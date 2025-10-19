@@ -51,11 +51,11 @@ class CartItem(models.Model):
 def generate_payment_code():
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))
 
-class Payment_Code():
+class Payment_Code(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="payment_codes")
     code = models.CharField(max_length=15, unique=True, default=generate_payment_code())
     is_paid = models.BooleanField(default=False)
-    created_at = models.DateTimeField(default=timezone.now())
+    created_at = models.DateTimeField(default=timezone.now)
     
     def __str__(self):
         status = "Pago" if self.is_paid else "Pendente"
