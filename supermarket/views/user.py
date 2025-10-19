@@ -20,11 +20,10 @@ def register_user(request):
     email = request.POST.get("email")
     
     if User.objects.filter(username=username).exists():
-        messages.error(request, "User already exists!")
+        return redirect("market:register")  
     else:
         User.objects.create_user(username=username, password=password, email=email)
-        messages.success(request, "Usuário criado com sucesso!")
-        return redirect("login")  
+        return redirect("market:login")  
 
 def login_user(request):
     if request.method == "GET":
@@ -36,7 +35,6 @@ def login_user(request):
     user = authenticate(request, username=username, password=password)
     if user is not None:
         login(request, user)
-        messages.success(request, f"bem-vindo, {username}!")
-        return redirect("market:home")
-    else:
         return redirect("market:home")   
+    else:
+        return redirect("market:login")
