@@ -1,5 +1,3 @@
-from itertools import product
-from turtle import update
 from django.db import models
 import string
 import random
@@ -7,17 +5,17 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 # Create your models here.
-class Products(models.Model):
+class Product(models.Model):
     name = models.CharField(max_length=100)
-    description = models.TextField(max_length=100)
-    Created_date = models.DateTimeField(default=timezone.now)
+    description = models.TextField()
+    created_date = models.DateTimeField(default=timezone.now)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     
     def __str__(self):
         return self.name
     
 class Stock(models.Model):
-    product = models.ForeignKey(Products, on_delete=models.CASCADE, related_name="stocks")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="stocks")
     quantity = models.PositiveIntegerField(default=0)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -38,7 +36,7 @@ class Cart(models.Model):
     
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
-    product = models.ForeignKey(Products, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     
     def __str__(self):
@@ -53,7 +51,7 @@ def generate_payment_code():
 
 class Payment_Code(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="payment_codes")
-    code = models.CharField(max_length=15, unique=True, default=generate_payment_code())
+    code = models.CharField(max_length=15, unique=True, default=generate_payment_code)
     is_paid = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
     
