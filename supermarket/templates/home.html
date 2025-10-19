@@ -9,6 +9,9 @@
     <p>Bem vindooooooooo</p>
     <h2>{{ user.username }}</h2>
     <h3>{{ cart_price }}</h3>
+    {% for item in items %}
+        <h3>{{ item.price }}</h3>
+    {% endfor %}
     <form action="{% url "market:logout" %}" method="post">
         {% csrf_token %}
         <button type="submit">Logout</button>
