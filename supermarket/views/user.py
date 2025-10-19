@@ -15,4 +15,4 @@ def register_user(request):
     else:
         User.objects.create_user(username=username, password=password, email=email)
         messages.success(request, "Usuário criado com sucesso!")
-        return redirect("login")  # ou qualquer página que queira
+        return redirect("login")  
