@@ -4,8 +4,9 @@ from django.urls import path
 from supermarket import views
 
 
-app_name = "market"
+app_name = 'market'
 
 urlpatterns = [
-    path("products/all", views.home)
+    path("products/all/", views.home, name='product'),
+    path("user/create/", views.register_user, name='register'),
 ]
