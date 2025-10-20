@@ -12,6 +12,8 @@ def home(request):
     cart, created = Cart.objects.get_or_create(user=user)
     items = cart.items.all()
     cart_price = user.cart.total_price
-    return render(request ,"home.html", context={"user": user,
-                                            "cart_price": cart_price,
-                                            "items": items if items else None})
+    
+    return render(request ,"home.html",
+        context={"user": user,
+        "cart_price": cart_price,
+        "items": items if items else None})
