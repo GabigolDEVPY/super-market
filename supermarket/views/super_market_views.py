@@ -3,6 +3,7 @@ from django.http import request, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from supermarket.models import Cart
+from django.core import serializers
 
 # Create your views here.
 
@@ -12,6 +13,7 @@ def home(request):
     cart, created = Cart.objects.get_or_create(user=user)
     items = cart.items.all()
     cart_price = user.cart.total_price
+    
     
     return render(request ,"home.html",
         context={"user": user,

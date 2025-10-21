@@ -1,24 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <form method="post" action="{% url 'market:register' %}">
-        {% csrf_token %}
-        <label>Username:</label>
-        <input type="text" name="username" required><br>
-    
-        <label>Email:</label>
-        <input type="email" name="email" required><br>
-    
-        <label>Password:</label>
-        <input type="password" name="password" required><br>
-    
-        <button type="submit">Registrar</button>
-    </form>
-</body>
-</html>
-
+<form method="POST">
+    {% csrf_token %}
+    {% for field in form %}
+        <div class="block_orientation">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if request.method == "POST" %}
+                {{ field.errors }}
+            {% endif %}    
+        </div>
+    {% endfor %}
+    <button type="submit">Registrar</button>
+</form>
