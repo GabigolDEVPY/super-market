@@ -17,7 +17,7 @@ def register_user(request):
     form = RegisterForm(request.POST)
     if form.is_valid():
         form.save()
-        return redirect("market:login")  
+        return redirect("market:login")
     return render(request, "register.html", {"form": form})
     
 

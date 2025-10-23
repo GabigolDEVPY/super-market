@@ -9,7 +9,7 @@ app_name = 'market'
 urlpatterns = [
     #home
     path("", views.home, name='home'),
-    path("products/all/", views.home, name='product'),
+    path("cart/", views.cart, name='cart'),
     
     path("login/", views.login_user, name='login'),
     path("register/", views.register_user, name='register'),

@@ -6,19 +6,18 @@
     <title>Document</title>
 </head>
 <body>
-    <p>Bem vindooooooooo</p>
-    <h2>{{ user.username }}</h2>
-    <h3>{{ cart_price }}</h3>
-    {% if items %}
-    {% for item in items %}
-        <h3>{{ item.price }}</h3>
-    {% endfor %}
-    {% else %}
-        <h3>Nenhum item</h3>
-    {% endif %}
     <form action="{% url "market:logout" %}" method="post">
         {% csrf_token %}
         <button type="submit">Logout</button>
     </form>
+    <p>Bem vindo</p>
+    <h2>{{ user.username }}</h2>
+    {% if products %}
+    {% for product in products %}
+        <h3>{{ product.price }}</h3>
+    {% endfor %}
+    {% else %}
+        <h3>Nenhum item</h3>
+    {% endif %}
 </body>
 </html>
