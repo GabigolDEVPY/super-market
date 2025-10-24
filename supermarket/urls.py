@@ -7,9 +7,10 @@ from supermarket import views
 app_name = 'market'
 
 urlpatterns = [
-    #home
     path("", views.home, name='home'),
     path("cart/", views.cart, name='cart'),
+    path("cart/add/<int:id>", views.add_to_cart, name='addcart'),
+    path("product/<int:id>/", views.product, name='product'),
     
     path("login/", views.login_user, name='login'),
     path("register/", views.register_user, name='register'),
