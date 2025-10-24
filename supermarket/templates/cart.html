@@ -12,5 +12,9 @@
         {% else %}
             <h3>Nenhum item</h3>
         {% endif %}
+        <form action="{% url 'market:cartbuy' %}">
+            {% csrf_token %}
+            <button>Buy</button>
+        </form>
     </div>
 {% endblock content %}
