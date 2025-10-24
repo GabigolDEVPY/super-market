@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from supermarket.models import Cart, Product, CartItem
+import time
 
 
 
@@ -32,6 +33,16 @@ def add_to_cart(request, id):
 def cartbuy(request):
     user = request.user
     cart = Cart.objects.get(user=user)
-    items = cart.items.delete()
+    items = cart.items.all().delete()
     print(items)
     return render(request, "cart.html")
+
+
+@login_required(login_url='market:login')
+def cartremove(request):
+    if request.method == "POST":
+        id = request.POST.get("id")
+        user = request.user
+        cart = Cart.objects.get(user=user)
+        cart.items.filter(id=id).delete()
+        return redirect("market:cart")

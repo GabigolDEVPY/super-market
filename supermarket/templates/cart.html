@@ -6,6 +6,11 @@
         <h3>{{ cart_price }}</h3>
         {% if items %}
         {% for item in items %}
+        <form action="{% url 'market:cartremove' %}" method="post">
+                {% csrf_token %}
+                <input name="id" type="hidden" value="{{ item.id }}">
+                <button>Remove</button>
+            </form>
             <h3>{{ item.product.name }}</h3>
             <h3>{{ item.price }}</h3>
         {% endfor %}
