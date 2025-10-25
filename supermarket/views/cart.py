@@ -20,7 +20,7 @@ def cart(request):
 @login_required(login_url='market:login')
 def add_to_cart(request, id):
     user = request.user
-    cart = Cart.objects.get(user=user)
+    cart = user.cart
     product = Product.objects.get(id=id)
     CartItem.objects.create(cart=cart, product=product, quantity=1)
 
@@ -30,7 +30,7 @@ def add_to_cart(request, id):
 @login_required(login_url='market:login')
 def cartbuy(request):
     user = request.user
-    cart = Cart.objects.get(user=user)
+    cart = user.cart
     items = cart.items.all().delete()
     return render(request, "cart.html")
 
@@ -40,6 +40,7 @@ def cartremove(request):
     if request.method == "POST":
         id = request.POST.get("id")
         user = request.user
-        cart = Cart.objects.get(user=user)
+        cart = user.cart
         cart.items.filter(id=id).delete()
         return redirect("market:cart")
+

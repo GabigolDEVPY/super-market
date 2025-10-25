@@ -1,10 +1,11 @@
-from itertools import product
-from pyexpat import model
 from django.db import models
 import string
 import random
 from django.contrib.auth.models import User
+from django.dispatch import receiver
 from django.utils import timezone
+from django.db.models.signals import post_save
+
 
 # Create your models here.
 class Product(models.Model):

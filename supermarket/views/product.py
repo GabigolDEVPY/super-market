@@ -43,7 +43,7 @@ def productbuynow(request):
         inventory_item.quantity += quantity
         inventory_item.save()
     else:
-        inventory_item.objects.create(inventory=inventory, product=product, quantity=quantity)
+        InventoryItem.objects.create(inventory=inventory, product=product, quantity=quantity)
         
     return redirect("market:home")
     
