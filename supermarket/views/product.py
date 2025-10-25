@@ -17,18 +17,33 @@ def product(request, id):
 @login_required(login_url='market:login')
 def buynow(request, id):
     product = Product.objects.get(id=id)
+    stock = product.stocks.first()
     return render(request ,"payment.html",
-        context={"product": product})
+        context={
+                "product": product,
+                "stock": stock
+                })
 
 @login_required(login_url='market:login')
 def productbuynow(request):
     user = request.user
-    quantity = request.POST.get("quantity") if request.POST.get("quantity") else 1
+    quantity = int(request.POST.get("quantity"))
     id = request.POST.get("id")
     discount = request.POST.get("discount") or None
-    inventory, created = Inventory.objects.get_or_create(user=user)
     product = Product.objects.get(id=id)
-    InventoryItem.objects.create(inventory=inventory, product=product, quantity=quantity)
+    stock = product.stocks.first()
+    if not stock or stock.quantity < quantity:
+        return redirect("market:home")
+    stock.quantity -= quantity
+    stock.save()
+    inventory, created = Inventory.objects.get_or_create(user=user)
+    inventory_item = InventoryItem.objects.filter(inventory=inventory, product=product).first()
     
+    if inventory_item:
+        inventory_item.quantity += quantity
+        inventory_item.save()
+    else:
+        inventory_item.objects.create(inventory=inventory, product=product, quantity=quantity)
+        
     return redirect("market:home")
     

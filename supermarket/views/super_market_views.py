@@ -12,6 +12,3 @@ def home(request):
             "products": products
         })
 
-
-    
-    
