@@ -19,3 +19,8 @@ def product(request, id):
     return render(request ,"product.html",
         context={"product": product})
 
+def buynow(request, id):
+    product = Product.objects.get(id=id)
+    return render(request ,"payment.html",
+        context={"product": product})
+

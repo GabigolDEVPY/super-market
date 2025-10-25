@@ -1,10 +1,13 @@
-
 {% extends "base.html" %}
     {% block content %}
         <a href="{% url 'market:cart' %}">Cart</a>
         <a href="{% url 'market:home' %}">Home</a>
         <h3>{{ product.name }}</h3>
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 200px;">
+        {% endif %}
         <h3>{{ product.description }}</h3>
         <h3>{{ product.price }}</h3>
         <a href="{% url 'market:addcart' product.id %}">add to cart</a>
+        <a href="{% url 'market:buynow' product.id %}">buy now</a>
     {% endblock content %}
