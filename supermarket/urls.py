@@ -15,6 +15,7 @@ urlpatterns = [
     path("cart/buy", views.cartbuy, name='cartbuy'),
     path("cart/remove", views.cartremove, name="cartremove"),
 
+    # product.views
     path("product/<int:id>/", views.product, name='product'),
     path("product/buy/<int:id>/", views.buynow, name='buynow'),
     path("product/buy", views.productbuynow, name='productbuynow'),
