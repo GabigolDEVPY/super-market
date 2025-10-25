@@ -8,6 +8,7 @@
         {% endif %}
         <h3>{{ product.description }}</h3>
         <h3>{{ product.price }}</h3>
+        <h3>{{ quantity }}</h3>
         <a href="{% url 'market:addcart' product.id %}">add to cart</a>
         <a href="{% url 'market:buynow' product.id %}">buy now</a>
     {% endblock content %}

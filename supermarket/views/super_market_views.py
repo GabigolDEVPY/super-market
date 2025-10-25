@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from supermarket.models import Cart, Product, CartItem
 
 
@@ -16,8 +15,13 @@ def home(request):
 @login_required(login_url='market:login')
 def product(request, id):
     product = Product.objects.get(id=id)
+    stock = product.stocks.first()
+    quantity = stock.quantity if stock else 0
     return render(request ,"product.html",
-        context={"product": product})
+        context={
+            "product": product,
+            "quantity": quantity
+            })
 
 def buynow(request, id):
     product = Product.objects.get(id=id)
