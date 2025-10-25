@@ -6,7 +6,7 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SESSION_COOKIE_AGE = 1800
+SESSION_COOKIE_AGE = 900
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 

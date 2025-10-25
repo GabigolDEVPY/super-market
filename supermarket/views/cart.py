@@ -32,7 +32,6 @@ def cartbuy(request):
     user = request.user
     cart = Cart.objects.get(user=user)
     items = cart.items.all().delete()
-    print(items)
     return render(request, "cart.html")
 
 

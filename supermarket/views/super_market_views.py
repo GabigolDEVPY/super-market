@@ -23,8 +23,12 @@ def product(request, id):
             "quantity": quantity
             })
 
+@login_required(login_url='market:login')
 def buynow(request, id):
     product = Product.objects.get(id=id)
     return render(request ,"payment.html",
         context={"product": product})
 
+@login_required(login_url='market:login')
+def productbuynow(request):
+    pass

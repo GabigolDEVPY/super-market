@@ -4,6 +4,20 @@
         <a href="{% url 'market:home' %}">Home</a>
         <h3>{{ product.name }}</h3>
         <h3>{{ product.price }}</h3>
-        <input type="number">
-        <a href="{% url 'market:buynow' product.id %}">finalize purchase</a>
+        <p>
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 200px;">
+        </p>
+        <form action="">
+            {% csrf_token %}
+            <label for="discount">Discount</label>
+            <input id="discount" type="text">
+            <button type="submit">Apply</button>
+        </form>
+        <form action="{% url 'market:productbuynow'  %}" method="post">
+            {% csrf_token %}
+            <input name="id" type="hidden" value="{{ product.id }}">
+            <label for="quantity">quantity</label>
+            <input id="quantity" type="number">
+            <button type="submit">Finalize purchase</button>
+        </form>
     {% endblock content %}
