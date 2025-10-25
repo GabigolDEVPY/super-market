@@ -10,14 +10,15 @@
         <form action="">
             {% csrf_token %}
             <label for="discount">Discount</label>
-            <input id="discount" type="text">
+            <input name="discount" id="discount" type="text">
             <button type="submit">Apply</button>
         </form>
         <form action="{% url 'market:productbuynow'  %}" method="post">
             {% csrf_token %}
+            <input name="discount" id="discount-backend" type="hidden" value="{{ discount|default:''}}">
             <input name="id" type="hidden" value="{{ product.id }}">
             <label for="quantity">quantity</label>
-            <input id="quantity" type="number">
+            <input id="quantity" type="number" min="1" value="1">
             <button type="submit">Finalize purchase</button>
         </form>
     {% endblock content %}

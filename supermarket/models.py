@@ -1,3 +1,5 @@
+from itertools import product
+from pyexpat import model
 from django.db import models
 import string
 import random
@@ -59,7 +61,18 @@ class Payment_Code(models.Model):
     def __str__(self):
         status = "Pago" if self.is_paid else "Pendente"
         return f"{self.user.username} - {self.code} ({status})"
+
+class Inventory(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="inventory")
     
-#user = request.user
-# cart = user.cart  # Isso é o carrinho DO usuário logado
-# total = cart.total_price
+    def __str__(self):
+        return f"Inventory of {self.user.username}"
+    
+class InventoryItem(models.Model):
+    inventory = models.ForeignKey("Inventory", on_delete=models.CASCADE, related_name="items")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    added_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.product.name} X {self.quantity}"

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from supermarket.models import Cart, Product, CartItem
+from supermarket.models import Cart, InventoryItem, Product, CartItem, Inventory
 
 
 @login_required(login_url='market:login')
@@ -31,4 +31,16 @@ def buynow(request, id):
 
 @login_required(login_url='market:login')
 def productbuynow(request):
-    pass
+    user = request.user
+    quantity = request.POST.get("quantity") if request.POST.get("quantity") else 1
+    id = request.POST.get("id")
+    discount = request.POST.get("discount") or None
+    inventory, created = Inventory.objects.get_or_create(user=user)
+    product = Product.objects.get(id=id)
+    InventoryItem.objects.create(inventory=inventory, product=product, quantity=quantity)
+    
+    
+    return redirect("market:home")
+    
+    
+    
