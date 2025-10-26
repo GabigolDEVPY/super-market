@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from supermarket.models import Cart, InventoryItem, Product, CartItem, Inventory
 
 
-@login_required(login_url='market:login')
+# @login_required(login_url='market:login')
 def product(request, id):
     product = Product.objects.get(id=id)
     stock = product.stocks.first()
