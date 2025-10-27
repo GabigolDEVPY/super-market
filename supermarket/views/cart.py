@@ -1,7 +1,8 @@
+from itertools import product
+from traceback import print_tb
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from supermarket.models import Cart, Product, CartItem
-
+from supermarket.models import Cart, InventoryItem, Product, CartItem
 
 
 @login_required(login_url='market:login')
@@ -30,7 +31,16 @@ def add_to_cart(request, id):
 @login_required(login_url='market:login')
 def cartbuy(request):
     user = request.user
+    inventory = user.inventory
     cart = user.cart
+    items = cart.items.all()
+    print(cart)
+    for item in items:
+        inv_item, created = InventoryItem.objects.get_or_create(
+            inventory=inventory, product=item.product)
+        if not created:
+            inv_item.quantity += item.quantity
+            inv_item.save()
     items = cart.items.all().delete()
     return render(request, "cart.html")
 
