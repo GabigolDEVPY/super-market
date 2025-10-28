@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, Stock, Cart, CartItem, Payment_Code, Inventory, InventoryItem
+from .models import Product, Stock, Cart, CartItem, Payment_Code, Inventory, InventoryItem, Category
 
 @admin.register(Payment_Code)
 class PaymentCodeAdmin(admin.ModelAdmin):
@@ -31,3 +31,7 @@ class Inventory(admin.ModelAdmin):
 @admin.register(InventoryItem)
 class Inventory(admin.ModelAdmin):
     list_display = ("inventory", "product", "quantity", "added_at")
+    
+@admin.register(Category)
+class Category(admin.ModelAdmin):
+    list_display = ("category",)

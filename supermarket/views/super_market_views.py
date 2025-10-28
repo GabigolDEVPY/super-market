@@ -12,3 +12,10 @@ def home(request):
             "products": products
         })
 
+@login_required(login_url='market:login')
+def inventory(request):
+    user = request.user
+    inventory = user.inventory
+    items = inventory.items.all()
+    return render(request, "inventory.html", context={"items": items})
+    

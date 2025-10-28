@@ -34,7 +34,6 @@ def cartbuy(request):
     inventory = user.inventory
     cart = user.cart
     items = cart.items.all()
-    print(cart)
     for item in items:
         inv_item, created = InventoryItem.objects.get_or_create(
             inventory=inventory, product=item.product)

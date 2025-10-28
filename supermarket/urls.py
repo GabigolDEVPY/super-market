@@ -2,12 +2,17 @@ from django import views
 from django.contrib import admin
 from django.urls import path
 from supermarket import views
+from supermarket.admin import Inventory
 
 
 app_name = 'market'
 
 urlpatterns = [
+    # home
     path("", views.home, name='home'),
+    
+    # my purchases
+    path("mypurchases/", views.inventory, name="inventory"),
 
     # cart views
     path("cart/", views.cart, name='cart'),

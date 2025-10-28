@@ -11,6 +11,7 @@
         <button type="submit">Logout</button>
     </form>
     <a href="{% url 'market:cart' %}">Cart</a>
+    <a href="{% url 'market:inventory' %}">My purchases</a>
     <h2>{{ user.username }}</h2>
     {% if products %}
     {% for product in products %}
