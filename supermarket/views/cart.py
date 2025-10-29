@@ -23,7 +23,11 @@ def add_to_cart(request, id):
     user = request.user
     cart = user.cart
     product = Products.objects.get(id=id)
-    CartItem.objects.create(cart=cart, product=product, quantity=1)
+    item, created = CartItem.objects.get_or_create(cart=cart, product=product, defaults={'quantity': 1})
+    if not created:
+        item.quantity += 1
+        item.save()
+    
 
     return render(request ,"product.html",
         context={"product": product})
