@@ -2,7 +2,7 @@ from itertools import product
 from traceback import print_tb
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from supermarket.models import Cart, InventoryItem, Product, CartItem
+from supermarket.models import Cart, InventoryItem, Products, CartItem
 
 
 @login_required(login_url='market:login')
@@ -22,7 +22,7 @@ def cart(request):
 def add_to_cart(request, id):
     user = request.user
     cart = user.cart
-    product = Product.objects.get(id=id)
+    product = Products.objects.get(id=id)
     CartItem.objects.create(cart=cart, product=product, quantity=1)
 
     return render(request ,"product.html",

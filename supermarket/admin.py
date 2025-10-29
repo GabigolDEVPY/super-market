@@ -1,11 +1,11 @@
 from django.contrib import admin
-from .models import Product, Stock, Cart, CartItem, Payment_Code, Inventory, InventoryItem, Category
+from .models import Products, Stock, Cart, CartItem, Payment_Code, Inventory, InventoryItem, Category
 
 @admin.register(Payment_Code)
 class PaymentCodeAdmin(admin.ModelAdmin):
     list_display = ("user", "code", "created_at", "is_paid")
 
-@admin.register(Product)
+@admin.register(Products)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ("name", "price", "created_date")
 

@@ -12,7 +12,7 @@ class Category(models.Model):
     def __str__(self):
         return self.category
 
-class Product(models.Model):
+class Products(models.Model):
     name = models.CharField(max_length=100)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
     description = models.TextField()
@@ -24,7 +24,7 @@ class Product(models.Model):
         return self.name
     
 class Stock(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="stocks")
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, related_name="stocks")
     quantity = models.PositiveIntegerField(default=0)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -45,7 +45,7 @@ class Cart(models.Model):
     
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     
     def __str__(self):
@@ -76,7 +76,7 @@ class Inventory(models.Model):
     
 class InventoryItem(models.Model):
     inventory = models.ForeignKey("Inventory", on_delete=models.CASCADE, related_name="items")
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     added_at = models.DateTimeField(auto_now_add=True)
     
