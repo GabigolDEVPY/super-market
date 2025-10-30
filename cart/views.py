@@ -5,7 +5,7 @@ from cart.models import Cart, CartItem
 from inventory.models import InventoryItem
 
 
-@login_required(login_url='market:login')
+@login_required(login_url='account:login')
 def cart(request):
     user = request.user
     cart, created = Cart.objects.get_or_create(user=user)
@@ -18,21 +18,22 @@ def cart(request):
         "items": items })
 
 
-@login_required(login_url='market:login')
+@login_required(login_url='accounts:login')
 def add_to_cart(request, id):
     user = request.user
     cart = user.cart
     product = Product.objects.get(id=id)
-    item, created = CartItem.objects.get_or_create(cart=cart, product=product, defaults={'quantity': 1})
-    if not created:
-        item.quantity += 1
-        item.save()
+    if product.stocks.first().quantity:
+        item, created = CartItem.objects.get_or_create(cart=cart, product=product, defaults={'quantity': 1})
+        if not created:
+            item.quantity += 1
+            item.save()
     
 
     return render(request ,"product.html",
         context={"product": product})
 
-@login_required(login_url='market:login')
+@login_required(login_url='accounts:login')
 def cartbuy(request):
     user = request.user
     inventory = user.inventory
@@ -51,11 +52,11 @@ def cartbuy(request):
     return render(request, "cart.html")
 
 
-@login_required(login_url='market:login')
+@login_required(login_url='accounts:login')
 def cartremove(request):
     if request.method == "POST":
         id = request.POST.get("id")
         user = request.user
         cart = user.cart
         cart.items.filter(id=id).delete()
-        return redirect("market:cart")
+        return redirect("cart:cart")

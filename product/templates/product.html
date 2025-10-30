@@ -1,6 +1,6 @@
 {% extends "base.html" %}
     {% block content %}
-        <a href="{% url 'market:cart' %}">Cart</a>
+        <a href="{% url 'cart:cart' %}">Cart</a>
         <a href="{% url 'market:home' %}">Home</a>
         <h3>{{ product.name }}</h3>
         {% if product.image %}
@@ -10,6 +10,6 @@
         <h3>{{ product.price }}</h3>
         <h4>quantity</h4>
         <h3>{{ quantity }}</h3>
-        <a href="{% url 'market:addcart' product.id %}">add to cart</a>
-        <a href="{% url 'market:buynow' product.id %}">buy now</a>
+        <a href="{% url 'cart:addcart' product.id %}">add to cart</a>
+        <a href="{% url 'product:buynow' product.id %}">buy now</a>
     {% endblock content %}

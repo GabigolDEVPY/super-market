@@ -6,7 +6,7 @@
         <h3>{{ cart_price }}</h3>
         {% if items %}
         {% for item in items %}
-        <form action="{% url 'market:cartremove' %}" method="post">
+        <form action="{% url 'cart:cartremove' %}" method="post">
                 {% csrf_token %}
                 <label for="quantity">quantity</label>
                 <label for="quantity">{{item.quantity}}</label>
@@ -19,7 +19,7 @@
         {% else %}
             <h3>Nenhum item</h3>
         {% endif %}
-        <form action="{% url 'market:cartbuy' %}">
+        <form action="{% url 'cart:cartbuy' %}">
             {% csrf_token %}
             <button>Buy</button>
         </form>
