@@ -1,0 +1,81 @@
+supermarket/
+│
+├── manage.py
+│
+├── supermarket/                     # pasta principal do projeto (core)
+│   ├── __init__.py
+│   ├── settings.py                  # configs do projeto
+│   ├── urls.py                      # urls globais (include dos apps)
+│   ├── wsgi.py
+│   └── asgi.py
+│
+├── accounts/                        # app de usuários e perfis
+│   ├── migrations/
+│   ├── __init__.py
+│   ├── models.py                    # UserProfile, Endereço etc.
+│   ├── views.py                     # login, logout, perfil
+│   ├── urls.py
+│   ├── forms.py
+│   ├── signals.py
+│   └── templates/
+│       └── accounts/
+│           ├── login.html
+│           ├── register.html
+│           └── profile.html
+│
+├── products/                        # app de produtos e estoque
+│   ├── migrations/
+│   ├── __init__.py
+│   ├── models.py                    # Product, Stock
+│   ├── views.py                     # lista e detalhe de produtos
+│   ├── urls.py
+│   └── templates/
+│       └── products/
+│           ├── product_list.html
+│           └── product_detail.html
+│
+├── cart/                            # app do carrinho
+│   ├── migrations/
+│   ├── __init__.py
+│   ├── models.py                    # Cart, CartItem
+│   ├── views.py                     # adicionar, remover, atualizar
+│   ├── urls.py
+│   └── templates/
+│       └── cart/
+│           └── cart.html
+│
+├── orders/                          # app de pedidos e pagamentos
+│   ├── migrations/
+│   ├── __init__.py
+│   ├── models.py                    # Order, OrderItem
+│   ├── views.py                     # checkout, confirmação
+│   ├── urls.py
+│   └── templates/
+│       └── orders/
+│           ├── checkout.html
+│           └── order_success.html
+│
+├── static/                          # arquivos estáticos globais
+│   ├── css/
+│   │   ├── base.css
+│   │   ├── navbar.css
+│   │   └── products.css
+│   │
+│   ├── js/
+│   │   ├── main.js
+│   │   ├── cart.js
+│   │   └── checkout.js
+│   │
+│   └── img/
+│       ├── logo.png
+│       ├── banner.jpg
+│       └── products/
+│           ├── produto1.jpg
+│           └── produto2.jpg
+│
+├── templates/                       # templates globais (herança base)
+│   ├── base.html
+│   ├── navbar.html
+│   └── footer.html
+│
+└── requirements.txt
