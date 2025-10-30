@@ -1,7 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from supermarket.models import Cart, InventoryItem, Products, CartItem, Inventory
-
+from products.models import Products
 
 def home(request):
     user = request.user

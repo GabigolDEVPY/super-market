@@ -1,4 +1,5 @@
-from . models import Cart, Inventory
+from cart.models import Cart
+from inventory.models import Inventory
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 
