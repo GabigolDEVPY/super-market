@@ -1,28 +1,7 @@
 from django.contrib import admin
-from .models import Products, Stock, Cart, CartItem, Payment_Code, Inventory, InventoryItem, Category
-
-@admin.register(Payment_Code)
-class PaymentCodeAdmin(admin.ModelAdmin):
-    list_display = ("user", "code", "created_at", "is_paid")
-
-@admin.register(Products)
-class ProductAdmin(admin.ModelAdmin):
-    list_display = ("name", "price", "created_date")
+from .models import Inventory, InventoryItem
 
 
-@admin.register(Stock)
-class StockAdmin(admin.ModelAdmin):
-    list_display = ("product", "quantity", "updated_at")
-
-
-@admin.register(Cart)
-class CartAdmin(admin.ModelAdmin):
-    list_display = ("user", "created_at", "updated_at") 
-    
-
-@admin.register(CartItem)
-class CartItemAdmin(admin.ModelAdmin):
-    list_display = ("cart", "product", "quantity")
     
 @admin.register(Inventory)
 class Inventory(admin.ModelAdmin):
@@ -32,6 +11,3 @@ class Inventory(admin.ModelAdmin):
 class Inventory(admin.ModelAdmin):
     list_display = ("inventory", "product", "quantity", "added_at")
     
-@admin.register(Category)
-class Category(admin.ModelAdmin):
-    list_display = ("category",)

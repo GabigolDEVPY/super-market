@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
-    <form action="{% url "market:logout" %}" method="post">
+    <form action="{% url "accounts:logout" %}" method="post">
         {% csrf_token %}
         <button type="submit">Logout</button>
     </form>
-    <a href="{% url 'market:cart' %}">Cart</a>
-    <a href="{% url 'market:inventory' %}">My purchases</a>
+    {% comment %} <a href="{% url 'market:cart' %}">Cart</a>
+    <a href="{% url 'market:inventory' %}">My purchases</a> {% endcomment %}
     <h2>{{ user.username }}</h2>
     {% if products %}
     {% for product in products %}
-        <a href="{% url 'market:product' product.id %}">
+        {% comment %} <a href="{% url 'market:product' product.id %}"> {% endcomment %}
             <h3>{{ product.name }}</h3>
             <h3>{{ product.description }}</h3>
             <h3>{{ product.price }}</h3>

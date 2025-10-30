@@ -7,7 +7,7 @@ from .forms import RegisterForm
 def logout_user(request):
     if request.method == "POST":
         logout(request)
-        return redirect("market:login")
+        return redirect("accounts:login")
     return redirect("market:home")
         
 
@@ -18,7 +18,7 @@ def register_user(request):
     form = RegisterForm(request.POST)
     if form.is_valid():
         form.save()
-        return redirect("market:login")
+        return redirect("accounts:login")
     return render(request, "register.html", {"form": form})
     
 
@@ -32,5 +32,5 @@ def login_user(request):
         login(request, user)
         return redirect("market:home")   
     else:
-        return redirect("market:login")
+        return redirect("accounts:login")
     
