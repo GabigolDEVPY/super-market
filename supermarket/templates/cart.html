@@ -9,7 +9,7 @@
         <form action="{% url 'market:cartremove' %}" method="post">
                 {% csrf_token %}
                 <label for="quantity">quantity</label>
-                <input name="quantity" id="quantity" type="number" min="1" value="1" max="{{ stock.quantity }}">
+                <label for="quantity">{{item.quantity}}</label>
                 <input name="id" type="hidden" value="{{ item.id }}">
                 <button>Remove</button>
             </form>
