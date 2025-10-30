@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+    <div>
+        <a href="{% url 'market:home' %}">Home</a>
+        <h2>{{ user.username }}</h2>
+        <h3>{{ cart_price }}</h3>
+        {% if items %}
+        {% for item in items %}
+        <form action="{% url 'market:cartremove' %}" method="post">
+                {% csrf_token %}
+                <label for="quantity">quantity</label>
+                <label for="quantity">{{item.quantity}}</label>
+                <input name="id" type="hidden" value="{{ item.id }}">
+                <button>Remove</button>
+            </form>
+            <h3>{{ item.product.name }}</h3>
+            <h3>{{ item.price }}</h3>
+        {% endfor %}
+        {% else %}
+            <h3>Nenhum item</h3>
+        {% endif %}
+        <form action="{% url 'market:cartbuy' %}">
+            {% csrf_token %}
+            <button>Buy</button>
+        </form>
+    </div>
+{% endblock content %}
