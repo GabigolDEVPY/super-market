@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from .forms import RegisterForm
 
+
 def logout_user(request):
     if request.method == "POST":
         logout(request)
