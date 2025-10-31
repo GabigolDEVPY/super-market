@@ -6,5 +6,5 @@ from . import views
 app_name = 'inventory'
 
 urlpatterns = [
-    path("inventory/", views.inventory, name="inventory")
+    path("/", views.inventory, name="inventory")
 ]
