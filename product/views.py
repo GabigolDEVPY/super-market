@@ -15,17 +15,19 @@ def product(request, id):
             "quantity": quantity
             })
 
-@login_required(login_url='market:login')
+@login_required(login_url='accounts:login')
 def buynow(request, id):
     product = Product.objects.get(id=id)
     stock = product.stocks.first()
+    if stock.quantity < 1:
+        return render(request, "product.html", context={"product": product})
     return render(request ,"payment.html",
         context={
                 "product": product,
                 "stock": stock
                 })
 
-@login_required(login_url='market:login')
+@login_required(login_url='accounts:login')
 def productbuynow(request):
     user = request.user
     quantity = int(request.POST.get("quantity"))
