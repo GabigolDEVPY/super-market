@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from product.models import Product
-from inventory.models import InventoryItem
+from inventory.models import InventoryItem, Inventory
 
 
 def product(request, id):
