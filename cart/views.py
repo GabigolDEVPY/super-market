@@ -1,9 +1,8 @@
-from django.shortcuts import render
-from itertools import product
-from traceback import print_tb
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from supermarket.models import Cart, InventoryItem, Products, CartItem
+from product.models import Product
+from cart.models import Cart, CartItem
+from inventory.models import InventoryItem
 
 
 @login_required(login_url='market:login')
@@ -23,7 +22,7 @@ def cart(request):
 def add_to_cart(request, id):
     user = request.user
     cart = user.cart
-    product = Products.objects.get(id=id)
+    product = Product.objects.get(id=id)
     item, created = CartItem.objects.get_or_create(cart=cart, product=product, defaults={'quantity': 1})
     if not created:
         item.quantity += 1

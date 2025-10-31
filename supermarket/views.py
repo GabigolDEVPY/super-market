@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from products.models import Product
+from product.models import Product
 
 def home(request):
     user = request.user

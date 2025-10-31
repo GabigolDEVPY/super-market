@@ -4,12 +4,12 @@
         {% csrf_token %}
         <button type="submit">Logout</button>
     </form>
-    {% comment %} <a href="{% url 'market:cart' %}">Cart</a>
-    <a href="{% url 'market:inventory' %}">My purchases</a> {% endcomment %}
+    <a href="{% url 'cart:cart' %}">Cart</a>
+    <a href="{% url 'inventory:inventory' %}">My purchases</a> 
     <h2>{{ user.username }}</h2>
     {% if products %}
     {% for product in products %}
-        {% comment %} <a href="{% url 'market:product' product.id %}"> {% endcomment %}
+        <a href="{% url 'product:product' product.id %}"> 
             <h3>{{ product.name }}</h3>
             <h3>{{ product.description }}</h3>
             <h3>{{ product.price }}</h3>
