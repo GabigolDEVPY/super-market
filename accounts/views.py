@@ -1,5 +1,7 @@
 from django.shortcuts import render
+from django.views import View
 from django.contrib.auth import authenticate, login, logout
+from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 from .forms import RegisterForm
 
@@ -9,7 +11,10 @@ def logout_user(request):
         logout(request)
         return redirect("accounts:login")
     return redirect("market:home")
-        
+
+class LoginView(View):
+    def get(self, request):
+        return render(request, "login.html")
 
 def register_user(request):
     if request.method == "GET":
