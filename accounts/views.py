@@ -3,39 +3,39 @@ from django.views import View
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
+from django.views.generic import FormView
+
+import accounts
 from .forms import RegisterForm
 
 
-def logout_user(request):
-    if request.method == "POST":
+class LogoutView(View):
+    def post(self, request):
         logout(request)
         return redirect("accounts:login")
-    return redirect("market:home")
+    def get(self, request):
+        return redirect("market:home")
 
 class LoginView(View):
     def get(self, request):
         return render(request, "login.html")
 
-def register_user(request):
-    if request.method == "GET":
-        form = RegisterForm()
-        return render(request, "register.html", {"form": form})
-    form = RegisterForm(request.POST)
-    if form.is_valid():
-        form.save()
+    def post(self, request):
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect("market:home")
         return redirect("accounts:login")
-    return render(request, "register.html", {"form": form})
+        
+        
+class RegisterView(FormView):
+    template_name = "register.html"
+    form_class = RegisterForm
+    success_url = reverse_lazy("accounts:login")
     
-
-def login_user(request):
-    if request.method == "GET":
-        return render(request, "login.html")
-    username = request.POST.get("username") 
-    password = request.POST.get("password")
-    user = authenticate(request, username=username, password=password)
-    if user is not None:
-        login(request, user)
-        return redirect("market:home")   
-    else:
-        return redirect("accounts:login")
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
     

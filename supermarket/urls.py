@@ -7,5 +7,5 @@ app_name = 'market'
 
 urlpatterns = [
     # home
-    path("", views.home, name='home'),
+    path("", views.HomeView.as_view(), name='home'),
 ]
