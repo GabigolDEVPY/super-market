@@ -1,14 +1,15 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from product.models import Product
-from cart.models import Cart, CartItem
-from django.contrib.auth.models import User
-from inventory.models import InventoryItem, Inventory
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView
 
-# Create your views here.
-@login_required(login_url='accounts:login')
-def inventory(request):
-    user = request.user
-    inventory = user.inventory
-    items = inventory.items.all()
-    return render(request, "inventory.html", context={"items": items})
+
+class InventoryView(LoginRequiredMixin, ListView):
+    template_name = "inventory.html"
+    context_object_name = "items"
+    login_url = "accounts:login"
+    
+    def get_queryset(self):
+        user = self.request.user
+        items = user.inventory.items.all()
+        return items
+    
+        
