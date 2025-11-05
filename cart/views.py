@@ -1,22 +1,20 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.views.generic import ListView, TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from product.models import Product
 from cart.models import Cart, CartItem
 from inventory.models import InventoryItem
 
-
-@login_required(login_url='account:login')
-def cart(request):
-    user = request.user
-    cart, created = Cart.objects.get_or_create(user=user)
-    items = cart.items.all()
-    cart_price = cart.total_price
+class CartView(LoginRequiredMixin, TemplateView):
+    template_name = "cart.html"
     
-    return render(request ,"cart.html",
-        context={"user": user,
-        "cart_price": cart_price,
-        "items": items })
-
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["items"] = self.request.user.cart.items.all()
+        context["cart_price"] = self.request.user.cart.total_price
+        return context 
+    
 
 @login_required(login_url='accounts:login')
 def add_to_cart(request, id):

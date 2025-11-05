@@ -5,7 +5,6 @@ from django.views.generic import ListView
 class InventoryView(LoginRequiredMixin, ListView):
     template_name = "inventory.html"
     context_object_name = "items"
-    login_url = "accounts:login"
     
     def get_queryset(self):
         user = self.request.user
