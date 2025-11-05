@@ -19,6 +19,13 @@ class ProductDetailView(DetailView):
         return context
     
 class BuyNowView(LoginRequiredMixin, View):
+    def get(self, request, id):
+        product = Product.objects.get(id=id)
+        stock = product.stocks.first()
+        if not stock or stock.quantity < 1:
+            return render(request, "product.html", {"product": product})
+        return render(request, "payment.html", {"product": product, "stock": stock})
+        
 
 @login_required(login_url='accounts:login')
 def productbuynow(request):
