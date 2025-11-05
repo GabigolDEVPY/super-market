@@ -1,31 +1,24 @@
-from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.views import View
 from product.models import Product
+from django.views.generic.detail import DetailView
 from inventory.models import InventoryItem, Inventory
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-def product(request, id):
-    product = Product.objects.get(id=id)
-    stock = product.stocks.first()
-    quantity = stock.quantity if stock else 0
-    return render(request ,"product.html",
-        context={
-            "product": product,
-            "quantity": quantity
-            })
-
-@login_required(login_url='accounts:login')
-def buynow(request, id):
-    product = Product.objects.get(id=id)
-    stock = product.stocks.first()
-    if stock.quantity < 1:
-        return render(request, "product.html", context={"product": product})
-    return render(request ,"payment.html",
-        context={
-                "product": product,
-                "stock": stock
-                })
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = "product.html"
+    context_object_name = "product"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        stock = self.object.stocks.first()
+        context["quantity"] = stock.quantity if stock else 0 
+        return context
+    
+class BuyNowView(LoginRequiredMixin, View):
 
 @login_required(login_url='accounts:login')
 def productbuynow(request):
