@@ -7,7 +7,7 @@
             <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 200px;">
         {% endif %}
         <h3>{{ product.description }}</h3>
-        <h3>{{ product.price }}</h3>
+        <h3>{{ product.apply_discount}}</h3>
         <h4>quantity</h4>
         <h3>{{ quantity }}</h3>
         <a href="{% url 'cart:addcart' product.id %}">add to cart</a>

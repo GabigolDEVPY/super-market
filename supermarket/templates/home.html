@@ -12,7 +12,7 @@
         <a href="{% url 'product:product' product.id %}"> 
             <h3>{{ product.name }}</h3>
             <h3>{{ product.description }}</h3>
-            <h3>{{ product.price }}</h3>
+            <h3>{{ product.apply_discount }}</h3>
             {% if product.image %}
                 <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 200px;">
             {% endif %}

@@ -21,8 +21,17 @@ def add_to_cart(request, id):
     user = request.user
     cart = user.cart
     product = Product.objects.get(id=id)
+    
+    
+    if product.discount:
+        discount_amount = (product.price * product.discount.discount) / 100
+        final_price = product.price - discount_amount
+    else:
+        final_price = product.price
+        
     if product.stocks.first().quantity:
-        item, created = CartItem.objects.get_or_create(cart=cart, product=product, defaults={'quantity': 1})
+        item, created = CartItem.objects.get_or_create(cart=cart, product=product, defaults={'quantity': 1,})
+        
         if not created:
             item.quantity += 1
             item.save()

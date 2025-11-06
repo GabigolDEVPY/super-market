@@ -1,5 +1,5 @@
 from django.contrib import admin
-from . models import Product, Stock, Category
+from . models import Product, Stock, Category, Promotion
 
 
 # Register your models here.
@@ -15,3 +15,7 @@ class StockAdmin(admin.ModelAdmin):
 @admin.register(Category)
 class Category(admin.ModelAdmin):
     list_display = ("category",)    
+    
+@admin.register(Promotion)
+class Promotion(admin.ModelAdmin):
+    list_display = ("name",)

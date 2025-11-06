@@ -14,7 +14,7 @@
                 <button>Remove</button>
             </form>
             <h3>{{ item.product.name }}</h3>
-            <h3>{{ item.price }}</h3>
+            <h3>{{ item.product.apply_discount }}</h3>
         {% endfor %}
         {% else %}
             <h3>Nenhum item</h3>
