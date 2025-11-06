@@ -29,7 +29,12 @@ class CartItem(models.Model):
     
     @property
     def subtotal(self):
-        return (self.product.price - (self.product.price * self.product.discount.discount / 100))  if self.product.discount else self.product.price * self.quantity
+        if self.product.discount:
+            discount =  (self.product.price / 100) * self.product.discount.discount
+            price_with_discount = self.product.price - discount
+            return price_with_discount * self.quantity
+        return self.product.price * self.quantity
+
 
 def generate_payment_code():
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))
