@@ -2,17 +2,23 @@
     {% block content %}
         <a href="{% url 'cart:cart' %}">Cart</a>
         <a href="{% url 'market:home' %}">Home</a>
+        
         <h3>{{ product.name }}</h3>
-        <h3>{{ product.price }}</h3>
+        <h3>{{ discount_price|default:product.price }}</h3>
         <p>
             <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 200px;">
         </p>
-        <form action="">
+        <form action="{% url 'product:buynow' product.id %}" method="post">
             {% csrf_token %}
             <label for="discount">Discount</label>
             <input name="discount" id="discount" type="text">
             <button type="submit">Apply</button>
         </form>
+        {% if messages %}
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        {% endif %}
         <form action="{% url 'product:productbuynow'  %}" method="post">
             {% csrf_token %}
             <input name="discount" id="discount-backend" type="hidden" value="{{ discount|default:''}}">

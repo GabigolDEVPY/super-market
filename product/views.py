@@ -4,8 +4,9 @@ from django.views import View
 from product.models import Product
 from django.views.generic.detail import DetailView
 from inventory.models import InventoryItem, Inventory
+from product.models import DiscountCode
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from django.contrib import messages
 
 class ProductDetailView(DetailView):
     model = Product
@@ -25,14 +26,29 @@ class BuyNowView(LoginRequiredMixin, View):
         if not stock or stock.quantity < 1:
             return render(request, "product.html", {"product": product})
         return render(request, "payment.html", {"product": product, "stock": stock})
-        
+    
+    
+    #apply discount cupom
+    def post(self, request, id):
+        discount = request.POST.get("discount") or None
+        if discount:
+            discount_search = DiscountCode.objects.filter(name=discount).first()
+            if not discount_search:
+                messages.error(request, "Cupom Inválido!")
+                return redirect('product:buynow', id)
+        product = Product.objects.get(id=id)
+        stock = product.stocks.first()
+        discount_price = product.price - (product.price / 100 * discount_search.discount)
+        messages.success(request, "Cupom de desconto aplicado com sucesso!!")
+        return render(request, 'payment.html', {"product": product, "stock": stock, "discount_price": discount_price})
+
+
 
 @login_required(login_url='accounts:login')
 def productbuynow(request):
     user = request.user
     quantity = int(request.POST.get("quantity"))
     id = request.POST.get("id")
-    discount = request.POST.get("discount") or None
     product = Product.objects.get(id=id)
     stock = product.stocks.first()
     if not stock or stock.quantity < quantity:

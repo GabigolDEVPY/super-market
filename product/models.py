@@ -47,4 +47,10 @@ class Stock(models.Model):
     def __str__(self):
         return f"{self.product.name} - {self.quantity} unidades"
 
-    
+
+class DiscountCode(models.Model):
+    name = models.CharField(max_length=15, blank=False)
+    discount = models.PositiveIntegerField()
+
+    def __str__(self):
+        return self.name
