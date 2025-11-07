@@ -4,7 +4,7 @@
         <a href="{% url 'market:home' %}">Home</a>
         
         <h3>{{ product.name }}</h3>
-        <h3>{{ discount_price|default:product.price }}</h3>
+        <h3>{{ discount_price|default:product.apply_discount }}</h3>
         <p>
             <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 200px;">
         </p>

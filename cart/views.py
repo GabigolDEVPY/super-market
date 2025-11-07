@@ -5,7 +5,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from product.models import Product
 from cart.models import Cart, CartItem
 from inventory.models import InventoryItem
+from utils.decorators import clear_session_data
+from django.utils.decorators import method_decorator
 
+
+@method_decorator(clear_session_data(["discount_price", "discount_name"]), name="dispatch")
 class CartView(LoginRequiredMixin, TemplateView):
     template_name = "cart.html"
     

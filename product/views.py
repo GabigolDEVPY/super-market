@@ -1,3 +1,4 @@
+from django import dispatch
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views import View
@@ -7,7 +8,11 @@ from inventory.models import InventoryItem, Inventory
 from product.models import DiscountCode
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from utils.decorators import clear_session_data
+from django.utils.decorators import method_decorator
 
+
+@method_decorator(clear_session_data(["discount_name", "discount_price"]), name="dispatch")
 class ProductDetailView(DetailView):
     model = Product
     template_name = "product.html"
@@ -18,6 +23,7 @@ class ProductDetailView(DetailView):
         stock = self.object.stocks.first()
         context["quantity"] = stock.quantity if stock else 0 
         return context
+    
     
 class BuyNowView(LoginRequiredMixin, View):
     def get(self, request, id):
@@ -40,7 +46,7 @@ class BuyNowView(LoginRequiredMixin, View):
                 previous_price = request.session.get("discount_price")
                 messages.error(request, "Cupom Inválido!")
                 return render(request, 'payment.html', {"product": product, "stock": stock, "discount_price": previous_price, "discount": previous_discount})
-        discount_price = float(product.price - (product.price / 100 * discount_search.discount))
+        discount_price = float(product.apply_discount() - (product.price / 100 * discount_search.discount))
         request.session["discount_name"] = discount_search.name
         request.session["discount_price"] = discount_price      
         messages.success(request, "Cupom de desconto aplicado com sucesso!!")
@@ -67,6 +73,7 @@ def productbuynow(request):
         inventory_item.save()
     else:
         InventoryItem.objects.create(inventory=inventory, product=product, quantity=quantity)
-        
+    request.session.pop("discount_name", None)
+    request.session.pop("discount_price", None)
     return redirect("market:home")
     
