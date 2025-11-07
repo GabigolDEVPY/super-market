@@ -21,7 +21,7 @@
         {% endif %}
         <form action="{% url 'product:productbuynow'  %}" method="post">
             {% csrf_token %}
-            <input name="discount" id="discount-backend" type="hidden" value="{{ discount|default:''}}">
+            <input name="discount" id="discount-backend" type="hidden" value="{{ discount_true|default:''}}">
             <input name="id" type="hidden" value="{{ product.id }}">
             <label for="quantity">quantity</label>
             <input name="quantity" id="quantity" type="number" min="1" value="1" max="{{ stock.quantity }}">
