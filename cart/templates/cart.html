@@ -1,9 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
     <div>
-        <a href="{% url 'market:home' %}">Home</a>
-        <h2>{{ user.username }}</h2>
-        <h3>{{ cart_price }}</h3>
         {% if items %}
         {% for item in items %}
         <form action="{% url 'cart:cartremove' %}" method="post">

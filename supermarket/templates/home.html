@@ -10,7 +10,8 @@
                             <div class="card-body">
                                 <h5 class="card-title">{{ product.name }}</h5>
                                 <p class="card-text">{{ product.description }}</p>
-                                <a href="{% url 'product:product' product.id %}" class="btn btn-primary">Go somewhere</a>
+                                <h5 class="card-title">R$ {{ product.apply_discount }}</h5>
+                                <a href="{% url 'product:product' product.id %}" class="btn btn-success">Buy Now</a>
                             </div>
                         </div>
                     {% endfor %}

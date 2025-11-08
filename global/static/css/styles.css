@@ -16,3 +16,24 @@ a {
     text-decoration: none;
 
 }
+
+.nav-link {
+    color: white;
+}
+.nav-item {
+    color: white;
+}
+
+
+.bg-body-tertiary {
+    background-color: rgb(0 102 203) !important;
+}
+
+.button-hover:hover {
+    color: black;
+}
+
+.btn-outline-success {
+    --bs-btn-color: #ffffff ;
+    --bs-btn-border-color: #ffffff;
+}

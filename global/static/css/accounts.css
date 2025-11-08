@@ -1,8 +1,13 @@
 .box-layout {
     background-color: rgb(255, 255, 255);
     border-radius: 10px;
+    width: 45vh;
+    height: 60vh;
 }
 
 .box-layout form {
+    display: flex;
+    flex-direction: column;
     margin: 30px;
+    gap: 20px;
 }

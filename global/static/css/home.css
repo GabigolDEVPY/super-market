@@ -1,11 +1,19 @@
 .display-form-products {
     background-color: rgb(255, 255, 255);
-    padding: 50px;
-    box-sizing: border-box;
-    margin-top: 15vh;
+    padding: 6vh;
+    display: flex;
+    margin-top: 25vh;
 }
 
 .row {
     margin-left: 7vh;
     gap: 5px;
+}
+
+.card {
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: scale(1.02);
 }
