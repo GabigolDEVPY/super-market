@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
@@ -25,6 +26,7 @@ class LoginView(View):
         if user is not None:
             login(request, user)
             return redirect("market:home")
+        messages.error(request, "Username or password expired")
         return redirect("accounts:login")
         
         

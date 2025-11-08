@@ -32,8 +32,8 @@ def add_to_cart(request, id):
         final_price = product.price - discount_amount
     else:
         final_price = product.price
-        
-    if product.stocks.first().quantity:
+    stock = product.stocks.first()
+    if  not stock or stock < 1:
         item, created = CartItem.objects.get_or_create(cart=cart, product=product, defaults={'quantity': 1,})
         
         if not created:
