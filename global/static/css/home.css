@@ -1,0 +1,11 @@
+.display-form-products {
+    background-color: rgb(255, 255, 255);
+    padding: 50px;
+    box-sizing: border-box;
+    margin-top: 15vh;
+}
+
+.row {
+    margin-left: 7vh;
+    gap: 5px;
+}

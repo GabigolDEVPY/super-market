@@ -10,6 +10,6 @@
         <h3>{{ product.apply_discount}}</h3>
         <h4>quantity</h4>
         <h3>{{ quantity }}</h3>
-        <a href="{% url 'cart:addcart' product.id %}">add to cart</a>
-        <a href="{% url 'product:buynow' product.id %}">buy now</a>
+        <a class="btn btn-primary" href="{% url 'cart:addcart' product.id %}">add to cart</a>
+        <a class="btn btn-primary" href="{% url 'product:buynow' product.id %}">buy now</a>
     {% endblock content %}

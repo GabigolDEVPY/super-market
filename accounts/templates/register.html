@@ -1,13 +1,17 @@
-<form method="POST">
-    {% csrf_token %}
-    {% for field in form %}
-        <div class="block_orientation">
-            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-            {{ field }}
-            {% if request.method == "POST" %}
-                {{ field.errors }}
-            {% endif %}    
-        </div>
-    {% endfor %}
-    <button type="submit">Registrar</button>
-</form>
+{% extends "base.html" %}
+{% block content %}
+    <form method="POST">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="block_orientation">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if request.method == "POST" %}
+                    {{ field.errors }}
+                {% endif %}    
+            </div>
+        {% endfor %}
+        <button type="submit">Registrar</button>
+    </form>
+{% endblock content %}
+

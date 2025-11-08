@@ -16,7 +16,7 @@ class LogoutView(View):
 
 class LoginView(View):
     def get(self, request):
-        return render(request, "login.html")
+        return render(request, "login.html", {"hide_navbar": True})
 
     def post(self, request):
         username = request.POST.get("username")
@@ -32,6 +32,8 @@ class RegisterView(FormView):
     template_name = "register.html"
     form_class = RegisterForm
     success_url = reverse_lazy("accounts:login")
+    extra_context = {"hide_navbar": True}
+    
     
     def form_valid(self, form):
         form.save()
