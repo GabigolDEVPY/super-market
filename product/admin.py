@@ -1,6 +1,6 @@
 from csv import list_dialects
 from django.contrib import admin
-from . models import Product, Stock, Category, Promotion, DiscountCode
+from . models import Product, Stock, Category, Promotion, DiscountCode, ImagesProduct
 
 
 # Register your models here.
@@ -23,4 +23,8 @@ class Promotion(admin.ModelAdmin):
     
 @admin.register(DiscountCode)
 class DiscountCode(admin.ModelAdmin):
+    list_display = ("name",)
+    
+@admin.register(ImagesProduct)
+class ImagesProduct(admin.ModelAdmin):
     list_display = ("name",)

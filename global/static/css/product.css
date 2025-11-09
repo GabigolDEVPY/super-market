@@ -19,3 +19,15 @@
     display: flex;
     flex-direction: row;
 }
+
+.carousel-indicators [data-bs-target] {
+    background-color: black;
+}
+
+.carousel-control-next-icon {
+    background-color: black;
+}
+
+.carousel-control-prev-icon {
+    background-color: black;
+}

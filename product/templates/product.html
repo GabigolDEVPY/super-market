@@ -5,19 +5,17 @@
             <div class="product">
                 <div>
                     <h3>{{ product.name }}</h3>
-                    {% if product.image %}
-                        <img class="image-class-product" src="{{ product.image.url }}" alt="{{ product.name }}">
-                    {% endif %}
+                    {% include "carrousel.html" %}
                 </div>
                 <div>
-                    <h3>{{ product.description }}</h3>
                     <h3>{{ product.apply_discount}}</h3>
-                    <h4>quantity</h4>
-                    <h3>{{ quantity }}</h3>
+                    <label for="quantity">quantity</label>
+                    <input name="quantity" id="quantity" type="number" min="1" value="1" max="{{ stock.quantity }}">
                     <a class="btn btn-primary" href="{% url 'cart:addcart' product.id %}">add to cart</a>
                     <a class="btn btn-primary" href="{% url 'product:buynow' product.id %}">buy now</a>
                 </div>
             </div>
+            <h3>{{ product.description }}</h3>
         </div>
 
     {% endblock content %}

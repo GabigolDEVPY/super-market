@@ -22,6 +22,7 @@ class ProductDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         stock = self.object.stocks.first()
         context["quantity"] = stock.quantity if stock else 0 
+        context["images"] = self.object.images.all()
         return context
     
     
