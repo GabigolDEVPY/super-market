@@ -1,20 +1,19 @@
 {% extends "base.html" %}
     {% block content %}
-
         <div class="display-form-product">
-            <div class="product">
-                <div>
-                    <h3>{{ product.name }}</h3>
-                    {% include "carrousel.html" %}
+                <div class="product">
+                    <div>
+                        <h3>{{ product.name }}</h3>
+                        {% include "carrousel.html" %}
+                    </div>
+                    <div>
+                        <h3>{{ product.apply_discount}}</h3>
+                        <label for="quantity">quantity</label>
+                        <input name="quantity" id="quantity" type="number" min="1" value="1" max="{{ stock.quantity }}">
+                        <a class="btn btn-primary" href="{% url 'cart:addcart' product.id %}">add to cart</a>
+                        <a class="btn btn-success" href="{% url 'product:buynow' product.id %}">buy now</a>
+                    </div>
                 </div>
-                <div>
-                    <h3>{{ product.apply_discount}}</h3>
-                    <label for="quantity">quantity</label>
-                    <input name="quantity" id="quantity" type="number" min="1" value="1" max="{{ stock.quantity }}">
-                    <a class="btn btn-primary" href="{% url 'cart:addcart' product.id %}">add to cart</a>
-                    <a class="btn btn-primary" href="{% url 'product:buynow' product.id %}">buy now</a>
-                </div>
-            </div>
             <h3>{{ product.description }}</h3>
         </div>
 

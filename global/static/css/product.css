@@ -10,8 +10,12 @@
     
 }
 
+.carousel-size {
+    width: 60vh;
+}
+
 .image-class-product {
-    max-width: 700px;
+    width: 60vh;
     border-radius: 10px;
 }
 
@@ -31,3 +35,4 @@
 .carousel-control-prev-icon {
     background-color: black;
 }
+
