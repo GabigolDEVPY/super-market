@@ -1,8 +1,5 @@
 {% extends "base.html" %}
-    {% block content %}
-        <a href="{% url 'cart:cart' %}">Cart</a>
-        <a href="{% url 'market:home' %}">Home</a>
-        
+    {% block content %}    
         <h3>{{ product.name }}</h3>
         <h3>{{ discount_price|default:product.apply_discount }}</h3>
         <p>

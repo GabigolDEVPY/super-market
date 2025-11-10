@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
     <div>
-        <a href="{% url 'market:home' %}">Home</a>
         <h2>{{ user.username }}</h2>
         {% if items %}
             {% for item in items %}

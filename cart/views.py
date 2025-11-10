@@ -41,8 +41,7 @@ def add_to_cart(request, id):
             item.save()
     
 
-    return render(request ,"product.html",
-        context={"product": product})
+    return redirect("product:product", product.id)
 
 @login_required(login_url='accounts:login')
 def cartbuy(request):

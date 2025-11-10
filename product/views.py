@@ -22,7 +22,10 @@ class ProductDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         stock = self.object.stocks.first()
         context["quantity"] = stock.quantity if stock else 0 
-        context["images"] = self.object.images.all()
+        images = [img.image.url for img in  self.object.images.all()]
+        images.insert(0, self.object.image.url)
+        context["images"] = images
+
         return context
     
     
@@ -31,7 +34,7 @@ class BuyNowView(LoginRequiredMixin, View):
         product = Product.objects.get(id=id)
         stock = product.stocks.first()
         if not stock or stock.quantity < 1:
-            return render(request, "product.html", {"product": product})
+            return render(request, "payment.html", {"product": product})
         return render(request, "payment.html", {"product": product, "stock": stock})
     
     

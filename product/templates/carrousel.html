@@ -13,7 +13,7 @@
     <div class="carousel-inner">
       {% for image in images %}
         <div class="carousel-item {% if forloop.first %}active{% endif %}">
-          <img class="image-class-product" src="{{ image.image.url }}" alt="...">
+          <img class="image-class-product" src="{{ image.url|default:image }}" alt="...">
         </div>
       {% endfor %}
     </div>
