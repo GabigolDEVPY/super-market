@@ -38,3 +38,8 @@ a {
     --bs-btn-color: #ffffff ;
     --bs-btn-border-color: #ffffff;
 }
+
+.block-orientation {
+    display: flex;
+    flex-direction: column;
+}

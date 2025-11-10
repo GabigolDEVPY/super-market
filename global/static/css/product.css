@@ -17,11 +17,14 @@
 .image-class-product {
     width: 60vh;
     border-radius: 10px;
+    border: 1px solid rgb(180, 180, 180);
+    min-height: 60vh;
 }
 
 .product {
     display: flex;
     flex-direction: row;
+    gap: 2vh;
 }
 
 .carousel-indicators [data-bs-target] {
@@ -36,3 +39,13 @@
     background-color: black;
 }
 
+.product-right {
+    display: flex;
+    flex-direction: column;
+    padding: 4vh;
+    width: 35vh;
+    height: 60vh;
+    border: 1px solid rgb(180, 180, 180);
+    border-radius: 10px;
+    gap: 0.4vh;
+}
