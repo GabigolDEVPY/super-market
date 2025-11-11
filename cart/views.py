@@ -24,6 +24,7 @@ class CartView(LoginRequiredMixin, TemplateView):
 def add_to_cart(request, id):
     user = request.user
     cart = user.cart
+    quantity = int(request.POST.get("quantity"))
     product = Product.objects.get(id=id)
     
     
@@ -33,11 +34,12 @@ def add_to_cart(request, id):
     else:
         final_price = product.price
     stock = product.stocks.first()
-    if  not stock or stock.quantity < 1:
-        item, created = CartItem.objects.get_or_create(cart=cart, product=product, defaults={'quantity': 1,})
+    if stock and stock.quantity >= 1:
+        print(quantity)
+        item, created = CartItem.objects.get_or_create(cart=cart, product=product, defaults={'quantity': quantity,})
         
         if not created:
-            item.quantity += 1
+            item.quantity += quantity
             item.save()
     
 

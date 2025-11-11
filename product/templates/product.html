@@ -14,20 +14,23 @@
                                 <s class="text-muted">{{ product.price }}</s>
                                 <h3 class="ms-2 text-success fw-bold" >{{ product.apply_discount}}</h3>
                             </p>
-                            <div class="mb-3">
-                                <label for="exampleSelect" class="form-label">Change Option</label>
-                                <select class="form-select" id="exampleSelect" aria-label="Selecione algo">
-                                    <option selected>Select...</option>
-                                    <option value="1">Action</option>
-                                    <option value="2">Another action</option>
-                                    <option value="3">Something else here</option>
-                                </select>
-                            </div>
-                            <div class="mb-3 w-25">
-                                <label for="quantity" class="form-label">Quantidade</label>
-                                <input style="width: 6vh;" type="number" name="quantity" id="quantity" class="form-control text-center" min="1" value="1" max="{{ quantity }}">
-                            </div>
-                            <a class="btn btn-primary" href="{% url 'cart:addcart' product.id %}">add to cart</a>
+                            <form action="{% url 'cart:addcart' product.id %}" method="post">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="exampleSelect" class="form-label">Change Option</label>
+                                    <select class="form-select" id="exampleSelect" aria-label="Selecione algo">
+                                        <option selected>Select...</option>
+                                        <option value="1">Action</option>
+                                        <option value="2">Another action</option>
+                                        <option value="3">Something else here</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3 w-25">
+                                    <label for="quantity" class="form-label">Quantidade</label>
+                                    <input style="width: 6vh;" type="number" name="quantity" id="quantity" class="form-control text-center" min="1" value="1" max="{{ quantity }}">
+                                </div>
+                                <button style="width: 26.8vh;" type="submit" class="btn btn-primary">add to cart</button>
+                            </form>
                             <a class="btn btn-success" href="{% url 'product:buynow' product.id %}">buy now</a>
                         </div>
                     </div>
