@@ -17,6 +17,7 @@
 
 .image-class-product {
     width: 60vh;
+    height: 60vh;
     border-radius: 10px;
     border: 1px solid rgb(180, 180, 180);
     min-height: 60vh;

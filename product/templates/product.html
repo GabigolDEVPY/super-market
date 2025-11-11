@@ -9,10 +9,10 @@
 
                     <div>
                         <div class="product-right">
-                            <label>{{ quantity }} disponíveis</label>
+                            <label>{% if quantity > 0 %}{{ quantity }} disponíveis {% else %} Produto indisponível {% endif %}</label>
                             <p class="mb-0">
-                                <s class="text-muted">{{ product.price }}</s>
-                                <h3 class="ms-2 text-success fw-bold" >{{ product.apply_discount}}</h3>
+                                <s class="text-muted">{% if product.discount %}R${{ product.price }}{% endif %}</s>
+                                <h3 class="ms-2 text-success fw-bold">R$ {{ product.apply_discount}}</h3>
                             </p>
                             <form action="{% url 'cart:addcart' product.id %}" method="post">
                                 {% csrf_token %}

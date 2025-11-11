@@ -39,6 +39,7 @@
     word-wrap: break-word;
     transition: 0.2s ease;
     height: 42vh;
+    padding-bottom: 2vh;
 }
 
 .card:hover {
@@ -51,6 +52,17 @@
     width: 100%;
     object-fit: cover;        /* mantém proporção e corta excesso */
     border-radius: 5px 5px 0 0;
+}
+
+.card-body {
+    padding: 5px;
+}
+p {
+    margin-bottom: 0;
+}
+
+.card-title {
+    margin-bottom: 1px;
 }
 
 .block-scroll {

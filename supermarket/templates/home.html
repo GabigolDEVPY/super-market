@@ -7,11 +7,12 @@
                         {% for product in products %}
                             <div class="card" style="width: 13rem;">
                                 <img src="{{ product.image.url }}" class="card-img-top product-img" alt="{{ product.name }}">
-                                <div class="card-body">
+                                <div class="card-body d-flex flex-column">
                                     <h6 class="card-title">{{ product.name }}</h6>
                                     <p style="font-size: 13px;" class="card-text">{{ product.description }}</p>
+                                    <s class="text-muted">{% if product.discount %}R${{ product.price }}{% else %}&nbsp{% endif %}</s>
                                     <h5 class="card-title">R$ {{ product.apply_discount }}</h5>
-                                    <a href="{% url 'product:product' product.id %}" class="btn btn-success">Buy Now</a>
+                                    <a style="height: 4vh; width: 12vh;" href="{% url 'product:product' product.id %}" class="btn btn-success mt-auto">Buy Now</a>
                                 </div>
                             </div>
                         {% endfor %}

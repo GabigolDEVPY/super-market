@@ -19,6 +19,7 @@ a {
 
 .nav-link {
     color: white;
+    font-size: 14px;
 }
 .nav-item {
     color: white;
@@ -42,4 +43,8 @@ a {
 .block-orientation {
     display: flex;
     flex-direction: column;
+}
+
+.navbar {
+    height: 5vh;
 }
