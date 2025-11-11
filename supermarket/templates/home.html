@@ -2,23 +2,38 @@
 {% block content %}
     <div class="display-form-products">
         {% if products %}
-            <div class="container">
-                <div class="row">
-                    {% for product in products %}
-                        <div class="card" style="width: 18rem;">
-                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img-top">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ product.name }}</h5>
-                                <p class="card-text">{{ product.description }}</p>
-                                <h5 class="card-title">R$ {{ product.apply_discount }}</h5>
-                                <a href="{% url 'product:product' product.id %}" class="btn btn-success">Buy Now</a>
+                <div class="block-scroll">
+                    <div class="scroll-row p-2">
+                        {% for product in products %}
+                            <div class="card" style="width: 13rem;">
+                                <img src="{{ product.image.url }}" class="card-img-top product-img" alt="{{ product.name }}">
+                                <div class="card-body">
+                                    <h6 class="card-title">{{ product.name }}</h6>
+                                    <p style="font-size: 13px;" class="card-text">{{ product.description }}</p>
+                                    <h5 class="card-title">R$ {{ product.apply_discount }}</h5>
+                                    <a href="{% url 'product:product' product.id %}" class="btn btn-success">Buy Now</a>
+                                </div>
                             </div>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>      
+
+            </div>
         {% else %}
-            <h3>Nenhum item</h3>
-        {% endif %} 
+            <p class="text-center mt-4">Nenhum produto encontrado.</p>
+        {% endif %}
+    <script>
+        const scrollRow = document.querySelector('.scroll-row');
+
+        scrollRow.addEventListener('wheel', (event) => {
+            // só ativa o scroll horizontal quando o mouse estiver sobre o container
+            event.preventDefault();
+            scrollRow.scrollBy({
+                left: event.deltaY < 0 ? -100 : 100,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+
 {% endblock content %}
 

@@ -1,23 +1,66 @@
 .display-form-products {
     display: flex;
+    flex-direction: column;   /* mantém os cards em coluna dentro do bloco principal */
+    overflow-x: hidden;       /* evita scroll duplo */
     margin-top: 10vh;
-    width: 124vh;
     height: 100%;
-    background-color: rgb(255, 255, 255);
+    align-items: center;
 }
 
-.row {
-    margin-top: 5vh;
-    gap: 6px;
-    background-color: rgb(255, 255, 255);
-    width: 113vh;
-    margin-left: 5vh;
+.scroll-row {
+    display: flex;
+    flex-wrap: nowrap;        /* impede quebra de linha */
+    overflow-x: auto;         /* ativa o scroll horizontal */
+    overflow-y: hidden;
+    white-space: nowrap;
+    scrollbar-width: thin;
+    gap: 5px;
+    width: 100%;
+    background-color: white;
 }
 
+.scroll-row::-webkit-scrollbar {
+    height: 8px;
+}
+
+.scroll-row::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+.scroll-row::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
+/* impede o texto de estourar o card */
 .card {
-    transition: transform 0.2s ease;
+    flex: 0 0 auto;           /* impede o card de encolher no flex */
+    white-space: normal;
+    word-wrap: break-word;
+    transition: 0.2s ease;
+    height: 42vh;
 }
 
 .card:hover {
     transform: scale(1.02);
+}
+
+/* todas as imagens com o mesmo tamanho */
+.product-img {
+    height: 180px;            /* define altura fixa */
+    width: 100%;
+    object-fit: cover;        /* mantém proporção e corta excesso */
+    border-radius: 5px 5px 0 0;
+}
+
+.block-scroll {
+    margin-top: 2vh;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    background-color: white;
+    width: 80%;
+    padding: 5vh;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 2px rgba(0,0,0, 0.2);
 }
