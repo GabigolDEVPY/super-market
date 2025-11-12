@@ -25,7 +25,7 @@
 
 .scroll-row::-webkit-scrollbar-thumb {
     background: #ccc;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
 }
 
 .scroll-row::-webkit-scrollbar-thumb:hover {
@@ -51,7 +51,7 @@
     height: 180px;            /* define altura fixa */
     width: 100%;
     object-fit: cover;        /* mantém proporção e corta excesso */
-    border-radius: 5px 5px 0 0;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
 
 .card-body {
@@ -73,7 +73,7 @@ p {
     background-color: white;
     width: 80%;
     padding: 5vh;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
     box-shadow: 0px 0px 10px 2px rgba(0,0,0, 0.2);
 }
 
