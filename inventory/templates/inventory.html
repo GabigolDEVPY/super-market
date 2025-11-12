@@ -1,5 +1,7 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
+    <link rel="stylesheet" href="{% static "css/inventory" %}">
     <div>
         <h2>{{ user.username }}</h2>
         {% if items %}

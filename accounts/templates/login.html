@@ -1,35 +1,35 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
-
-<div class="box-layout" style="height: 40vh;">
-    <form class="space-form-register" method="post" action="{% url 'accounts:login' %}">
-        <div>
-            {% csrf_token %}
-            <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Username</label>
-                <input name="username" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+    <link rel="stylesheet" href="{% static 'css/accounts.css' %}">
+    <div class="box-layout" style="height: 40vh;">
+        <form class="space-form-register" method="post" action="{% url 'accounts:login' %}">
+            <div>
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Username</label>
+                    <input name="username" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputPassword1" class="form-label">Password</label>
+                    <input name="password" type="password" class="form-control" id="exampleInputPassword1">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="form-text">{{ message }}</div>      
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                    <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                </div>
             </div>
-            <div class="mb-3">
-                <label for="exampleInputPassword1" class="form-label">Password</label>
-                <input name="password" type="password" class="form-control" id="exampleInputPassword1">
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="form-text">{{ message }}</div>      
-                    {% endfor %}
-                {% endif %}
+            <div>
+                <button type="submit" class="btn btn-primary">Login</button>
+                <a class="btn btn-primary" href="{% url "accounts:register" %}">Register</a>
             </div>
-            <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                <label class="form-check-label" for="exampleCheck1">Check me out</label>
-            </div>
-        </div>
-        <div>
-            <button type="submit" class="btn btn-primary">Login</button>
-            <a class="btn btn-primary" href="{% url "accounts:register" %}">Register</a>
-        </div>
-    </form>
-</div>
-
+        </form>
+    </div>
 {% endblock content %}
 
 

@@ -1,0 +1,38 @@
+        <nav class="navbar navbar-expand-lg bg-body-tertiary w-100 fixed-top">
+            <div class="container-fluid d-flex justify-content-center align-items-center">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
+                    <ul class="navbar-nav mb-2 mb-lg-0 d-flex gap-4">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'market:home' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'cart:cart' %}">Cart</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'inventory:inventory' %}">My purchases</a>
+                        </li>
+                        <li class="nav-item d-flex align-items-center">
+                            <form class="button-hover" action="{% url 'accounts:logout' %}" method="post">
+                                {% csrf_token %}
+                                <button 
+                                    type="submit" 
+                                    class="btn btn-link nav-link text-decoration-none p-0"
+                                    style="color: inherit;"
+                                >
+                                    Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                    
+                    <form class="d-flex ms-4" role="search">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
+        </nav>

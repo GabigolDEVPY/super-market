@@ -1,42 +1,45 @@
 {% extends "base.html" %}
-    {% block content %}
-        <div class="display-form-product">
-            <h3>{{ product.name }}</h3>
-                <div class="product">
-                    <div>
-                        {% include "carrousel.html" %}
-                    </div>
-
-                    <div>
-                        <div class="product-right">
-                            <label>{% if quantity > 0 %}{{ quantity }} disponíveis {% else %} Produto indisponível {% endif %}</label>
-                            <p class="mb-0">
-                                <s class="text-muted">{% if product.discount %}R${{ product.price }}{% endif %}</s>
-                                <h3 class="ms-2 text-success fw-bold">R$ {{ product.apply_discount}}</h3>
-                            </p>
-                            <form action="{% url 'cart:addcart' product.id %}" method="post">
-                                {% csrf_token %}
-                                <div class="mb-3">
-                                    <label for="exampleSelect" class="form-label">Change Option</label>
-                                    <select class="form-select" id="exampleSelect" aria-label="Selecione algo">
-                                        <option selected>Select...</option>
-                                        <option value="1">Action</option>
-                                        <option value="2">Another action</option>
-                                        <option value="3">Something else here</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3 w-25">
-                                    <label for="quantity" class="form-label">Quantidade</label>
-                                    <input style="width: 6vh;" type="number" name="quantity" id="quantity" class="form-control text-center" min="1" value="1" max="{{ quantity }}">
-                                </div>
-                                <button style="width: 26.8vh;" type="submit" class="btn btn-primary">add to cart</button>
-                            </form>
-                            <a class="btn btn-success" href="{% url 'product:buynow' product.id %}">buy now</a>
-                        </div>
-                    </div>
-
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static "css/product.css" %}">
+    <div class="display-form-product">
+        <h3>{{ product.name }}</h3>
+            <div class="product">
+                <div>
+                    {% include "carrousel.html" %}
                 </div>
-            <h3>{{ product.description }}</h3>
-        </div>
 
-    {% endblock content %}
+                <div>
+                    <div class="product-right">
+                        <label>{% if quantity > 0 %}{{ quantity }} disponíveis {% else %} Produto indisponível {% endif %}</label>
+                        <p class="mb-0">
+                            <s class="text-muted">{% if product.discount %}R${{ product.price }}{% endif %}</s>
+                            <p style="color: #198754;">{% if product.discount %} {{ product.discount.discount }}% OFF {% endif %}</p>
+                            <h3 class="text-success fw-bold">R$ {{ product.apply_discount}}</h3>
+                        </p>
+                        <form action="{% url 'cart:addcart' product.id %}" method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="exampleSelect" class="form-label">Change Option</label>
+                                <select class="form-select" id="exampleSelect" aria-label="Selecione algo">
+                                    <option selected>Select...</option>
+                                    <option value="1">Action</option>
+                                    <option value="2">Another action</option>
+                                    <option value="3">Something else here</option>
+                                </select>
+                            </div>
+                            <div class="mb-3 w-25">
+                                <label for="quantity" class="form-label">Quantidade</label>
+                                <input style="width: 6vh;" type="number" name="quantity" id="quantity" class="form-control text-center" min="1" value="1" max="{{ quantity }}">
+                            </div>
+                            <button style="width: 26.8vh;" type="submit" class="btn btn-primary mt-auto">add to cart</button>
+                        </form>
+                        <a style="margin-top: 4px;" class="btn btn-success" href="{% url 'product:buynow' product.id %}">buy now</a>
+                    </div>
+                </div>
+
+            </div>
+        <h3>{{ product.description }}</h3>
+    </div>
+
+{% endblock content %}
