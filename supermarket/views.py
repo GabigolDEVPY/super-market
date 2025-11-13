@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from product.models import Product
+from product.models import Product, Category
 from django.views.generic import ListView
 
 class HomeView(ListView):
@@ -9,6 +9,7 @@ class HomeView(ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["categories"] = Category.objects.prefetch_related("products").all()
         context["user"] = self.request.user 
         return context
     

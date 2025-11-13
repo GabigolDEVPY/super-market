@@ -23,7 +23,7 @@ class Promotion(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True, related_name="products")
     description = models.TextField()
     discount = models.ForeignKey(Promotion, on_delete=models.CASCADE, null=True, blank=True)
     created_date = models.DateTimeField(default=timezone.now)
