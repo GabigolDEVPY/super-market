@@ -13,7 +13,12 @@ class HomeView(ListView):
         context["user"] = self.request.user 
         return context
     
-
+class AllProducts(ListView):
+    model = Product
+    template_name = "allproducts.html"
+    context_object_name = "products"
+    
+    
 
 
     
