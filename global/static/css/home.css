@@ -9,14 +9,9 @@
 }
 
 .display-form-products-all {
-    display: flex;
-    flex-direction: row;   /* mantém os cards em coluna dentro do bloco principal */
-    overflow-x: hidden;       /* evita scroll duplo */
-    margin-top: 10vh;
-    height: 100%;
-    width: 100%;
-    align-items: center;
-    background-color: white;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
 }
 
 .scroll-row {
@@ -107,10 +102,11 @@ p {
 .very-form {
     display: flex;
     flex-direction: column;   /* mantém os cards em coluna dentro do bloco principal */
-    overflow-x: hidden;       /* evita scroll duplo */
-    margin-top: 10vh;
-    height: 100%;
-    width: 100%;
+    margin-top: 50vh;
+    width: 70%;
     align-items: center;
+    padding: 3vh;
     background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
 }

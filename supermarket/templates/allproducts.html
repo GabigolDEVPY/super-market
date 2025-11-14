@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<link rel="stylesheet" href="{% static "css/home.css" %}">
-<div class="very-form">
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<div  class="very-form">
     <div class="display-form-products-all">
         {% for product in products %}
             <div class="card" style="width: 13rem;">
                 <img src="{{ product.image.url }}" class="card-img-top product-img" alt="{{ product.name }}">
-                <div class="card-body">
+                <div class="card-body d-flex flex-column">
                     <h6 style="font-size: 16px;" class="card-title">{{ product.name }}</h6>
                     <p style="font-size: 13px;" class="card-text">{{ product.description }}</p>
                     <s style="font-size: 14px;" class="text-muted">{% if product.discount %}R${{ product.price }}{% else %}&nbsp{% endif %}</s>
