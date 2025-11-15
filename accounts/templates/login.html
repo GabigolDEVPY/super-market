@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
     <link rel="stylesheet" href="{% static 'css/accounts.css' %}">
-    <div class="box-layout" style="height: 40vh;">
+    <div class="box-layout">
         <form class="space-form-register" method="post" action="{% url 'accounts:login' %}">
             <div>
                 {% csrf_token %}

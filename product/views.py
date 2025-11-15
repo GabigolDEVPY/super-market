@@ -1,3 +1,5 @@
+import dis
+from email import message
 from django import dispatch
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -43,18 +45,20 @@ class BuyNowView(LoginRequiredMixin, View):
         discount = request.POST.get("discount") or None
         product = Product.objects.get(id=id)
         stock = product.stocks.first()
+        previous_discount = request.session.get("discount_name")
+        previous_price = request.session.get("discount_price")
         if discount:
             discount_search = DiscountCode.objects.filter(name=discount).first()
             if not discount_search:
-                previous_discount = request.session.get("discount_name")
-                previous_price = request.session.get("discount_price")
                 messages.error(request, "Cupom Inválido!")
                 return render(request, 'payment.html', {"product": product, "stock": stock, "discount_price": previous_price, "discount": previous_discount})
-        discount_price = float(product.apply_discount() - (product.price / 100 * discount_search.discount))
-        request.session["discount_name"] = discount_search.name
-        request.session["discount_price"] = discount_price      
-        messages.success(request, "Cupom de desconto aplicado com sucesso!!")
-        return render(request, 'payment.html', {"product": product, "stock": stock, "discount_price": discount_price, "discount": discount})
+            discount_price = float(product.apply_discount() - (product.price / 100 * discount_search.discount))
+            request.session["discount_name"] = discount_search.name
+            request.session["discount_price"] = discount_price      
+            messages.success(request, "Cupom de desconto aplicado com sucesso!!")
+            return render(request, 'payment.html', {"product": product, "stock": stock, "discount_price": discount_price, "discount": discount})
+        messages.error(request, "Insira um cupom desconto!")
+        return render(request, 'payment.html', {"product": product, "stock": stock, "discount_price": previous_price, "discount": previous_discount})
 
 
 
