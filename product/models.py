@@ -31,6 +31,12 @@ class Product(models.Model):
     image = models.ImageField(upload_to='products/', null=True, blank=True)
     image_full = models.ImageField(upload_to='products/', null=True, blank=True)
     
+    def quantity(self):
+        stock = self.stocks.first()
+        return stock.quantity if stock else 0
+    
+    
+    
     def __str__(self):
         return self.name
     
