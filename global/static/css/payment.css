@@ -1,0 +1,8 @@
+.row-direction {
+    display: flex;
+    flex-direction: row;
+}
+
+.info-block {
+    width: 60%;
+}
