@@ -6,6 +6,7 @@ import os
 load_dotenv()
 
 LOGIN_URL = "accounts:login"
+STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

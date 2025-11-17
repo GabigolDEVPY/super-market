@@ -1,6 +1,7 @@
-import dis
-from email import message
+<<<<<<< HEAD
+=======
 from django import dispatch
+>>>>>>> parent of df79cc8 (add files)
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views import View
@@ -12,6 +13,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from utils.decorators import clear_session_data
 from django.utils.decorators import method_decorator
+from . utils import create_checkout_session
 
 
 @method_decorator(clear_session_data(["discount_name", "discount_price"]), name="dispatch")
@@ -45,20 +47,23 @@ class BuyNowView(LoginRequiredMixin, View):
         discount = request.POST.get("discount") or None
         product = Product.objects.get(id=id)
         stock = product.stocks.first()
+<<<<<<< HEAD
         previous_discount = request.session.get("discount_name")
-        previous_price = request.session.get("discount_price")
+        previous_price = request.session.get("discount_price", 0)
+=======
+>>>>>>> parent of df79cc8 (add files)
         if discount:
             discount_search = DiscountCode.objects.filter(name=discount).first()
             if not discount_search:
+                previous_discount = request.session.get("discount_name")
+                previous_price = request.session.get("discount_price")
                 messages.error(request, "Cupom Inválido!")
                 return render(request, 'payment.html', {"product": product, "stock": stock, "discount_price": previous_price, "discount": previous_discount})
-            discount_price = float(product.apply_discount() - (product.price / 100 * discount_search.discount))
-            request.session["discount_name"] = discount_search.name
-            request.session["discount_price"] = discount_price      
-            messages.success(request, "Cupom de desconto aplicado com sucesso!!")
-            return render(request, 'payment.html', {"product": product, "stock": stock, "discount_price": discount_price, "discount": discount})
-        messages.error(request, "Insira um cupom desconto!")
-        return render(request, 'payment.html', {"product": product, "stock": stock, "discount_price": previous_price, "discount": previous_discount})
+        discount_price = float(product.apply_discount() - (product.price / 100 * discount_search.discount))
+        request.session["discount_name"] = discount_search.name
+        request.session["discount_price"] = discount_price      
+        messages.success(request, "Cupom de desconto aplicado com sucesso!!")
+        return render(request, 'payment.html', {"product": product, "stock": stock, "discount_price": discount_price, "discount": discount})
 
 
 
@@ -71,6 +76,17 @@ def productbuynow(request):
     stock = product.stocks.first()
     if not stock or stock.quantity < quantity:
         return redirect("market:home")
+    
+    discount_price = request.session.get("discount_price")
+    if discount_price is not None:
+        price = float((product.price * 100) - float(request.session["discount_price"])) * quantity
+    else:
+        price = int((product.price * 100) * quantity)
+        
+    #aprovar compra no checkout 
+    print(product.price, quantity)
+    url = create_checkout_session(price, quantity);
+    return redirect(url)
     stock.quantity -= quantity
     stock.save()
     inventory, created = Inventory.objects.get_or_create(user=user)
