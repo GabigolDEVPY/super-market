@@ -4,13 +4,12 @@ from django.contrib.auth.decorators import login_required
 from django.views import View
 from product.models import Product
 from django.views.generic.detail import DetailView
-from inventory.models import InventoryItem, Inventory
 from product.models import DiscountCode
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from utils.decorators import clear_session_data
 from django.utils.decorators import method_decorator
-from ..payment.utils import create_checkout_session
+from payment.utils import create_checkout_session
 
 
 @method_decorator(clear_session_data(["discount_name", "discount_price"]), name="dispatch")

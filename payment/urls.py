@@ -2,4 +2,8 @@ from django.shortcuts import render
 from django.urls import path
 from . import views, webhooks
 
-urlpatterns = path("stripe/webhook/", webhooks.stripe_webhook)
+app_name = 'payment'
+
+urlpatterns = [
+    path("stripe/webhook/", webhooks.stripe_webhook, name='payment')
+    ]

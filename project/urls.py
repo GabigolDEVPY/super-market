@@ -10,6 +10,7 @@ urlpatterns = [
     path('cart/', include('cart.urls')),
     path('inventory/', include('inventory.urls')),
     path('product/', include('product.urls')),
+    path('payment/', include('payment.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
