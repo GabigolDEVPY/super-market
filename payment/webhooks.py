@@ -10,7 +10,6 @@ from inventory.models import Inventory, InventoryItem
 
 @csrf_exempt
 def stripe_webhook(request):
-    print("chegou aqui")
     payload = request.body
     sig_header = request.META["HTTP_STRIPE_SIGNATURE"]
     secret = settings.STRIPE_WEBHOOK_SECRET
@@ -44,5 +43,18 @@ def stripe_webhook(request):
             product=product,
             quantity=quantity,
         )
+        stock.quantity -= quantity
+        stock.save()
+        inventory, created = Inventory.objects.get_or_create(user=user)
+        inventory_item = InventoryItem.objects.filter(inventory=inventory, product=product).first()
+        
+        if inventory_item:
+            inventory_item.quantity += quantity
+            inventory_item.save()
+        else:
+            InventoryItem.objects.create(inventory=inventory, product=product, quantity=quantity)
+        request.session.pop("discount_name", None)
+        request.session.pop("discount_price", None)
+        return redirect("market:home")
 
     return HttpResponse(status=200)

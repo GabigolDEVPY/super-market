@@ -10,7 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from utils.decorators import clear_session_data
 from django.utils.decorators import method_decorator
-from . utils import create_checkout_session
+from ..payment.utils import create_checkout_session
 
 
 @method_decorator(clear_session_data(["discount_name", "discount_price"]), name="dispatch")
@@ -79,20 +79,7 @@ def productbuynow(request):
         price = int((product.price * 100) * quantity)
         
     #aprovar compra no checkout 
-    print(product.price, quantity)
     url = create_checkout_session(price, quantity, product, user);
     return redirect(url)
-    stock.quantity -= quantity
-    stock.save()
-    inventory, created = Inventory.objects.get_or_create(user=user)
-    inventory_item = InventoryItem.objects.filter(inventory=inventory, product=product).first()
-    
-    if inventory_item:
-        inventory_item.quantity += quantity
-        inventory_item.save()
-    else:
-        InventoryItem.objects.create(inventory=inventory, product=product, quantity=quantity)
-    request.session.pop("discount_name", None)
-    request.session.pop("discount_price", None)
-    return redirect("market:home")
+
     
