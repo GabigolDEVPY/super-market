@@ -80,7 +80,7 @@ def productbuynow(request):
         
     #aprovar compra no checkout 
     print(product.price, quantity)
-    url = create_checkout_session(price, quantity);
+    url = create_checkout_session(price, quantity, product, user);
     return redirect(url)
     stock.quantity -= quantity
     stock.save()

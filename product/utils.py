@@ -1,22 +1,32 @@
+# product/utils.py
+
 import stripe
-from django.shortcuts import render, redirect
-from django.http import Http404
+from django.conf import settings
 
-import os
+stripe.api_key = settings.API_STRIPE
 
+def create_checkout_session(price, quantity, product, user):
+    session = stripe.checkout.Session.create(
+        payment_method_types=["card"],
+        line_items=[{
+            "price_data": {
+                "currency": "brl",
+                "unit_amount": price,
+                "product_data": {
+                    "name": product.name,
+                },
+            },
+            "quantity": quantity,
+        }],
+        mode="payment",
+        success_url="http://localhost:8000/success",
+        cancel_url="http://localhost:8000/cancel",
+        metadata={
+            "product_id": str(product.id),
+            "user_id": str(user.id),
+            "quantity": str(quantity),
+        }
+    )
 
-stripe.api_key = os.getenv("API_KEY_STRIPE")
-
-def create_checkout_session(unit_amount, quantity):
-    try:
-        session = stripe.checkout.Session.create(
-            mode="payment",
-            success_url="https://seusite.com/success",
-            cancel_url="http://127.0.0.1:8000/",
-            line_items=[{"price_data": {"currency": "brl", "unit_amount": unit_amount, "product": "prod_TQkRWppUtfASmD"}, "quantity": quantity }],
-        )
-    except Exception as e:
-        raise Http404("Erro ao carregar checkout")
-        
     return session.url
 
