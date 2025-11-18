@@ -10,6 +10,7 @@ from inventory.models import Inventory, InventoryItem
 
 @csrf_exempt
 def stripe_webhook(request):
+    print("chegou aqui")
     payload = request.body
     sig_header = request.META["HTTP_STRIPE_SIGNATURE"]
     secret = settings.STRIPE_WEBHOOK_SECRET
