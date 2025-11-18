@@ -19,8 +19,8 @@ def create_checkout_session(price, quantity, product, user):
             "quantity": quantity,
         }],
         mode="payment",
-        success_url="http://localhost:8000/success",
-        cancel_url="http://localhost:8000/cancel",
+        success_url="http://localhost:8000/inventory",
+        cancel_url="http://localhost:8000/",
         metadata={
             "product_id": str(product.id),
             "user_id": str(user.id),

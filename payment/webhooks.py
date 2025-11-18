@@ -26,35 +26,21 @@ def stripe_webhook(request):
         product_id = int(metadata["product_id"])
         user_id = int(metadata["user_id"])
         quantity = int(metadata["quantity"])
-
-        # ATUALIZAÇÃO DO PEDIDO, ESTOQUE, INVENTÁRIO
+        
         product = Product.objects.get(id=product_id)
         user = User.objects.get(id=user_id)
-
-        # baixar estoque
         stock = product.stocks.first()
-        stock.quantity -= quantity
-        stock.save()
 
-        # inventário
-        inventory, _ = Inventory.objects.get_or_create(user=user)
-        InventoryItem.objects.create(
-            inventory=inventory,
-            product=product,
-            quantity=quantity,
-        )
         stock.quantity -= quantity
         stock.save()
-        inventory, created = Inventory.objects.get_or_create(user=user)
-        inventory_item = InventoryItem.objects.filter(inventory=inventory, product=product).first()
         
-        if inventory_item:
-            inventory_item.quantity += quantity
-            inventory_item.save()
-        else:
-            InventoryItem.objects.create(inventory=inventory, product=product, quantity=quantity)
+        inventory, created = Inventory.objects.get_or_create(user=user)
+        inventory_item, _= InventoryItem.objects.get_or_create(inventory=inventory, product=product).first()
+        
+        inventory_item.quantity += quantity
+        inventory_item.save()
+
         request.session.pop("discount_name", None)
         request.session.pop("discount_price", None)
-        return redirect("market:home")
 
     return HttpResponse(status=200)
