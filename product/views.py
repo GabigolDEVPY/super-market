@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 from django import dispatch
->>>>>>> parent of df79cc8 (add files)
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views import View
@@ -47,11 +44,9 @@ class BuyNowView(LoginRequiredMixin, View):
         discount = request.POST.get("discount") or None
         product = Product.objects.get(id=id)
         stock = product.stocks.first()
-<<<<<<< HEAD
         previous_discount = request.session.get("discount_name")
         previous_price = request.session.get("discount_price", 0)
-=======
->>>>>>> parent of df79cc8 (add files)
+        
         if discount:
             discount_search = DiscountCode.objects.filter(name=discount).first()
             if not discount_search:
