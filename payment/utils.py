@@ -12,8 +12,8 @@ def create_checkout_session(price, quantity, product, user):
             "price_data": {
                 "currency": "brl",
                 "unit_amount": price,
-                "product": "prod_abc123"
-                Arrumar
+                "product": "prod_abc123",
+                # Arrumar
                 "product_data": {
                     "name": product.name,
                 },

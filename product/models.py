@@ -25,6 +25,7 @@ class Product(models.Model):
     name = models.CharField(max_length=100)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True, related_name="products")
     description = models.TextField()
+    id_stripe = models.CharField(max_length=50, blank=True)
     discount = models.ForeignKey(Promotion, on_delete=models.CASCADE, null=True, blank=True)
     created_date = models.DateTimeField(default=timezone.now)
     price = models.DecimalField(max_digits=10, decimal_places=2)
