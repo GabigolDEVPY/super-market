@@ -28,7 +28,6 @@ class ProductDetailView(DetailView):
 
         return context
     
-    
 class BuyNowView(LoginRequiredMixin, View):
     def get(self, request, id):
         product = Product.objects.get(id=id)
@@ -53,11 +52,13 @@ class BuyNowView(LoginRequiredMixin, View):
                 previous_price = request.session.get("discount_price")
                 messages.error(request, "Cupom Inválido!")
                 return render(request, 'payment.html', {"product": product, "stock": stock, "discount_price": previous_price, "discount": previous_discount})
-        discount_price = float(product.apply_discount() - (product.price / 100 * discount_search.discount))
-        request.session["discount_name"] = discount_search.name
-        request.session["discount_price"] = discount_price      
-        messages.success(request, "Cupom de desconto aplicado com sucesso!!")
-        return render(request, 'payment.html', {"product": product, "stock": stock, "discount_price": discount_price, "discount": discount})
+            discount_price = float(product.apply_discount() - (product.price / 100 * discount_search.discount))
+            request.session["discount_name"] = discount_search.name
+            request.session["discount_price"] = discount_price      
+            messages.success(request, "Cupom de desconto aplicado com sucesso!!")
+            return render(request, 'payment.html', {"product": product, "stock": stock, "discount_price": discount_price})
+        messages.success(request, "Insira um cupom de desconto!!")
+        return render(request, 'payment.html', {"product": product, "stock": stock, "discount_price": previous_price})
 
 
 
@@ -73,7 +74,7 @@ def productbuynow(request):
     
     discount_price = request.session.get("discount_price")
     if discount_price is not None:
-        price = float((product.price * 100) - float(request.session["discount_price"])) * quantity
+        price = int(discount_price * 100 * quantity)
     else:
         price = int((product.price * 100) * quantity)
         
