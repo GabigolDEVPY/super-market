@@ -35,12 +35,9 @@ def stripe_webhook(request):
         stock.save()
         
         inventory, created = Inventory.objects.get_or_create(user=user)
-        inventory_item, _= InventoryItem.objects.get_or_create(inventory=inventory, product=product).first()
+        inventory_item, _= InventoryItem.objects.get_or_create(inventory=inventory, product=product)
         
         inventory_item.quantity += quantity
         inventory_item.save()
-
-        request.session.pop("discount_name", None)
-        request.session.pop("discount_price", None)
 
     return HttpResponse(status=200)

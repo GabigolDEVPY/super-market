@@ -74,9 +74,9 @@ def productbuynow(request):
     
     discount_price = request.session.get("discount_price")
     if discount_price is not None:
-        price = int(discount_price * 100 * quantity)
+        price = int(discount_price * 100)
     else:
-        price = int((product.price * 100) * quantity)
+        price = int(product.price * 100)
         
     #aprovar compra no checkout 
     url = create_checkout_session(price, quantity, product, user);
