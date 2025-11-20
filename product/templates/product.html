@@ -18,7 +18,7 @@
                                 <p style="color: #198754;">{% if product.discount %} {{ product.discount.discount }}% OFF {% endif %}</p>
                                 <h3 class="text-success fw-bold">R$ {{ product.apply_discount}}</h3>
                             </p>
-                            <form action="{% url 'cart:addcart' product.id %}" method="post">
+                            <form action="{% url 'cart:addcart' product.id %}" method="get">
                                 {% csrf_token %}
                                 <div class="mb-3">
                                     <label for="exampleSelect" class="form-label">Change Option</label>

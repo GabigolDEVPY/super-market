@@ -1,14 +1,15 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView, TemplateView
+from django.views import View
+from django.views.generic import  TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from product.models import Product
-from cart.models import Cart, CartItem
-from inventory.models import InventoryItem
 from utils.decorators import clear_session_data
 from django.utils.decorators import method_decorator
+from inventory.models import InventoryItem
+from .utils import add_to_cart
 
 
+#retornar a tela do carrinho do cliente!
 @method_decorator(clear_session_data(["discount_price", "discount_name"]), name="dispatch")
 class CartView(LoginRequiredMixin, TemplateView):
     template_name = "cart.html"
@@ -20,31 +21,14 @@ class CartView(LoginRequiredMixin, TemplateView):
         return context 
     
 
-@login_required(login_url='accounts:login')
-def add_to_cart(request, id):
-    user = request.user
-    cart = user.cart
-    quantity = int(request.POST.get("quantity"))
-    product = Product.objects.get(id=id)
-    
-    
-    if product.discount:
-        discount_amount = (product.price * product.discount.discount) / 100
-        final_price = product.price - discount_amount
-    else:
-        final_price = product.price
-    stock = product.stocks.first()
-    if stock and stock.quantity >= 1:
-        print(quantity)
-        item, created = CartItem.objects.get_or_create(cart=cart, product=product, defaults={'quantity': quantity,})
-        
-        if not created:
-            item.quantity += quantity
-            item.save()
-    
+#Logica pra adicionar produto ao carrinho 
+class AddCart(LoginRequiredMixin, View):
+    def get(self, request, id):
+        product = add_to_cart(request, id)
+        return redirect("product:product", product.id)
 
-    return redirect("product:product", product.id)
 
+#Rota pra comprar itens do carrinho 
 @login_required(login_url='accounts:login')
 def cartbuy(request):
     user = request.user
