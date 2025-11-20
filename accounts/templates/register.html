@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load widget_tweaks %}
 {% load static %}
 {% block content %}
     <link rel="stylesheet" href="{% static 'css/accounts.css' %}">
@@ -9,10 +10,10 @@
                 {% for field in form %}
                     <div class="block_orientation">
                         <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-                        {{ field }}
-                        {% if request.method == "POST" %}
-                            {{ field.errors }}
-                        {% endif %}    
+                        {% render_field field class+="form-control" %}
+                        {% for error in field.errors %}
+                            <p class="message_error">{{ error }}</p>
+                        {% endfor %}
                     </div>
                 {% endfor %}
             </div>

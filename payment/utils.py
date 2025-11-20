@@ -12,17 +12,13 @@ def create_checkout_session(price, quantity, product, user):
             "price_data": {
                 "currency": "brl",
                 "unit_amount": price,
-                "product": "prod_abc123",
-                # Arrumar
-                "product_data": {
-                    "name": product.name,
-                },
+                "product": product.id_stripe,
             },
             "quantity": quantity,
         }],
         mode="payment",
         success_url="http://localhost:8000/inventory",
-        cancel_url="http://localhost:8000/",
+        cancel_url=f"http://localhost:8000/product/{str(product.id)}",
         metadata={
             "product_id": str(product.id),
             "user_id": str(user.id),
