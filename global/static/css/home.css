@@ -101,11 +101,11 @@ p {
 
 .very-form {
     display: flex;
-    min-height: 100vh;
+    min-height: 90vh;
     flex-direction: column; 
     width: 70%;
     padding: 3vh;
-    margin-top: 12vh;
+    margin-top: 5vh;
     background-color: white;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);

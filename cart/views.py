@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from utils.decorators import clear_session_data
 from django.utils.decorators import method_decorator
 from inventory.models import InventoryItem
-from .utils import add_to_cart
+from .utils import add_to_cart, cartremove
 
 
 #retornar a tela do carrinho do cliente!
@@ -21,12 +21,18 @@ class CartView(LoginRequiredMixin, TemplateView):
         return context 
     
 
+
 #Logica pra adicionar produto ao carrinho 
 class AddCart(LoginRequiredMixin, View):
-    def get(self, request, id):
-        product = add_to_cart(request, id)
-        return redirect("product:product", product.id)
+    def post(self, request):
+        id = add_to_cart(request)
+        return redirect("product:product", id)
 
+
+class CartRemove(LoginRequiredMixin,View):
+    def post(self, request):
+        cartremove(request)
+        return redirect("cart:cart")
 
 #Rota pra comprar itens do carrinho 
 @login_required(login_url='accounts:login')
@@ -48,11 +54,3 @@ def cartbuy(request):
     return render(request, "cart.html")
 
 
-@login_required(login_url='accounts:login')
-def cartremove(request):
-    if request.method == "POST":
-        id = request.POST.get("id")
-        user = request.user
-        cart = user.cart
-        cart.items.filter(id=id).delete()
-        return redirect("cart:cart")

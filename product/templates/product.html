@@ -8,7 +8,6 @@
                 <div>
                     {% include "carrousel.html" %}
                 </div>
-
                 <div>
                     <div class="product-right">
                         <label>{% if quantity > 0 %}{{ quantity }} disponíveis {% else %} Produto indisponível {% endif %}</label>
@@ -18,10 +17,11 @@
                                 <p style="color: #198754;">{% if product.discount %} {{ product.discount.discount }}% OFF {% endif %}</p>
                                 <h3 class="text-success fw-bold">R$ {{ product.apply_discount}}</h3>
                             </p>
-                            <form action="{% url 'cart:addcart' product.id %}" method="get">
+                            <form action="{% url 'cart:addcart' %}" method="post">
                                 {% csrf_token %}
                                 <div class="mb-3">
                                     <label for="exampleSelect" class="form-label">Change Option</label>
+                                    <input type="hidden" name="id" value="{{ product.id }}">
                                     <select class="form-select" id="exampleSelect" aria-label="Selecione algo">
                                         <option selected>Select...</option>
                                         <option value="1">Action</option>

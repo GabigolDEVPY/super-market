@@ -2,10 +2,11 @@ from product.models import Product
 from cart.models import Cart, CartItem
 from inventory.models import InventoryItem
 
-def add_to_cart(request, id):
+def add_to_cart(request):
     user = request.user
     cart = user.cart
-    quantity = int(request.GET.get("quantity"))
+    id = request.POST.get("id")
+    quantity = int(request.POST.get("quantity"))
     product = Product.objects.get(id=id)
     
     if product.discount:
@@ -21,5 +22,11 @@ def add_to_cart(request, id):
         if not created:
             item.quantity += quantity
             item.save()
-    return product       
+    return id
     
+
+def cartremove(request):
+    id = request.POST.get("id")
+    user = request.user
+    cart = user.cart
+    cart.items.filter(id=id).delete()
