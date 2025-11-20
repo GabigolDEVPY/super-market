@@ -1,6 +1,9 @@
+from django.shortcuts import redirect
 from product.models import Product
 from cart.models import Cart, CartItem
 from inventory.models import InventoryItem
+from payment.utils import create_checkout_session_product
+
 
 def add_to_cart(request):
     user = request.user
@@ -8,13 +11,11 @@ def add_to_cart(request):
     id = request.POST.get("id")
     quantity = int(request.POST.get("quantity"))
     product = Product.objects.get(id=id)
-    
     if product.discount:
         discount_amount = (product.price * product.discount.discount) / 100
         final_price = product.price - discount_amount
     else:
         final_price = product.price
-        
     stock = product.stocks.first()
     if stock and stock.quantity >= 1:
         item, created = CartItem.objects.get_or_create(cart=cart, product=product, defaults={'quantity': quantity,})
@@ -30,3 +31,29 @@ def cartremove(request):
     user = request.user
     cart = user.cart
     cart.items.filter(id=id).delete()
+    
+    
+def cartbuy(request):
+    user = request.user
+    inventory = user.inventory
+    cart = user.cart
+    items = cart.items.all()
+    line_items = []
+    for item in items:
+        print(item.product.price)
+        line_items.append(
+            {
+                "price_data": {
+                    "currency": "brl",
+                    "unit_amount": int((item.product.apply_discount()) * 100),
+                    "product": item.product.id_stripe,
+                },
+                "quantity": item.quantity
+            },
+        )
+    metadata={
+        "cart_id": str(user.cart.id),
+        "user_id": str(user.id),
+    }
+    url = create_checkout_session_product(user=user, items=line_items, metadata=metadata) 
+    return redirect(url)

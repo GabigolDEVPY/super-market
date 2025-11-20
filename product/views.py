@@ -79,6 +79,12 @@ def productbuynow(request):
         price = int(product.price * 100)
         
     #aprovar compra no checkout 
+    metadata={
+            "product_id": str(product.id) if product else None,
+            "cart_id": str(user.cart.id),
+            "user_id": str(user.id),
+            "quantity": str(quantity),
+        }
     url = create_checkout_session_product(price, quantity, product, user);
     return redirect(url)
 

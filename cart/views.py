@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from utils.decorators import clear_session_data
 from django.utils.decorators import method_decorator
 from inventory.models import InventoryItem
-from .utils import add_to_cart, cartremove
+from .utils import add_to_cart, cartremove, cartbuy
 
 
 #retornar a tela do carrinho do cliente!
@@ -29,28 +29,29 @@ class AddCart(LoginRequiredMixin, View):
         return redirect("product:product", id)
 
 
+# Logica pra remover item do carrinho 
 class CartRemove(LoginRequiredMixin,View):
     def post(self, request):
         cartremove(request)
         return redirect("cart:cart")
 
 #Rota pra comprar itens do carrinho 
-@login_required(login_url='accounts:login')
-def cartbuy(request):
-    user = request.user
-    inventory = user.inventory
-    cart = user.cart
-    items = cart.items.all()
-    for item in items:
-        stock = item.product.stocks.first()
-        inv_item, created = InventoryItem.objects.get_or_create(
-            inventory=inventory, product=item.product)
-        if not created:
-            inv_item.quantity += item.quantity
-            stock.quantity -= item.quantity
-            stock.save()
-            inv_item.save()
-    items = cart.items.all().delete()
-    return render(request, "cart.html")
+class CartBuy(LoginRequiredMixin, View):
+    def post(self, request):
+        cartbuy(request)
+        redirect("cart:cart")
+    
+        # items = request.user.cart.items.all()
+        # for item in items:
+        #     stock = item.product.stocks.first()
+        #     inv_item, created = InventoryItem.objects.get_or_create(
+        #         inventory=inventory, product=item.product)
+        #     if not created:
+        #         inv_item.quantity += item.quantity
+        #         stock.quantity -= item.quantity
+        #         stock.save()
+        #         inv_item.save()
+        # items = cart.items.all().delete()
+        # return render(request, "cart.html")
 
 

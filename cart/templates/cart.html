@@ -18,7 +18,7 @@
         {% else %}
             <h3>Nenhum item</h3>
         {% endif %}
-        <form action="{% url 'cart:cartbuy' %}">
+        <form action="{% url 'cart:cartbuy' %}" method="post">
             {% csrf_token %}
             <button>Buy</button>
         </form>
