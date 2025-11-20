@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from utils.decorators import clear_session_data
 from django.utils.decorators import method_decorator
-from payment.utils import create_checkout_session, create_checkout_session_product
+from payment.utils import create_checkout_session_product
 
 
 @method_decorator(clear_session_data(["discount_name", "discount_price"]), name="dispatch")
