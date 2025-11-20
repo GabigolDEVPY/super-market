@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from utils.decorators import clear_session_data
 from django.utils.decorators import method_decorator
-from payment.utils import create_checkout_session
+from payment.utils import create_checkout_session, create_checkout_session_product
 
 
 @method_decorator(clear_session_data(["discount_name", "discount_price"]), name="dispatch")
@@ -79,7 +79,7 @@ def productbuynow(request):
         price = int(product.price * 100)
         
     #aprovar compra no checkout 
-    url = create_checkout_session(price, quantity, product, user);
+    url = create_checkout_session_product(price, quantity, product, user);
     return redirect(url)
 
     

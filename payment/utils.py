@@ -5,7 +5,7 @@ from django.conf import settings
 
 stripe.api_key = settings.API_STRIPE
 
-def create_checkout_session(price, quantity, product, user):
+def create_checkout_session_product(price, quantity, product, user):
     session = stripe.checkout.Session.create(
         payment_method_types=["card"],
         line_items=[{
@@ -28,3 +28,7 @@ def create_checkout_session(price, quantity, product, user):
 
     return session.url
 
+
+
+def create_checkout_session_cart(user):
+    pass
