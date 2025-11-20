@@ -101,11 +101,11 @@ p {
 
 .very-form {
     display: flex;
-    flex-direction: column;   /* mantém os cards em coluna dentro do bloco principal */
-    margin-top: 50vh;
+    min-height: 100vh;
+    flex-direction: column; 
     width: 70%;
-    align-items: center;
     padding: 3vh;
+    margin-top: 12vh;
     background-color: white;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
