@@ -38,7 +38,7 @@ def cartbuy(request):
     inventory = user.inventory
     cart = user.cart
     items = cart.items.all()
-    urls = {"succes_url": "inventory/", "cancel_url": f"product/{id}"} 
+    urls = {"success_url": "inventory/", "cancel_url": f"cart/"} 
     line_items = []
     for item in items:
         print(item.product.price)

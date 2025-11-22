@@ -38,8 +38,7 @@ def stripe_webhook(request):
                     inv_item.save()
             items = cart.items.all().delete()
             return HttpResponse(status=200)
-        elif metadata["event_mode"] == "product":
-            print("have a product here")    
+        elif metadata["event_mode"] == "product": 
             quantity = int(metadata["quantity"])
             product = Product.objects.get(id=metadata["product_id"])   
             stock = product.stocks.first()
@@ -50,4 +49,4 @@ def stripe_webhook(request):
             inventory_item.quantity += quantity
             inventory_item.save()
             return HttpResponse(status=200)
-        return HttpResponse(status=200)
+    return HttpResponse(status=200)
