@@ -85,7 +85,7 @@ def productbuynow(request):
             "user_id": str(user.id),
             "quantity": str(quantity),
         }
-    url = create_checkout_session_product(price, quantity, product, user);
+    url = create_checkout_session_product(metadata, product);
     return redirect(url)
 
     

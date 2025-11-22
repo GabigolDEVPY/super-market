@@ -4,6 +4,8 @@ import stripe
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
+from cart.models import Cart
+import product
 from product.models import Product
 from django.contrib.auth.models import User
 from inventory.models import Inventory, InventoryItem
@@ -20,15 +22,29 @@ def stripe_webhook(request):
     if event["type"] == "checkout.session.completed":
         session = event["data"]["object"]
         metadata = session["metadata"]
-        product_id = int(metadata["product_id"])
-        user_id = int(metadata["user_id"])
-        quantity = int(metadata["quantity"])   
-        product = Product.objects.get(id=product_id)
-        user = User.objects.get(id=user_id)
+        user = metadata["user_id"]
+        if "cart_id" in metadata:
+            cart = Cart.objects.get(id=metadata["cart_id"])
+            inventory = Inventory.objects.get(user=metadata["user_id"])
+            items = cart.items.all()
+            for item in items:
+                stock = item.product.stocks.first()
+                inv_item, created = InventoryItem.objects.get_or_create(
+                    inventory=inventory, product=item.product)
+                if not created:
+                    inv_item.quantity += item.quantity
+                    stock.quantity -= item.quantity
+                    stock.save()
+                    inv_item.save()
+            items = cart.items.all().delete()
+            return HttpResponse(status=200)
+            
+        quantity = int(metadata["quantity"])
+        product = Product.objects.get(id=metadata["product_id"])   
         stock = product.stocks.first()
         stock.quantity -= quantity
         stock.save()
-        inventory, created = Inventory.objects.get_or_create(user=user)
+        inventory, created = Inventory.objects.get_or_create(user=metadata["user_id"])
         inventory_item, _= InventoryItem.objects.get_or_create(inventory=inventory, product=product)  
         inventory_item.quantity += quantity
         inventory_item.save()
