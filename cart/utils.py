@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 from product.models import Product
-from cart.models import Cart, CartItem
-from inventory.models import InventoryItem
+from cart.models import CartItem
+from django.http import HttpResponse
 from payment.utils import create_checkout_session_product
 
 
@@ -27,18 +27,19 @@ def add_to_cart(request):
     
 
 def cartremove(request):
-    id = request.POST.get("id")
-    user = request.user
-    cart = user.cart
-    cart.items.filter(id=id).delete()
+    try:
+        id = request.POST.get("id")
+        user = request.user
+        cart = user.cart
+        cart.items.filter(id=id).delete()
+    except Exception as e:
+        return HttpResponse(status=200)
     
     
 def cartbuy(request):
     user = request.user
-    urls = {"success_url": "inventory/", "cancel_url": f"cart/"} 
-    line_items = []
-    for item in user.cart.items.all():
-        line_items.append(
+    urls = {"success_url": "inventory/", "cancel_url": "cart/"} 
+    line_items = [
             {
                 "price_data": {
                     "currency": "brl",
@@ -46,8 +47,9 @@ def cartbuy(request):
                     "product": item.product.id_stripe,
                 },
                 "quantity": item.quantity
-            },
-        )
+            }
+        for item in user.cart.items.all()]
+    
     metadata={
         "cart_id": str(user.cart.id),
         "user_id": str(user.id),
