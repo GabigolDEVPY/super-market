@@ -23,7 +23,7 @@ def stripe_webhook(request):
         session = event["data"]["object"]
         metadata = session["metadata"]
         user = metadata["user_id"]
-        if "cart_id" in metadata:
+        if metadata["event_mode"] == "cart":
             cart = Cart.objects.get(id=metadata["cart_id"])
             inventory = Inventory.objects.get(user=metadata["user_id"])
             items = cart.items.all()
@@ -38,14 +38,16 @@ def stripe_webhook(request):
                     inv_item.save()
             items = cart.items.all().delete()
             return HttpResponse(status=200)
-            
-        quantity = int(metadata["quantity"])
-        product = Product.objects.get(id=metadata["product_id"])   
-        stock = product.stocks.first()
-        stock.quantity -= quantity
-        stock.save()
-        inventory, created = Inventory.objects.get_or_create(user=metadata["user_id"])
-        inventory_item, _= InventoryItem.objects.get_or_create(inventory=inventory, product=product)  
-        inventory_item.quantity += quantity
-        inventory_item.save()
-    return HttpResponse(status=200)
+        elif metadata["event_mode"] == "product":
+            print("have a product here")    
+            quantity = int(metadata["quantity"])
+            product = Product.objects.get(id=metadata["product_id"])   
+            stock = product.stocks.first()
+            stock.quantity -= quantity
+            stock.save()
+            inventory, created = Inventory.objects.get_or_create(user=metadata["user_id"])
+            inventory_item, _= InventoryItem.objects.get_or_create(inventory=inventory, product=product)  
+            inventory_item.quantity += quantity
+            inventory_item.save()
+            return HttpResponse(status=200)
+        return HttpResponse(status=200)

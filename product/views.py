@@ -78,14 +78,26 @@ def productbuynow(request):
     else:
         price = int(product.price * 100)
         
-    #aprovar compra no checkout 
+    #aprovar compra no checkout
+    urls = {"success_url": "inventory/", "cancel_url": f"product/{id}"} 
+ 
+    items = {
+                "price_data": {
+                    "currency": "brl",
+                    "unit_amount": int((product.apply_discount()) * 100),
+                    "product": product.id_stripe,
+                },
+                "quantity": quantity
+            },
+        
     metadata={
-            "product_id": str(product.id) if product else None,
+            "product_id": str(product.id),
             "cart_id": str(user.cart.id),
             "user_id": str(user.id),
             "quantity": str(quantity),
+            "event_mode": "product"
         }
-    url = create_checkout_session_product(metadata, product);
+    url = create_checkout_session_product(metadata, items, urls);
     return redirect(url)
 
     
