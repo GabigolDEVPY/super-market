@@ -55,9 +55,9 @@
 
 /* todas as imagens com o mesmo tamanho */
 .product-img {
-    height: 180px;            /* define altura fixa */
+    height: 200px;            /* define altura fixa */
     width: 100%;
-    object-fit: cover;        /* mantém proporção e corta excesso */
+    object-fit: fill;        /* mantém proporção e corta excesso */
     border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
 
