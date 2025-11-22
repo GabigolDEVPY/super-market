@@ -23,7 +23,11 @@
                                     class="btn btn-link nav-link text-decoration-none p-0"
                                     style="color: inherit;"
                                 >
+                                {% if user.is_authenticated %}
                                     Logout
+                                {% else %}
+                                    Login
+                                {% endif %}
                                 </button>
                             </form>
                         </li>

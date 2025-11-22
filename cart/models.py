@@ -18,7 +18,7 @@ class Cart(models.Model):
     
     @property
     def total_price(self):
-        return sum(item.subtotal for item in self.items.all())
+        return sum(item.product.apply_discount() * item.quantity for item in self.items.all())
     
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
@@ -28,13 +28,7 @@ class CartItem(models.Model):
     def __str__(self):
         return f"{self.quantity}x {self.product.name}"
     
-    @property
-    def subtotal(self):
-        if self.product.discount:
-            discount =  (self.product.price / 100) * self.product.discount.discount
-            price_with_discount = self.product.price - discount
-            return price_with_discount * self.quantity
-        return self.product.price * self.quantity
+
 
 
 def generate_payment_code():
