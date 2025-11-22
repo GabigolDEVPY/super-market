@@ -38,6 +38,7 @@ def stripe_webhook(request):
                     inv_item.save()
             items = cart.items.all().delete()
             return HttpResponse(status=200)
+        
         elif metadata["event_mode"] == "product": 
             quantity = int(metadata["quantity"])
             product = Product.objects.get(id=metadata["product_id"])   

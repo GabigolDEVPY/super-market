@@ -41,17 +41,6 @@ class CartBuy(LoginRequiredMixin, View):
         cartbuy(request)
         redirect("cart:cart")
     
-        # items = request.user.cart.items.all()
-        # for item in items:
-        #     stock = item.product.stocks.first()
-        #     inv_item, created = InventoryItem.objects.get_or_create(
-        #         inventory=inventory, product=item.product)
-        #     if not created:
-        #         inv_item.quantity += item.quantity
-        #         stock.quantity -= item.quantity
-        #         stock.save()
-        #         inv_item.save()
-        # items = cart.items.all().delete()
-        # return render(request, "cart.html")
+
 
 

@@ -35,13 +35,9 @@ def cartremove(request):
     
 def cartbuy(request):
     user = request.user
-    inventory = user.inventory
-    cart = user.cart
-    items = cart.items.all()
     urls = {"success_url": "inventory/", "cancel_url": f"cart/"} 
     line_items = []
-    for item in items:
-        print(item.product.price)
+    for item in user.cart.items.all():
         line_items.append(
             {
                 "price_data": {
@@ -57,5 +53,4 @@ def cartbuy(request):
         "user_id": str(user.id),
         "event_mode": "cart"
     }
-    url = create_checkout_session_product(items=line_items, metadata=metadata, urls=urls) 
-    return redirect(url)
+    return redirect(create_checkout_session_product(metadata, line_items, urls))
