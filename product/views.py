@@ -92,7 +92,6 @@ def productbuynow(request):
         
     metadata={
             "product_id": str(product.id),
-            "cart_id": str(user.cart.id),
             "user_id": str(user.id),
             "quantity": str(quantity),
             "event_mode": "product"
