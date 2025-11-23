@@ -1,0 +1,37 @@
+.very-form {
+    gap: 5vh;
+    display: flex;
+    min-height: 80vh;
+    flex-direction: row; 
+    width: 70%;
+    padding: 3vh;
+    margin-top: 5vh;
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+
+/* todas as imagens com o mesmo tamanho */
+.product-img {
+    height: 200px;            /* define altura fixa */
+    width: 200px;
+    object-fit: fill;        /* mantém proporção e corta excesso */
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.product-right {
+    display: flex;
+    flex-direction: column;
+    padding: 4vh;
+    width: 65vh;
+    height: 70vh;
+    border: 1px solid rgb(180, 180, 180);
+    border-radius: var(--border-radius);
+}
+
+.scroll-products {
+    border: 1px solid rgb(180, 180, 180);
+    border-radius: var(--border-radius);
+    height: 70vh;
+}

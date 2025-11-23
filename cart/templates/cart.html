@@ -2,26 +2,36 @@
 {% load static %}
 {% block content %}
     <link rel="stylesheet" href="{% static "css/cart.css" %}">
-    <div>
-        {{ cart_price }}
-        {% if items %}
-        {% for item in items %}
-        <form action="{% url 'cart:cartremove' %}" method="post">
-                {% csrf_token %}
-                <label for="quantity">quantity</label>
-                <label for="quantity">{{item.quantity}}</label>
-                <input name="id" type="hidden" value="{{ item.id }}">
-                <button>Remove</button>
-            </form>
-            <h3>{{ item.product.name }}</h3>
-            <h3>{{ item.product.apply_discount }}</h3>
-        {% endfor %}
-        {% else %}
+    <div class="very-form">
+        <div>
+            {% if items %}
+            <div class="overflow-y-auto scroll-products">
+                {% for item in items %}
+                <form action="{% url 'cart:cartremove' %}" method="post">
+                    {% csrf_token %}
+                    <div class="flex-shrink-0">
+                        <img class="product-img" src="{{ item.product.image.url }}" alt="...">
+                    </div>
+                    <label for="quantity">quantity</label>
+                    <label for="quantity">{{item.quantity}}</label>
+                    <input name="id" type="hidden" value="{{ item.id }}">
+                    <button>Remove</button>
+                    <h3>{{ item.product.name }}</h3>
+                    <h3>{{ item.product.apply_discount }}</h3>
+                </form>
+                {% endfor %}
+            </div>
+            {% else %}
             <h3>Nenhum item</h3>
-        {% endif %}
-        <form action="{% url 'cart:cartbuy' %}" method="post">
-            {% csrf_token %}
-            <button>Buy</button>
-        </form>
+            {% endif %}
+        </div>
+        
+        <div class="product-right">
+            {{ cart_price }}
+            <form action="{% url 'cart:cartbuy' %}" method="post">
+                {% csrf_token %}
+                <button>Buy</button>
+            </form>
+        </div>
     </div>
 {% endblock content %}
