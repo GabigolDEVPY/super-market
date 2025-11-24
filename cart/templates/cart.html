@@ -7,31 +7,56 @@
             {% if items %}
             <div class="overflow-y-auto scroll-products">
                 {% for item in items %}
-                <form action="{% url 'cart:cartremove' %}" method="post">
-                    {% csrf_token %}
-                    <div class="flex-shrink-0">
-                        <img class="product-img" src="{{ item.product.image.url }}" alt="...">
-                    </div>
-                    <label for="quantity">quantity</label>
-                    <label for="quantity">{{item.quantity}}</label>
-                    <input name="id" type="hidden" value="{{ item.id }}">
-                    <button>Remove</button>
-                    <h3>{{ item.product.name }}</h3>
-                    <h3>{{ item.product.apply_discount }}</h3>
-                </form>
+                    <div class="product card mb-2 shadow-sm">
+                        <div class="row g-0 align-items-center">
+                            <!-- Imagem do Produto -->
+                            <div class="col-md-3 text-center p-2">
+                                <img src="{{ item.product.image.url }}" 
+                                alt="{{ item.product.name }}"
+                                class="img-fluid rounded" 
+                                style="max-height: 120px; object-fit: cover;">
+                            </div>
+                            <!-- Informações -->
+                            <div class="col-md-6">
+                                <div class="card-body py-3">
+                                    <h5 class="card-title mb-1">{{ item.product.name }}</h5>
+                                    <p class="mb-1 text-muted">
+                                        Quantidade: 
+                                        <strong>{{ item.quantity }}</strong>
+                                    </p> 
+                                    <h4 class="text-success fw-bold mb-0">
+                                        R$ {{ item.product.apply_discount }}
+                                    </h4>
+                                </div>
+                            </div>
+                            <!-- Botão remover -->
+                            <div class="col-md-3 text-end pe-4">
+                                <form action="{% url 'cart:cartremove' %}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="id" value="{{ item.id }}">
+                                    <button class="btn btn-danger btn-sm mt-3">
+                                        Remover
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>    
                 {% endfor %}
             </div>
             {% else %}
             <h3>Nenhum item</h3>
             {% endif %}
         </div>
-        
         <div class="product-right">
-            {{ cart_price }}
+            <div class="price">
+                <h4>Total Price</h4>
+                <h5 class="text-success fw-bold mb-0" >R$ {{ cart_price }}</h5>
+            </div>
             <form action="{% url 'cart:cartbuy' %}" method="post">
+                {% include "form.html" %}
                 {% csrf_token %}
-                <button>Buy</button>
+                <button type="submit" class="btn btn-success w-100">Buy</button>
             </form>
         </div>
-    </div>
+    </div> 
 {% endblock content %}
