@@ -1,7 +1,9 @@
+from urllib import response
 from django.shortcuts import redirect
 from product.models import Product
 from cart.models import CartItem
 from django.http import HttpResponse
+import requests
 from payment.utils import create_checkout_session_product
 
 
@@ -47,6 +49,19 @@ def cartbuy(request):
     metadata={
         "cart_id": str(user.cart.id),
         "user_id": str(user.id),
-        "event_mode": "cart"
     }
     return redirect(create_checkout_session_product(metadata, line_items, urls))
+
+
+
+def validade_cep(cep):
+    cep = cep
+    url= f"https://viacep.com.br/ws/{cep}/json/"
+    try:
+        response = requests.get(url, timeout=5)
+        response.raise_for_status()
+        return (content := response.json())
+    except requests.exceptions.Timeout: 
+        return "Timeout"
+    except requests.exceptions.HTTPError as e:
+        return "Error"
