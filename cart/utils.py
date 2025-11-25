@@ -33,6 +33,11 @@ def cartremove(request):
     
     
 def cartbuy(request):
+    form = request.POST.dict()
+    response = validade_cep(form["cep"])
+    print(form)
+    print(response)
+    return redirect("market:home")
     user = request.user
     urls = {"success_url": "inventory/", "cancel_url": "cart/"} 
     line_items = [

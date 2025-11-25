@@ -53,8 +53,8 @@
                 <h5 class="text-success fw-bold mb-0" >R$ {{ cart_price }}</h5>
             </div>
             <form action="{% url 'cart:cartbuy' %}" method="post">
-                {% include "form.html" %}
                 {% csrf_token %}
+                {% include "form.html" %}
                 <button type="submit" class="btn btn-success w-100">Buy</button>
             </form>
         </div>
