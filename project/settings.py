@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'product',
     'inventory',
     'payment',
-    'widget_tweaks'
+    'widget_tweaks',
+    'phonenumber_field'
 ]
 
 MIDDLEWARE = [
