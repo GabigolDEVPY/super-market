@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-    <link rel="stylesheet" href="{% static "css/cart.css" %}">
-    <div class="very-form">
+    <link rel="stylesheet" href="{% static "css/payment.css" %}">
+    <div class="very-form justify-content-end">
         <div class="product-right">
             <div class="price">
                 <h4>Total Price</h4>
@@ -11,7 +11,8 @@
             <form action="{% url 'payment:payment' %}" method="post">
                 {% csrf_token %}
                 {% include "form.html" %}
-                <button type="submit" class="btn btn-success w-100">Buy</button>
+                <button type="submit" class="btn btn-success w-100">Finalize purchase</button>
+                <button type="submit" class="btn btn-danger w-100 mt-1">Back</button>
             </form>
         </div>
     </div> 
