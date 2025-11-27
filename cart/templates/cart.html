@@ -52,9 +52,8 @@
                 <h4>Total Price</h4>
                 <h5 class="text-success fw-bold mb-0" >R$ {{ cart_price }}</h5>
             </div>
-            <form action="{% url 'cart:cartbuy' %}" method="post">
+            <form action="{% url 'payment:validate' %}" method="get">
                 {% csrf_token %}
-                {% include "form.html" %}
                 <button type="submit" class="btn btn-success w-100">Buy</button>
             </form>
         </div>

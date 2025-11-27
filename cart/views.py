@@ -36,9 +36,9 @@ class CartRemove(LoginRequiredMixin,View):
 
 #Rota pra comprar itens do carrinho 
 class CartBuy(LoginRequiredMixin, View):
-    def post(self, request):
-        cartbuy(request)
-        redirect("cart:cart")
+    def get(self, request):
+        dados = cartbuy(request)
+        redirect("payment:cart")
     
 
 
