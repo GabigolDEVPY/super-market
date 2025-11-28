@@ -3,7 +3,7 @@
     display: flex;
     height: 50vh;
     flex-direction: row; 
-    width: 60%;
+    width: 100%;
     background-color: white;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);

@@ -7,8 +7,12 @@
             <li style="list-style: None;" class="nav-item">
                 <a style="color: #0d6efd;" class="nav-link" href="{% url "market:all" %}">See All Products</a>
             </li>
-        </div>        
-        {% include "scroll-product.html" %}
+        </div>
+            {% for category in categories %} 
+                {% if category.products.all %}       
+                    {% include "supermarket/scroll-product.html" %}
+                {% endif %}
+            {% endfor %}
     <script>
         const scrollRow = document.querySelector('.scroll-row');
         scrollRow.addEventListener('wheel', (event) => {

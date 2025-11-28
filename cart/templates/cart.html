@@ -3,7 +3,7 @@
 {% block content %}
 <link rel="stylesheet" href="{% static "css/cart.css" %}">
 
-<div class="container py-4">
+<div class="container py-4 mt-5">
 
     <!-- FORM ENGLOBANDO TUDO -->
     <form action="{% url 'payment:validate' %}" method="get">
@@ -16,7 +16,7 @@
 
                 {% if items %}
                     <div class="scroll-products pe-1" 
-                         style="max-height: 520px; overflow-y: auto;">
+                        style="max-height: 520px; overflow-y: auto;">
 
                         {% for item in items %}
                         <div class="card mb-3 shadow-sm border-0 h-100">
@@ -25,9 +25,9 @@
                                 <!-- Imagem -->
                                 <div class="col-4 col-md-3 text-center p-2">
                                     <img src="{{ item.product.image.url }}"
-                                         alt="{{ item.product.name }}"
-                                         class="img-fluid rounded"
-                                         style="max-height: 130px; object-fit: cover;">
+                                        alt="{{ item.product.name }}"
+                                        class="img-fluid rounded"
+                                        style="max-height: 130px; object-fit: cover;">
                                 </div>
 
                                 <!-- Informações -->
@@ -98,6 +98,9 @@
 
     </form>
 
+    <div class="very-form">
+        {% include "supermarket/scroll-product.html" %}
+    </div>
 </div>
 
 {% endblock content %}
