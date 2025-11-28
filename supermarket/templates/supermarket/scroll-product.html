@@ -6,17 +6,17 @@
         <div class="scroll-row p-2 d-flex gap-3 overflow-x">
             {% for product in items %}
             <a href="{% url 'product:product' product.id %}">
-                <div class="card" style="width: 13rem;">
-                    <img src="{{ product.image.url }}" class="card-img-top product-img" alt="{{ product.name }}">
+                <div class="card product-hover pb-2" style="height: 25rem; width: 14rem;">
+                    <img src="{{ product.image.url }}" class="img-fluid product-img" alt="{{ product.name }}">
                     <div class="card-body d-flex flex-column">
                         <h6 style="font-size: 16px;" class="card-title">{{ product.name }}</h6>
                         {% if product.quantity >= 1 %}
-                        <div>
-                            <s style="font-size: 14px;" class="text-muted">{% if product.discount %}R${{ product.price }}{% else %}&nbsp{% endif %}</s>
-                            <h5 class="card-title">R$ {{ product.apply_discount }}</h5>
-                            <p style="color: #198754;">{% if product.discount %} {{ product.discount.discount }}% OFF {% endif %}</p>
-                            <p style="color: #198754;">em até 12x sem juros no cartão</p>
-                        </div>
+                            <div>
+                                <s style="font-size: 14px;" class="text-muted">{% if product.discount %}R${{ product.price }}{% else %}&nbsp{% endif %}</s>
+                                <h5 class="card-title mb-0">R$ {{ product.apply_discount }}</h5>
+                                <p class="mb-0" style="color: #198754;">{% if product.discount %} {{ product.discount.discount }}% OFF {% endif %}</p>
+                                <p style="color: #198754;">em até 12x sem juros no cartão</p>
+                            </div>
                         {% else %}
                             <p style="padding: 1vh">Produto Indisponível</p>
                         {% endif %}

@@ -10,13 +10,11 @@
     margin-top: 8.3vh;
 }
 
-
-/* todas as imagens com o mesmo tamanho */
 .product-img {
-    height: 100px;            /* define altura fixa */
-    width: 100px;
-    object-fit: fill;        /* mantém proporção e corta excesso */
-    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    width: 220px;
+    height: 200px;
+    object-fit: cover; /* Bootstrap não tem isso */
+    border-radius: .5rem; /* opcional */
 }
 
 .resume {
@@ -38,9 +36,8 @@
 }
 
 .product {
-    height: 15vh;
     transition: 0.2s ease;
-    width: 65vh;
+    width: 48rem;
 }
 
 .product:hover {
@@ -51,6 +48,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    height: 30vh;
 
 }
 
@@ -58,4 +56,12 @@
 .price {
     padding: 1vh;
     box-sizing: border-box;
+}
+
+.product-hover {
+    transition: 0.2s ease;
+}
+
+.product-hover:hover {
+    transform: scale(1.02);
 }
