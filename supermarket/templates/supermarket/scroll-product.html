@@ -3,8 +3,8 @@
     <div class="name-category">
         <h5>{{ category.category }}</h5>
     </div>
-        <div class="scroll-row p-2">
-            {% for product in category.products.all %}
+        <div class="scroll-row p-2 d-flex gap-3 overflow-x">
+            {% for product in items %}
             <a href="{% url 'product:product' product.id %}">
                 <div class="card" style="width: 13rem;">
                     <img src="{{ product.image.url }}" class="card-img-top product-img" alt="{{ product.name }}">

@@ -16,7 +16,8 @@
 
 .scroll-row {
     display: flex;
-    flex-wrap: nowrap;        /* impede quebra de linha */
+    flex-wrap: nowrap;   
+    flex-direction: row;     /* impede quebra de linha */
     overflow-x: auto;         /* ativa o scroll horizontal */
     overflow-y: hidden;
     white-space: nowrap;

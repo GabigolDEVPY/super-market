@@ -5,8 +5,6 @@
     flex-direction: row; 
     width: 100%;
     background-color: white;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
 }
 .margin-top {
     margin-top: 8.3vh;
@@ -21,20 +19,20 @@
     border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
 
-.product-right {
-    display: flex;
-    flex-direction: column;
-    padding: 4vh;
-    width: 55vh;
-    border: 1px solid rgb(180, 180, 180);
+.resume {
+    height: 50vh;
+}
+
+.border {
     border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
 }
 
 .scroll-products {
     display: flex;
     flex-direction: column;
     border-radius: var(--border-radius);
-    height: 43.5vh;
+    height: 40vh;
     padding: 1vh;
     box-sizing: border-box;
 }

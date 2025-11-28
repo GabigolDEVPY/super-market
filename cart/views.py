@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from utils.decorators import clear_session_data
 from django.utils.decorators import method_decorator
 from inventory.models import InventoryItem
-from .utils import add_to_cart, cartremove, cartbuy
+from .utils import add_to_cart, cartremove, cartbuy, items_random
 
 
 #retornar a tela do carrinho do cliente!
@@ -15,7 +15,8 @@ class CartView(LoginRequiredMixin, TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["items"] = self.request.user.cart.items.all()
+        context['items'] = items_random()
+        context["items_cart"] = self.request.user.cart.items.all()
         context["cart_price"] = self.request.user.cart.total_price
         return context 
     

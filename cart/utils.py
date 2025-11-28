@@ -5,7 +5,7 @@ from cart.models import CartItem
 from django.http import HttpResponse
 import requests
 from payment.utils import create_checkout_session_product
-
+import random
 
 def add_to_cart(request):
     user = request.user
@@ -53,3 +53,6 @@ def cartbuy(request):
     return redirect(create_checkout_session_product(metadata, line_items, urls))
 
 
+def items_random():
+    return Product.objects.order_by('?')[:4]
+    

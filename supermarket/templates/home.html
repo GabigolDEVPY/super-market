@@ -10,7 +10,7 @@
         </div>
             {% for category in categories %} 
                 {% if category.products.all %}       
-                    {% include "supermarket/scroll-product.html" %}
+                    {% include "supermarket/scroll-product.html" with items=category.products.all %}
                 {% endif %}
             {% endfor %}
     <script>
