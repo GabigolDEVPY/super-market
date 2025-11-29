@@ -1,11 +1,14 @@
 .very-form {
-    gap: 5vh;
     display: flex;
-    height: 50vh;
-    flex-direction: row; 
-    width: 100%;
+    flex-direction: column; 
+    width: 220vh;
+    padding: 4vh;
+    margin-top: 5vh;
     background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
 }
+
 .margin-top {
     margin-top: 8.3vh;
 }
@@ -33,23 +36,28 @@
     height: 40vh;
     padding: 1vh;
     box-sizing: border-box;
+    overflow-x: auto;  
+}
+
+.scroll-row {
+    display: flex;
+    overflow-x: auto;         /* ativa o scroll horizontal */
+    overflow-y: hidden;
+    gap: 5px;
+    width: 100%;
+    background-color: white;
+    padding: 1rem;
 }
 
 .product {
+    white-space: nowrap;
+    flex-wrap: nowrap; 
     transition: 0.2s ease;
     width: 48rem;
 }
 
 .product:hover {
     transform: scale(1.02);
-}
-
-.product-2 {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    height: 30vh;
-
 }
 
 

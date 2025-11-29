@@ -54,5 +54,5 @@ def cartbuy(request):
 
 
 def items_random():
-    return Product.objects.order_by('?')[:4]
+    return Product.objects.order_by('?')[:7]
     

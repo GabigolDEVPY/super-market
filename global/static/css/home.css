@@ -10,8 +10,36 @@
 
 .display-form-products-all {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 5px;
+    grid-template-columns: repeat(5, max-content);
+    padding-bottom: 8px;
+    justify-content: start;
+    gap: 8px;
+}
+
+
+.see-all {
+    width: 60%;
+    display: flex; 
+    align-items: flex-start;
+}
+
+.name-category {
+    width: 95%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.very-form {
+    display: flex;
+    min-height: 90vh;
+    flex-direction: column; 
+    width: 70.5rem;
+    padding: 3vh;
+    margin-top: 5vh;
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
 }
 
 .scroll-row {
@@ -23,7 +51,7 @@
     white-space: nowrap;
     scrollbar-width: thin;
     gap: 5px;
-    width: 100%;
+    width: 120vh;
     background-color: white;
 }
 
@@ -74,40 +102,10 @@ p {
 }
 
 .block-scroll {
-    margin-top: 2vh;
-    display: flex; 
-    flex-direction: column;
-    align-items: center; 
-    justify-content: center;
+    margin-top: 1rem;
     background-color: white;
-    width: 60%;
-    padding: 3vh;
-    margin: 3vh;
-    border-radius: var(--border-radius);
-    box-shadow: 0px 0px 10px 2px rgba(0,0,0, 0.2);
-}
-
-.see-all {
-    width: 60%;
-    display: flex; 
-    align-items: flex-start;
-}
-
-.name-category {
-    width: 95%;
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-}
-
-.very-form {
-    display: flex;
-    min-height: 90vh;
-    flex-direction: column; 
-    width: 70%;
-    padding: 3vh;
-    margin-top: 5vh;
-    background-color: white;
-    border-radius: var(--border-radius);
+    width: 80rem;
+    border-radius: 5px;
+    padding: 2rem;
     box-shadow: var(--shadow);
 }

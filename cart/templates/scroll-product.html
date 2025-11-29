@@ -1,4 +1,3 @@
-
 <div class="block-scroll">
     <div class="name-category">
         <h5>{{ category.category }}</h5>
@@ -15,7 +14,7 @@
                                 <s style="font-size: 14px;" class="text-muted">{% if product.discount %}R${{ product.price }}{% else %}&nbsp{% endif %}</s>
                                 <h5 class="card-title mb-0">R$ {{ product.apply_discount }}</h5>
                                 <p class="mb-0" style="color: #198754;">{% if product.discount %} {{ product.discount.discount }}% OFF {% endif %}</p>
-                                <p style="color: #198754;">em até 12x sem juros no cartão</p>
+                                <p class="pb-0 mb-0" style="color: #198754;">em até 12x sem juros no cartão</p>
                             </div>
                         {% else %}
                             <p style="padding: 1vh">Produto Indisponível</p>
