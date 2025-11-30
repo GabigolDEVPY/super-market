@@ -53,7 +53,7 @@
     white-space: nowrap;
     flex-wrap: nowrap; 
     transition: 0.2s ease;
-    width: 48rem;
+    width: 50rem;
 }
 
 .product:hover {

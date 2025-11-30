@@ -2,7 +2,7 @@
     <div class="name-category">
         <h5>{{ category.category }}</h5>
     </div>
-        <div class="scroll-row p-2 d-flex gap-3 overflow-x">
+        <div class="scroll-row p-2 d-flex gap-3 overflow-x-auto">
             {% for product in items %}
             <a href="{% url 'product:product' product.id %}">
                 <div class="card product-hover pb-2" style="height: 25rem; width: 14rem;">
@@ -23,8 +23,8 @@
                 </div>
             </a>
             {% endfor %}
-        </div>
-    </div>        
+        </div>  
+</div>        
 
 
 
