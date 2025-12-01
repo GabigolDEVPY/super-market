@@ -85,17 +85,19 @@
                     <div class="mt-4">
                         <a role="button" data-bs-toggle="modal" data-bs-target="#modal">Adicionar endereço</a>
                         {% include "form.html" %}
-                        <select class="form-select" id="exampleSelect" aria-label="Selecione algo">
-                            <option selected>Select...</option>
-                            <option value="1">Action</option>
-                            <option value="2">Another action</option>
-                            <option value="3">Something else here</option>
-                        </select>
-                        <!-- BOTÃO AGORA É LINK -->
-                        <a href="{% url 'payment:validate' %}" 
-                            class="btn btn-success w-100 mt-1 py-2 fs-5">
-                            Finalizar Compra
-                        </a>
+                        <form action="">
+                            <select class="form-select" id="exampleSelect" aria-label="Selecione algo" required>
+                                <option value=""disable selected>Select...</option>
+                                <option value="1">Action</option>
+                                <option value="2">Another action</option>
+                                <option value="3">Something else here</option>
+                            </select>
+                            <!-- BOTÃO AGORA É LINK -->
+                            <a href="{% url 'payment:validate' %}" 
+                                class="btn btn-success w-100 mt-1 py-2 fs-5">
+                                Finalizar Compra
+                            </a>
+                        </form>
                     </div>
 
                 </div>
