@@ -33,3 +33,7 @@ a {
 .navbar {
     height: 5vh;
 }
+
+body.modal-open {
+    padding-right: 10px !important;
+}
