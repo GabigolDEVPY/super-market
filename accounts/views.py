@@ -5,6 +5,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 from django.views.generic import FormView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .utils import validade_cep
 from .forms import RegisterForm
 
 
@@ -41,3 +43,7 @@ class RegisterView(FormView):
         form.save()
         return super().form_valid(form)
     
+
+class AddAdress(View, LoginRequiredMixin):
+    def post(self, request):
+        response = validade_cep()

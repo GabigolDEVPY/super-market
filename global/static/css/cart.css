@@ -36,7 +36,7 @@
     height: 40vh;
     padding: 1vh;
     box-sizing: border-box;
-    overflow-x: auto;  
+    overflow-x: hidden;  
 }
 
 .scroll-row {
