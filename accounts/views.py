@@ -49,9 +49,10 @@ class AddAdress(View, LoginRequiredMixin):
         cep = request.POST.get("cep")
         response = validade_cep(cep)
         if response == "Error":
-            pass
+            messages.error(request, "Cep Inválido", extra_tags="open_modal")
         elif response == "Timeout":
-            pass
-        print(response)
-        return redirect("/cart/?open_modal=true")
+            messages.error(request, "Timeout error", extra_tags="open_modal")
+        else:
+            messages.error(request, "Cep Inválido", extra_tags="open_modal")
+        return redirect("cart:cart")
         

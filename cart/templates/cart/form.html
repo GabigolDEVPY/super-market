@@ -1,10 +1,14 @@
-{% if request.GET.open_modal == "true" %}
+{% if messages %}
+{% for message in messages %}
+{% if "open_modal" in message.tags%}
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-    var myModal = new bootstrap.Modal(document.getElementById('modal'));
-    myModal.show();
-});
+  document.addEventListener("DOMContentLoaded", () => {
+    const modal = new bootstrap.Modal(document.getElementById("modal"));
+    modal.show();
+  });
 </script>
+{% endif %}
+{% endfor %}
 {% endif %}
 
 <div class="modal fade" id="modal" tabindex="-1">
@@ -17,43 +21,54 @@ document.addEventListener("DOMContentLoaded", () => {
         <form action="{% url "accounts:addaddress" %}" method="post">
           {% csrf_token %}
           <div class="row g-3 mx-auto" style="max-width: 600px; width: 100%;"> 
-          
-              <div class="col-12">
-                  <label for="inputAddress" class="form-label">Address</label>
-                  <input name="address" type="text" class="form-control" id="inputAddress" placeholder="Main St">
-              </div>
-              
-              <div class="col-12">
-                <label for="inputAddress2" class="form-label">complement</label>
-                <input add type="text" class="form-control" id="inputAddress2" name="complement" placeholder="Apartment, studio, or floor">
-              </div>
-              
-              <div class="col-md-6">
-                <label for="inputEmail4" class="form-label">Neighborhood</label>
-                <input type="text" name="neighborhood" placeholder="Your neighborhood..." class="form-control" id="inputEmail4">
-              </div>
             
-              <div class="col-md-2">
-                <label for="inputZip" class="form-label">Number</label>
-                <input type="text" name="number"  class="form-control" id="inputZip">
+            {% if messages %}
+              <div class="container mt-3">
+                  {% for message in messages %}
+                  <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                      {{ message }}
+                      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                  </div>
+                  {% endfor %}
               </div>
-          
-              <div class="col-md-6">
-                <label for="inputEmail4" class="form-label">Tel</label>
-                <input type="Number" name="tel" class="form-control" id="inputEmail4">
-              </div>
-              
-          
+            {% endif %}
+            
+            <div class="col-12">
+              <label for="inputAddress" class="form-label">Address</label>
+              <input name="address" type="text" class="form-control" id="inputAddress" placeholder="Main St">
+            </div>
+            
+            <div class="col-12">
+              <label for="inputAddress2" class="form-label">complement</label>
+              <input add type="text" class="form-control" id="inputAddress2" name="complement" placeholder="Apartment, studio, or floor">
+            </div>
+            
+            <div class="col-md-6">
+              <label for="inputEmail4" class="form-label">Neighborhood</label>
+              <input type="text" name="neighborhood" placeholder="Your neighborhood..." class="form-control" id="inputEmail4">
+            </div>
+            
+            <div class="col-md-2">
+              <label for="inputZip" class="form-label">Number</label>
+              <input type="text" name="number"  class="form-control" id="inputZip">
+            </div>
+            
+            <div class="col-md-6">
+              <label for="inputEmail4" class="form-label">Tel</label>
+              <input type="Number" name="tel" class="form-control" id="inputEmail4">
+            </div>
+            
+            
             <div class="col-md-6">
               <label for="inputCity" class="form-label">City</label>
               <input name="city" type="text" placeholder="City..." class="form-control" id="inputCity">
             </div>
-          
+            
             <div class="col-md-6">
               <label for="inputCity" class="form-label">CEP</label>
               <input name="cep" placeholder="45344-000" type="text" class="form-control" id="inputCity">
             </div>
-          
+            
             <div class="col-md-6">
               <label for="inputState" class="form-label">State</label>
               <select name="state" id="inputState" class="form-select">
@@ -61,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <option>...</option>
               </select>
             </div>
-          
+            
             <div class="col-12">
               <button class="btn btn-success">Add Address</button>
               <button  type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
