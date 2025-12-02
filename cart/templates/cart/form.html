@@ -1,14 +1,14 @@
 {% if messages %}
-{% for message in messages %}
-{% if "open_modal" in message.tags%}
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const modal = new bootstrap.Modal(document.getElementById("modal"));
-    modal.show();
-  });
-</script>
-{% endif %}
-{% endfor %}
+  {% for message in messages %}
+    {% if "open_modal" in message.tags%}
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const modal = new bootstrap.Modal(document.getElementById("modal"));
+        modal.show();
+      });
+    </script>
+    {% endif %}
+  {% endfor %}
 {% endif %}
 
 <div class="modal fade" id="modal" tabindex="-1">
@@ -21,7 +21,7 @@
         <form action="{% url "accounts:addaddress" %}" method="post">
           {% csrf_token %}
           <div class="row g-3 mx-auto" style="max-width: 600px; width: 100%;"> 
-            
+
             {% if messages %}
               <div class="container mt-3">
                   {% for message in messages %}
