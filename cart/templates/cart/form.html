@@ -1,4 +1,4 @@
-{% if open_modal %}
+{% if request.GET.open_modal == "true" %}
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     var myModal = new bootstrap.Modal(document.getElementById('modal'));

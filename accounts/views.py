@@ -53,5 +53,5 @@ class AddAdress(View, LoginRequiredMixin):
         elif response == "Timeout":
             pass
         print(response)
-        return render(request, "cart/cart.html", context={"open_modal": True})
+        return redirect("/cart/?open_modal=true")
         
