@@ -11,7 +11,7 @@ from .utils import add_to_cart, cartremove, cartbuy, items_random
 #retornar a tela do carrinho do cliente!
 @method_decorator(clear_session_data(["discount_price", "discount_name"]), name="dispatch")
 class CartView(LoginRequiredMixin, TemplateView):
-    template_name = "cart.html"
+    template_name = "cart/cart.html"
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -33,7 +33,7 @@ class AddCart(LoginRequiredMixin, View):
 class CartRemove(LoginRequiredMixin,View):
     def post(self, request):
         cartremove(request)
-        return redirect("cart:cart")
+        return redirect("cart/cart:cart")
 
 #Rota pra comprar itens do carrinho 
 class CartBuy(LoginRequiredMixin, View):

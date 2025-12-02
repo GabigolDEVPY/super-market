@@ -84,7 +84,7 @@
 
                     <div class="mt-4">
                         <a role="button" data-bs-toggle="modal" data-bs-target="#modal">Adicionar endereço</a>
-                        {% include "form.html" %}
+                        {% include "cart/form.html" %}
                         <form action="">
                             <select class="form-select" id="exampleSelect" aria-label="Selecione algo" required>
                                 <option value=""disable selected>Select...</option>
@@ -106,7 +106,7 @@
         </div>
         <div class="card p-3 bg-white rounded-3 mt-5">
             <p class="fs-5">Você também pode gostar</p>
-            {% include "scroll-product.html" %}
+            {% include "cart/scroll-product.html" %}
         </div>
     </div>
 {% else %}
