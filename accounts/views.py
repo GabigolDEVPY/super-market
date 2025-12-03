@@ -47,12 +47,13 @@ class RegisterView(FormView):
 class AddAdress(View, LoginRequiredMixin):
     def post(self, request):
         cep = request.POST.get("cep")
-        response = validade_cep(cep)
-        if response == "Error":
-            messages.error(request, "Cep Inválido", extra_tags="open_modal")
-        elif response == "Timeout":
-            messages.error(request, "Timeout error", extra_tags="open_modal")
-        else:
-            messages.error(request, "Cep Inválido", extra_tags="open_modal")
+        if cep:
+            response = validade_cep(cep)
+            if response == "Error":
+                messages.error(request, "Cep Inválido", extra_tags="open_modal")
+            elif response == "Timeout":
+                messages.error(request, "O servidor demorou muito!", extra_tags="open_modal")
+            return redirect("cart:cart")
+        messages.error(request, "Insira o CEP", extra_tags="open_modal")
         return redirect("cart:cart")
         
