@@ -34,6 +34,11 @@
             {% endif %}
             
             <div class="col-12">
+              <label for="inputAddress" class="form-label">Salvar endereço como:</label>
+              <input name="name_address" type="text" class="form-control" id="inputAddress" placeholder="Nome endereço..." required>
+            </div>
+
+            <div class="col-12">
               <label for="inputAddress" class="form-label">Address</label>
               <input name="address" type="text" class="form-control" id="inputAddress" placeholder="Main St" required>
             </div>
@@ -72,13 +77,15 @@
             <div class="col-md-6">
               <label for="inputState" class="form-label">State</label>
               <select name="state" id="inputState" class="form-select" required>
-                <option selected>Choose...</option>
-                <option>...</option>
+                <option value="" selected disable>Choose...</option>
+                {% for state in states %}
+                  <option value="{{ state }}">{{ state }}</option>
+                {% endfor %}
               </select>
             </div>
             
             <div class="col-12">
-              <button class="btn btn-success">Add Address</button>
+              <button type="submit" class="btn btn-success">Add Address</button>
               <button  type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
             </div>
           </div>

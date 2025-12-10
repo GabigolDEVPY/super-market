@@ -6,7 +6,7 @@ from stripe import Balance
 
 # Create your models here.
 class InfosForm(models.Model):
-    user = models.ForeignKey(User, related_name="address", on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(User, related_name="address_order", on_delete=models.SET_NULL, null=True, blank=True)
     address = models.CharField(max_length=120, blank=False)
     complement = models.CharField(max_length=100, blank=True)
     neighborhood = models.CharField(max_length=50, blank=False)

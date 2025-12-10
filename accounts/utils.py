@@ -1,4 +1,5 @@
 import requests
+from .models import Address
 
 def validade_cep(cep):
     cep = cep
@@ -11,3 +12,18 @@ def validade_cep(cep):
         return "Timeout"
     except requests.exceptions.HTTPError as e:
         return "Error"
+    
+def add_cep(request):
+    data = request.POST.dict()
+    add_adress = Address.objects.create(
+        user = request.user,
+        address =data["address"], 
+        complement =data["complement"],
+        neighborhood =data["neighborhood"],
+        number=data["number"],
+        tel=data["tel"],
+        city=data["city"],
+        cep=data["cep"],
+        state=data["state"] 
+    )
+    

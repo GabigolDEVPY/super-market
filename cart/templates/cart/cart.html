@@ -86,17 +86,13 @@
                         <a role="button" data-bs-toggle="modal" data-bs-target="#modal">Adicionar endereço</a>
                         {% include "cart/form.html" %}
                         <form action="">
-                            <select class="form-select" id="exampleSelect" aria-label="Selecione algo" required>
-                                <option value=""disable selected>Select...</option>
-                                <option value="1">Action</option>
-                                <option value="2">Another action</option>
-                                <option value="3">Something else here</option>
+                            <select name="state" id="inputState" class="form-select" required>
+                                <option value="" selected disable>Choose...</option>
+                                {% for address in address %}
+                                <option value="{{ address.name }}">{{ address.name }}</option>
+                                {% endfor %}
                             </select>
-                            <!-- BOTÃO AGORA É LINK -->
-                            <a href="{% url 'payment:validate' %}" 
-                                class="btn btn-success w-100 mt-1 py-2 fs-5">
-                                Finalizar Compra
-                            </a>
+                            <button class="btn btn-success w-100 mt-1 py-2 fs-5">Finalizar Compra</button>
                         </form>
                     </div>
 

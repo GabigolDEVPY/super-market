@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 from django.views.generic import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .utils import validade_cep
+from .utils import add_cep, validade_cep
 from .forms import RegisterForm
 
 
@@ -53,6 +53,7 @@ class AddAdress(View, LoginRequiredMixin):
                 messages.error(request, "Cep Inválido", extra_tags="open_modal")
             elif response == "Timeout":
                 messages.error(request, "O servidor demorou muito!", extra_tags="open_modal")
+            add_cep(request)
             return redirect("cart:cart")
         messages.error(request, "Insira o CEP", extra_tags="open_modal")
         return redirect("cart:cart")
