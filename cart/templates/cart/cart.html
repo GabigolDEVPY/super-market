@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<link rel="stylesheet" href="{% static "css/cart.css" %}">
+<link rel="stylesheet" href="{% static 'css/cart.css' %}">
 {% if items_cart %}
-<div class="container py-4 mt-5">
+    <div class="container py-4 mt-5">
         <div class="row g-4">
 
             <!-- LISTA DE PRODUTOS -->
@@ -83,7 +83,7 @@
                     </div>
 
                     <div class="mt-4">
-                        <a href="{% url 'accounts:accounts' %}">Adicionar endereço</a>
+                        <a href="{% url 'accounts:home' %}">Adicionar endereço</a>
                         <form action="">
                             <select name="state" id="inputState" class="form-select" required>
                                 <option value="" selected disable>Selecionar...</option>

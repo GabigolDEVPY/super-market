@@ -19,8 +19,7 @@ class CartView(LoginRequiredMixin, TemplateView):
         context['address'] = self.request.user.address.all()
         context["items_cart"] = self.request.user.cart.items.all()
         context["cart_price"] = self.request.user.cart.total_price
-        context["states"] = states
-        
+        return context
     
 
 

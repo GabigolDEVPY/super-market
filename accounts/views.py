@@ -30,7 +30,7 @@ class LoginView(View):
         if user is not None:
             login(request, user)
             return redirect("market:home")
-        messages.error(request, "Username or password expired")
+        messages.error(request, "Username or password expired", extra_tags="login_message")
         return redirect("accounts:login")
         
         
@@ -61,7 +61,6 @@ class AddAdress(View, LoginRequiredMixin):
             form, error = add_cep(request)
             if error:
                 messages.error(request, "Corrija os erros do endereço", extra_tags="open_modal")
-                return CartView.as_view()(request, form=form)
             return redirect("accounts:home")
         messages.error(request, "Insira o CEP", extra_tags="open_modal")
         return redirect("accounts:home")

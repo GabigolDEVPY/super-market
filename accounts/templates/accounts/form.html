@@ -1,7 +1,7 @@
 {% load widget_tweaks %}
 {% if messages %}
   {% for message in messages %}
-    {% if "open_modal" in message.tags%}
+    {% if "open_modal" in message.tags %}
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const modal = new bootstrap.Modal(document.getElementById("modal"));
@@ -73,6 +73,7 @@
             <div class="col-md-6">
               <label for="inputCity" class="form-label">CEP</label>
               {% render_field form.cep class+="form-control" %}
+              
             </div>
             
             <div class="col-md-6">
