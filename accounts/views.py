@@ -4,10 +4,10 @@ from django.views import View
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
-from django.views.generic import FormView
+from django.views.generic import FormView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .utils import add_cep, validade_cep
-from .forms import RegisterForm
+from .forms import RegisterForm, AdressForm
 from cart.views import CartView
 
 
@@ -63,7 +63,12 @@ class AddAdress(View, LoginRequiredMixin):
         return redirect("cart:cart")
         
 
-class Home(LoginRequiredMixin, View):
-    def get(self, request):
-        print("chegou aqui karalhooooo")
-        return render(request, "accounts/home.html")
+class Home(LoginRequiredMixin, TemplateView):
+    template_name = "accounts/home.html"
+    
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = AdressForm()
+        return context
+    
