@@ -83,7 +83,7 @@
                     </div>
 
                     <div class="mt-4">
-                        <a role="button" data-bs-toggle="modal" data-bs-target="#modal">Adicionar endereço</a>
+                        <a href="{% url 'accounts:accounts' %}">Adicionar endereço</a>
                         {% include "cart/form.html" %}
                         <form action="">
                             <select name="state" id="inputState" class="form-select" required>
