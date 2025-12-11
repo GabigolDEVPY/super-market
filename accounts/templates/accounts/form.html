@@ -19,7 +19,7 @@
         <div class="modal-header mb-2">
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <form action="{% url "accounts:addaddress" %}" method="post">
+        <form action="{% url 'accounts:addaddress' %}" method="post">
           {% csrf_token %}
           <div class="row g-3 mx-auto" style="max-width: 600px; width: 100%;"> 
 

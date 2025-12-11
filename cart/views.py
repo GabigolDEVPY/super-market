@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from utils.decorators import clear_session_data
 from django.utils.decorators import method_decorator
 from .utils import add_to_cart, cartremove, cartbuy, items_random
-from .states import states
+
 
 
 #retornar a tela do carrinho do cliente!

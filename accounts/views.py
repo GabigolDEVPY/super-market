@@ -9,6 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .utils import add_cep, validade_cep
 from .forms import RegisterForm, AdressForm
 from cart.views import CartView
+from accounts.states import states
 
 
 class LogoutView(View):
@@ -46,6 +47,9 @@ class RegisterView(FormView):
     
 
 class AddAdress(View, LoginRequiredMixin):
+    def get(self, request):
+        return redirect("accounts:home")
+    
     def post(self, request):
         cep = request.POST.get("cep")
         if cep:
@@ -58,17 +62,17 @@ class AddAdress(View, LoginRequiredMixin):
             if error:
                 messages.error(request, "Corrija os erros do endereço", extra_tags="open_modal")
                 return CartView.as_view()(request, form=form)
-            return redirect("cart:cart")
+            return redirect("accounts:home")
         messages.error(request, "Insira o CEP", extra_tags="open_modal")
-        return redirect("cart:cart")
+        return redirect("accounts:home")
         
 
 class Home(LoginRequiredMixin, TemplateView):
     template_name = "accounts/home.html"
     
-    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["form"] = AdressForm()
+        context["states"] = states
         return context
     
