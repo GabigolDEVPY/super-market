@@ -1,5 +1,7 @@
+from django.shortcuts import redirect, render
 import requests
 from .models import Address
+from .forms import AdressForm
 
 def validade_cep(cep):
     cep = cep
@@ -15,15 +17,13 @@ def validade_cep(cep):
     
 def add_cep(request):
     data = request.POST.dict()
-    add_adress = Address.objects.create(
-        user = request.user,
-        address =data["address"], 
-        complement =data["complement"],
-        neighborhood =data["neighborhood"],
-        number=data["number"],
-        tel=data["tel"],
-        city=data["city"],
-        cep=data["cep"],
-        state=data["state"] 
-    )
-    
+    if request.method == "POST":
+        form = AdressForm(request.POST)
+        
+        if form.is_valid():
+            address = form.save(commit=False)
+            address.user = request.user
+            address.save()
+            return redirect("cart")
+
+        return form, (error := True)

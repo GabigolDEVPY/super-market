@@ -1,3 +1,4 @@
+{% load widget_tweaks %}
 {% if messages %}
   {% for message in messages %}
     {% if "open_modal" in message.tags%}
@@ -35,49 +36,49 @@
             
             <div class="col-12">
               <label for="inputAddress" class="form-label">Salvar endereço como:</label>
-              <input name="name_address" type="text" class="form-control" id="inputAddress" placeholder="Nome endereço..." required>
+              {% render_field form.name class+="form-control" %}
             </div>
 
             <div class="col-12">
-              <label for="inputAddress" class="form-label">Address</label>
-              <input name="address" type="text" class="form-control" id="inputAddress" placeholder="Main St" required>
+              <label for="inputAddress" class="form-label">Endereço</label>
+              {% render_field form.address class+="form-control" %}
             </div>
             
             <div class="col-12">
-              <label for="inputAddress2" class="form-label">complement</label>
-              <input add type="text" class="form-control" id="inputAddress2" name="complement" placeholder="Apartment, studio, or floor">
+              <label for="inputAddress2" class="form-label">Complemento</label>
+              {% render_field form.complement class+="form-control"%}
             </div>
             
             <div class="col-md-6">
-              <label for="inputEmail4" class="form-label">Neighborhood</label>
-              <input type="text" name="neighborhood" placeholder="Your neighborhood..." class="form-control" id="inputEmail4" required>
+              <label for="inputEmail4" class="form-label">Bairro</label>
+              {% render_field form.neighborhood class+="form-control" %}
             </div>
             
             <div class="col-md-2">
-              <label for="inputZip" class="form-label">Number</label>
-              <input type="text" name="number"  class="form-control" id="inputZip" required>
+              <label for="inputZip" class="form-label">Número</label>
+              {% render_field form.number class+="form-control" %}
             </div>
             
             <div class="col-md-6">
-              <label for="inputEmail4" class="form-label">Tel</label>
-              <input type="Number" name="tel" class="form-control" id="inputEmail4" required>
+              <label for="inputEmail4" class="form-label">Telefone</label>
+              {% render_field form.tel class+="form-control" %}
             </div>
             
             
             <div class="col-md-6">
-              <label for="inputCity" class="form-label">City</label>
-              <input name="city" type="text" placeholder="City..." class="form-control" id="inputCity" required>
+              <label for="inputCity" class="form-label">Cidade</label>
+              {% render_field form.city class+="form-control" %}
             </div>
             
             <div class="col-md-6">
               <label for="inputCity" class="form-label">CEP</label>
-              <input name="cep" placeholder="45344-000" type="text" class="form-control" id="inputCity" required>
+              {% render_field form.cep class+="form-control" %}
             </div>
             
             <div class="col-md-6">
-              <label for="inputState" class="form-label">State</label>
+              <label for="inputState" class="form-label">Estado</label>
               <select name="state" id="inputState" class="form-select" required>
-                <option value="" selected disable>Choose...</option>
+                <option value="" selected disable>Selecionar...</option>
                 {% for state in states %}
                   <option value="{{ state }}">{{ state }}</option>
                 {% endfor %}

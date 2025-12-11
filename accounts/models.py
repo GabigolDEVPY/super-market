@@ -10,7 +10,7 @@ class Address(models.Model):
     address = models.CharField(max_length=120, blank=False)
     complement = models.CharField(max_length=100, blank=True)
     neighborhood = models.CharField(max_length=50, blank=False)
-    number = models.CharField(max_length=10)
+    number = models.CharField(max_length=10, blank=False)
     tel = PhoneNumberField(blank=False, null=False)
     city = models.CharField(max_length=40, blank=False, null=False)
     cep = models.CharField(max_length=50, blank=False, null=False)

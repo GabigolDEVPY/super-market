@@ -87,7 +87,7 @@
                         {% include "cart/form.html" %}
                         <form action="">
                             <select name="state" id="inputState" class="form-select" required>
-                                <option value="" selected disable>Choose...</option>
+                                <option value="" selected disable>Selecionar...</option>
                                 {% for address in address %}
                                 <option value="{{ address.name }}">{{ address.name }}</option>
                                 {% endfor %}
@@ -109,7 +109,7 @@
     <div class="d-flex flex-column align-items-center justify-content-center">
         <img src="https://unpkg.com/heroicons@2.1.1/24/outline/shopping-bag.svg" width="58" class="mb-2">
         <h5 class="text-muted mb-4">Carrinho Vazio</h5>    
-        <a href="{% url 'market:home' %}" class="btn btn-primary">Go to shop</a>
+        <a href="{% url 'market:home' %}" class="btn btn-primary">Ir para produtos</a>
     </div>
 {% endif %}
 {% endblock content %}

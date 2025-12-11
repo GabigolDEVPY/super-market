@@ -2,11 +2,13 @@ from django.shortcuts import redirect
 from django.views import View
 from django.views.generic import  TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from accounts.views import AddAdress
 from utils.decorators import clear_session_data
 from django.utils.decorators import method_decorator
 from inventory.models import InventoryItem
 from .utils import add_to_cart, cartremove, cartbuy, items_random
 from .states import states
+from accounts.forms import AdressForm
 
 
 #retornar a tela do carrinho do cliente!
@@ -21,6 +23,9 @@ class CartView(LoginRequiredMixin, TemplateView):
         context["items_cart"] = self.request.user.cart.items.all()
         context["cart_price"] = self.request.user.cart.total_price
         context["states"] = states
+        
+        form = kwargs.get("form")
+        context["form"] = form or AdressForm()
         return context 
     
 
@@ -36,7 +41,7 @@ class AddCart(LoginRequiredMixin, View):
 class CartRemove(LoginRequiredMixin,View):
     def post(self, request):
         cartremove(request)
-        return redirect("cart/cart:cart")
+        return redirect("cart:cart")
 
 #Rota pra comprar itens do carrinho 
 class CartBuy(LoginRequiredMixin, View):

@@ -7,13 +7,13 @@
                 <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
                     <ul class="navbar-nav mb-2 mb-lg-0 d-flex gap-4">
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'market:home' %}">Home</a>
+                            <a class="nav-link" href="{% url 'market:home' %}">Inicio</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'cart:cart' %}">Cart</a>
+                            <a class="nav-link" href="{% url 'cart:cart' %}">Carrinho</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'inventory:inventory' %}">My purchases</a>
+                            <a class="nav-link" href="{% url 'inventory:inventory' %}">Minhas compras</a>
                         </li>
                         <li class="nav-item d-flex align-items-center">
                             <form class="button-hover" action="{% url 'accounts:logout' %}" method="post">
@@ -24,7 +24,7 @@
                                     style="color: inherit;"
                                 >
                                 {% if user.is_authenticated %}
-                                    Logout
+                                    Sair
                                 {% else %}
                                     Login
                                 {% endif %}
@@ -34,8 +34,8 @@
                     </ul>
                     
                     <form class="d-flex ms-4" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
+                        <input class="form-control me-2" type="search" placeholder="Procurar" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Procurar</button>
                     </form>
                 </div>
             </div>

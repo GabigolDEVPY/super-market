@@ -8,6 +8,7 @@ from django.views.generic import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .utils import add_cep, validade_cep
 from .forms import RegisterForm
+from cart.views import CartView
 
 
 class LogoutView(View):
@@ -53,7 +54,10 @@ class AddAdress(View, LoginRequiredMixin):
                 messages.error(request, "Cep Inválido", extra_tags="open_modal")
             elif response == "Timeout":
                 messages.error(request, "O servidor demorou muito!", extra_tags="open_modal")
-            add_cep(request)
+            form, error = add_cep(request)
+            if error:
+                messages.error(request, "Corrija os erros do endereço", extra_tags="open_modal")
+                return CartView.as_view()(request, form=form)
             return redirect("cart:cart")
         messages.error(request, "Insira o CEP", extra_tags="open_modal")
         return redirect("cart:cart")

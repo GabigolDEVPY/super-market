@@ -7,9 +7,9 @@
         </p>
         <form action="{% url 'product:buynow' product.id %}" method="post">
             {% csrf_token %}
-            <label for="discount">Discount</label>
+            <label for="discount">Desconto</label>
             <input name="discount" id="discount" type="text">
-            <button type="submit">Apply</button>
+            <button type="submit">Aplicar</button>
         </form>
         {% if messages %}
             {% for message in messages %}
@@ -19,8 +19,8 @@
         <form action="{% url 'product:productbuynow'  %}" method="post">
             {% csrf_token %}
             <input name="id" type="hidden" value="{{ product.id }}">
-            <label for="quantity">quantity</label>
+            <label for="quantity">Quantidade</label>
             <input name="quantity" id="quantity" type="number" min="1" value="1" max="{{ stock.quantity }}">
-            <button type="submit">Finalize purchase</button>
+            <button type="submit">Finalizar compra</button>
         </form>
     {% endblock content %}
