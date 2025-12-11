@@ -5,7 +5,7 @@ from django.conf import settings
 from payment.utils import paymentbuy
 from product.models import Product
 from django.contrib.auth.models import User
-from inventory.models import Inventory, InventoryItem
+from accounts.models import Inventory, InventoryItem
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 

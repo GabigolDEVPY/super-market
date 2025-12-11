@@ -5,7 +5,7 @@ from django.views.generic import  TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from utils.decorators import clear_session_data
 from django.utils.decorators import method_decorator
-from inventory.models import InventoryItem
+from accounts.models import InventoryItem
 import requests
 import stripe
 from django.conf import settings

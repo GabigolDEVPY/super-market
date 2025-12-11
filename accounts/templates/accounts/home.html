@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <h1>User</h1>
+    <a role="button" data-bs-toggle="modal" data-bs-target="#modal">Adicionar endereço</a>
+    {% include "accounts/form.html" %}
+{% endblock content %}
+

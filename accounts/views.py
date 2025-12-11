@@ -20,7 +20,7 @@ class LogoutView(View):
 
 class LoginView(View):
     def get(self, request):
-        return render(request, "login.html", {"hide_navbar": True})
+        return render(request, "accounts/login.html", {"hide_navbar": True})
 
     def post(self, request):
         username = request.POST.get("username")
@@ -62,3 +62,8 @@ class AddAdress(View, LoginRequiredMixin):
         messages.error(request, "Insira o CEP", extra_tags="open_modal")
         return redirect("cart:cart")
         
+
+class Home(LoginRequiredMixin, View):
+    def get(self, request):
+        print("chegou aqui karalhooooo")
+        return render(request, "accounts/home.html")

@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from inventory.models import InventoryItem, Inventory
+from accounts.models import InventoryItem, Inventory
 import product
 from product.models import Product
 
