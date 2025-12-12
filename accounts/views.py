@@ -46,7 +46,7 @@ class RegisterView(FormView):
         return super().form_valid(form)
     
 
-class AddAdress(View, LoginRequiredMixin):
+class AddAdress(LoginRequiredMixin, View):
     def get(self, request):
         return redirect("accounts:home")
     

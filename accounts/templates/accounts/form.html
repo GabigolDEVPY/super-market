@@ -34,57 +34,26 @@
               </div>
             {% endif %}
             
-            <div class="col-12">
-              <label for="inputAddress" class="form-label">Salvar endereço como:</label>
-              {% render_field form.name class+="form-control" %}
-            </div>
+            {% for field in form %}
+              {% if field.name == "state" %}
+                <div class="col-md-6">
+                  <label for="inputState" class="form-label">Estado</label>
+                  <select name="state" id="inputState" class="form-select" required>
+                    <option value="" selected disable>Selecionar...</option>
+                    {% for state in states %}
+                      <option value="{{ state }}">{{ state }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              {% endif %}
+              <div class="col-md-6">
+                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {% render_field field class+="form-control" %}
+              </div>
+            {% endfor %}
 
-            <div class="col-12">
-              <label for="inputAddress" class="form-label">Endereço</label>
-              {% render_field form.address class+="form-control" %}
-            </div>
+
             
-            <div class="col-12">
-              <label for="inputAddress2" class="form-label">Complemento</label>
-              {% render_field form.complement class+="form-control"%}
-            </div>
-            
-            <div class="col-md-6">
-              <label for="inputEmail4" class="form-label">Bairro</label>
-              {% render_field form.neighborhood class+="form-control" %}
-            </div>
-            
-            <div class="col-md-2">
-              <label for="inputZip" class="form-label">Número</label>
-              {% render_field form.number class+="form-control" %}
-            </div>
-            
-            <div class="col-md-6">
-              <label for="inputEmail4" class="form-label">Telefone</label>
-              {% render_field form.tel class+="form-control" %}
-            </div>
-            
-            
-            <div class="col-md-6">
-              <label for="inputCity" class="form-label">Cidade</label>
-              {% render_field form.city class+="form-control" %}
-            </div>
-            
-            <div class="col-md-6">
-              <label for="inputCity" class="form-label">CEP</label>
-              {% render_field form.cep class+="form-control" %}
-              
-            </div>
-            
-            <div class="col-md-6">
-              <label for="inputState" class="form-label">Estado</label>
-              <select name="state" id="inputState" class="form-select" required>
-                <option value="" selected disable>Selecionar...</option>
-                {% for state in states %}
-                  <option value="{{ state }}">{{ state }}</option>
-                {% endfor %}
-              </select>
-            </div>
             
             <div class="col-12">
               <button type="submit" class="btn btn-success">Add Address</button>

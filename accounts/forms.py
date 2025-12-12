@@ -14,3 +14,15 @@ class AdressForm(forms.ModelForm):
     class Meta:
         model = Address
         fields = "__all__"
+        exclude = ["user"]
+        labels = {
+            "name": "Nome",
+            "address": "Endereço",
+            "tel": "Telefone",
+            "city": "Cidade",
+            "neighborhood": "Bairro",
+            "complement": "Complemento",
+            "state": "Estado",
+            "number": "Número",
+            "cep": "Cep"
+        }

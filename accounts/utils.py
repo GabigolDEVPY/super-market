@@ -16,14 +16,15 @@ def validade_cep(cep):
         return "Error"
     
 def add_cep(request):
-    data = request.POST.dict()
     if request.method == "POST":
-        form = AdressForm(request.POST)
+        form_copy = request.POST.copy()
+        form_copy['tel'] = f"+55{request.POST.get("tel")}"
+        form = AdressForm(form_copy)
         
         if form.is_valid():
+            print("válido")
             address = form.save(commit=False)
             address.user = request.user
             address.save()
-            return redirect("cart")
-
+            return form, (error := False)
         return form, (error := True)
