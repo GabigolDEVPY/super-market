@@ -60,7 +60,7 @@ class AddAdress(LoginRequiredMixin, View):
                 messages.error(request, "O servidor demorou muito!", extra_tags="open_modal")
             form, error = add_cep(request)
             if error:
-                messages.error(request, "Corrija os erros do endereço", extra_tags="open_modal")
+                messages.error(request, error, extra_tags="open_modal")
             return redirect("accounts:home")
         messages.error(request, "Insira o CEP", extra_tags="open_modal")
         return redirect("accounts:home")

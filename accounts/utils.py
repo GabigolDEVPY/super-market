@@ -26,5 +26,6 @@ def add_cep(request):
             address = form.save(commit=False)
             address.user = request.user
             address.save()
-            return form, (error := False)
-        return form, (error := True)
+            return form, None
+        for campo, errors in form.errors.items():
+            return form, errors[0]
