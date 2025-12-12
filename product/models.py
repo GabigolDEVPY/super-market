@@ -1,8 +1,11 @@
+from pickletools import decimalnl_long, optimize
 from django.db import models
-import string
-import random
+from PIL import Image
+from django.conf import settings
+import os
 from django.contrib.auth.models import User
 from django.utils import timezone
+
 
 # Create your models here.
 class Category(models.Model):
@@ -36,8 +39,27 @@ class Product(models.Model):
         stock = self.stocks.first()
         return stock.quantity if stock else 0
     
+    def resize_image(self, img, new_width):
+        img_full_path = os.path.join(settings.MEDIA_ROOT, img.name)
+
+        with Image.open(img_full_path) as img_pil:
+            original_width, original_height = img_pil.size
+
+            if original_width <= new_width:
+                return
+            new_height = round((new_width * original_height) / original_width)
+            new_img = img_pil.resize((new_width, new_height), Image.LANCZOS)
+            new_img.save(img_full_path, optimize=True, quality=50)
+        
     
-    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        
+        max_image_size = 800  
+        
+        if self.image:
+            self.resize_image(self.image, max_image_size)
+            
     def __str__(self):
         return self.name
     
@@ -46,6 +68,8 @@ class Product(models.Model):
             discount_amount = (self.price * self.discount.discount) / 100
             return self.price - discount_amount
         return self.price
+    
+    
     
 class Stock(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="stocks")
@@ -71,3 +95,16 @@ class ImagesProduct(models.Model):
     
     def __str__(self):
         return f"{self.name}"
+    
+    
+class Variation(models.Model):
+    produto = models.ForeignKey(Product, on_delete=models.CASCADE)
+    name = models.CharField(max_length=60)
+    price = models.DecimalField(default=0, decimal_places=2, max_digits=10)
+    estoque = models.PositiveBigIntegerField(default=0)
+    
+    def __str__(self):
+        return self.name
+    
+
+        
