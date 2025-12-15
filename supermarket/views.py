@@ -17,6 +17,8 @@ class AllProducts(ListView):
     model = Product
     template_name = "allproducts.html"
     context_object_name = "products"
+    paginate_by = 2
+    ordering = ["id"]
     
     
 
