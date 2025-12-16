@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 from django.views.generic import FormView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .utils import add_cep, validade_cep
+from .utils import add_cep, validade_cep, create_inventory_and_cart
 from .forms import RegisterForm, AdressForm
 from cart.views import CartView
 from accounts.states import states
@@ -35,14 +35,16 @@ class LoginView(View):
         
         
 class RegisterView(FormView):
-    template_name = "register.html"
+    template_name = "accounts/register.html"
     form_class = RegisterForm
     success_url = reverse_lazy("accounts:login")
     extra_context = {"hide_navbar": True}
     
     
     def form_valid(self, form):
-        form.save()
+        user = form.save(commit=False)
+        user.save()
+        create_inventory_and_cart(user)
         return super().form_valid(form)
     
 

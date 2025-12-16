@@ -1,6 +1,8 @@
+from operator import invert
 from django.shortcuts import redirect, render
 import requests
-from .models import Address
+from .models import Address, Inventory
+from cart.models import Cart
 from .forms import AdressForm
 
 def validade_cep(cep):
@@ -29,3 +31,8 @@ def add_cep(request):
             return form, None
         for campo, errors in form.errors.items():
             return form, errors[0]
+
+def create_inventory_and_cart(user):
+    Inventory.objects.create(user=user)
+    Cart.objects.create(user=user)
+    return
