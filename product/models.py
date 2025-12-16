@@ -98,11 +98,17 @@ class ImagesProduct(models.Model):
     
     
 class Variation(models.Model):
-    produto = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="variations")
     name = models.CharField(max_length=60)
     price = models.DecimalField(default=0, decimal_places=2, max_digits=10)
-    estoque = models.PositiveBigIntegerField(default=0)
+    stock = models.PositiveBigIntegerField(default=0)
     
+    def apply_discount(self):
+        if self.product.discount:
+            discount_amount = (self.price * self.product.discount.discount) / 100
+            return self.price - discount_amount
+        return self.price
+
     def __str__(self):
         return self.name
     

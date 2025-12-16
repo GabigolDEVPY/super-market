@@ -15,20 +15,23 @@
                             <p class="mb-0">
                                 <s class="text-muted">{% if product.discount %}R${{ product.price }}{% endif %}</s>
                                 <p style="color: #198754;">{% if product.discount %} {{ product.discount.discount }}% OFF {% endif %}</p>
-                                <h3 class="text-success fw-bold">R$ {{ product.apply_discount}}</h3>
+                                <h3 class="text-success fw-bold">R$ <span id="price" >{{ product.apply_discount}}</span></h3>
                             </p>
+                            
                             <form action="{% url 'cart:addcart' %}" method="post">
                                 {% csrf_token %}
                                 <div class="mb-3">
                                     <label for="exampleSelect" class="form-label">Change Option</label>
                                     <input type="hidden" name="id" value="{{ product.id }}">
                                     <select class="form-select" id="exampleSelect" aria-label="Selecione algo">
-                                        <option selected>Select...</option>
-                                        <option value="1">Action</option>
-                                        <option value="2">Another action</option>
-                                        <option value="3">Something else here</option>
+                                        {% for variation in product.variations.all %}
+                                            <option data-preco="{{ variation.apply_discount }}" value="{{ variation.id }}">{{ variation.name }}</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
+                                {% for variation in product.variations.all %}
+                                    <p>{{ variation.price }}</p>
+                                {% endfor %}
                                 <div class="mb-3 w-25">
                                     <label for="quantity" class="form-label">Quantidade</label>
                                     <input style="width: 6vh;" type="number" name="quantity" id="quantity" class="form-control text-center" min="1" value="1" max="{{ quantity }}">
@@ -43,5 +46,18 @@
             </div>
         <h3>{{ product.description }}</h3>
     </div>
+<script>
+    const selectVariation = document.getElementById("exampleSelect");
+    const priceElemeent = document.getElementById("price");
 
+    selectVariation.addEventListener("change", function () {
+        const selectedOption = this.options[this.selectedIndex];
+        const newPrice = selectedOption.getAttribute("data-preco");
+
+        if (newPrice) {
+            priceElemeent.innerText = newPrice.replace(".", ",");
+        }
+    });
+
+</script>
 {% endblock content %}
