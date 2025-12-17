@@ -8,7 +8,6 @@ from django.views.generic import FormView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .utils import add_cep, validade_cep, create_inventory_and_cart
 from .forms import RegisterForm, AdressForm
-from cart.views import CartView
 from accounts.states import states
 
 
