@@ -68,16 +68,6 @@ class Product(models.Model):
             discount_amount = (self.price * self.discount.discount) / 100
             return self.price - discount_amount
         return self.price
-    
-    
-    
-class Stock(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="stocks")
-    quantity = models.PositiveIntegerField(default=0)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    def __str__(self):
-        return f"{self.product.name} - {self.quantity} unidades"
 
 
 class DiscountCode(models.Model):
