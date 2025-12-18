@@ -3,7 +3,6 @@ from django.shortcuts import redirect
 from product.models import Product
 from cart.models import CartItem
 from django.http import HttpResponse
-from django.db.models import Prefetch
 import requests
 from payment.utils import create_checkout_session_product
 import random
@@ -60,5 +59,7 @@ def cartbuy(request):
 
 
 def items_random():
-    return Product.objects.filter(variations__stock__gt=0).distinct().order_by('?')[:7]
+    items = Product.objects.filter(variations__stock__gt=0).distinct()
+    random.shuffle(items)
+    return items[:7]
     
