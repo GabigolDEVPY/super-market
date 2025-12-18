@@ -36,8 +36,13 @@
                                             <strong>{{ item.quantity }}</strong>
                                         </p>
 
+                                        <p class="mb-1 text-muted">
+                                            Variação:
+                                            <strong>{{ item.variant.name }}</strong>
+                                        </p>
+
                                         <h5 class="text-success fw-bold">
-                                            R$ {{ item.product.apply_discount }}
+                                            R$ {{ item.variant.apply_discount }}
                                         </h5>
                                     </div>
                                 </div>
