@@ -1,3 +1,4 @@
+from pydoc import describe
 from django.db import models
 from decimal import Decimal, ROUND_HALF_UP
 from PIL import Image
@@ -95,9 +96,9 @@ class Variation(models.Model):
     
     def apply_discount(self):
         if self.product.discount:
-            discount_amount = (self.price * self.product.discount.discount) / 100
-            return self.price - discount_amount
-        return self.price
+            discount_amount = (self.price * self.product.discount.discount) / Decimal("100")
+            return (self.price - discount_amount).quantize(Decimal("0.00"), rounding=ROUND_HALF_UP)
+        return (self.price).quanize(Decimal("0.00"))
     
 
     def __str__(self):

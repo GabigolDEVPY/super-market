@@ -12,7 +12,7 @@
                         {% if product.has_stock %}
                             <div>
                                 <s style="font-size: 14px;" class="text-muted">{% if product.discount %}R${{ product.price }}{% else %}&nbsp{% endif %}</s>
-                                <h5 class="card-title mb-0">R$ {{ product.apply_discount|floatformat:2 }}</h5>
+                                <h5 class="card-title mb-0">R$ {{ product.apply_discount }}</h5>
                                 <p class="mb-0" style="color: #198754;">{% if product.discount %} {{ product.discount.discount }}% OFF {% endif %}</p>
                                 <p class="pb-0 mb-0" style="color: #198754;">em até 12x sem juros no cartão</p>
                             </div>
