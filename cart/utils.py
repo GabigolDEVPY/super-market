@@ -10,12 +10,13 @@ import random
 def add_to_cart(request):
     user = request.user
     cart = user.cart
+    variant_id = request.POST.get("variantid")
     id = request.POST.get("id")
     quantity = int(request.POST.get("quantity"))
     product = Product.objects.get(id=id)
-    stock = product.stocks.first()
-    if stock and stock.quantity >= 1:
-        item, created = CartItem.objects.get_or_create(cart=cart, product=product, defaults={'quantity': quantity,})
+    variant = product.variations.get(id=variant_id)
+    if variant and variant.stock >= 1:
+        item, created = CartItem.objects.get_or_create(cart=cart, product=product, variant=variant, defaults={'quantity': quantity,})
         if not created:
             item.quantity += quantity
             item.save()

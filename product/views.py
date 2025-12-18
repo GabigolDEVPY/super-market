@@ -20,8 +20,8 @@ class ProductDetailView(DetailView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        stock = self.object.stocks.first()
-        context["quantity"] = stock.quantity if stock else 0 
+        stock = self.object.has_stock()
+        context["quantity"] = self.object.variations.first().stock if stock else None
         images = [img.image.url for img in  self.object.images.all()]
         images.insert(0, self.object.image.url)
         context["images"] = images

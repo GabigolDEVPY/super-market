@@ -10,11 +10,11 @@
                 </div>
                 <div>
                     <div class="product-right">
-                        <label>{% if quantity > 0 %}{{ quantity }} disponíveis {% else %} Produto indisponível {% endif %}</label>
-                        {% if product.quantity > 0 %}
+                        <label><span id="quantity">{{ quantity }}</span> disponíveis</label>
+                        {% if quantity > 0 %}
                             <p class="mb-0">
-                                <s class="text-muted">{% if product.discount %}R${{ product.price }}{% endif %}</s>
-                                <p style="color: #198754;">{% if product.discount %} {{ product.discount.discount }}% OFF {% endif %}</p>
+                                <p class="mb-0" style="color: #198754;">{% if product.discount %} {{ product.discount.discount }}% OFF {% endif %}</p>
+                                <s id="product-discount" class="text-muted">{% if product.discount %}R$ <span>{{ product.price }}</span>{% endif %}</s>
                                 <h3 class="text-success fw-bold">R$ <span id="price" >{{ product.apply_discount}}</span></h3>
                             </p>
                             
@@ -23,18 +23,15 @@
                                 <div class="mb-3">
                                     <label for="exampleSelect" class="form-label">Change Option</label>
                                     <input type="hidden" name="id" value="{{ product.id }}">
-                                    <select class="form-select" id="exampleSelect" aria-label="Selecione algo">
+                                    <select name="variantid" class="form-select" id="exampleSelect" aria-label="Selecione algo">
                                         {% for variation in product.variations.all %}
-                                            <option data-preco="{{ variation.apply_discount }}" value="{{ variation.id }}">{{ variation.name }}</option>
+                                            <option data-discount="{{ variation.price }}" data-quantity="{{ variation.stock }}" data-preco="{{ variation.apply_discount }}" value="{{ variation.id }}">{{ variation.name }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
-                                {% for variation in product.variations.all %}
-                                    <p>{{ variation.price }}</p>
-                                {% endfor %}
                                 <div class="mb-3 w-25">
                                     <label for="quantity" class="form-label">Quantidade</label>
-                                    <input style="width: 6vh;" type="number" name="quantity" id="quantity" class="form-control text-center" min="1" value="1" max="{{ quantity }}">
+                                    <input style="width: 6vh;" type="number" name="quantity" id="quantity-max" class="form-control text-center" min="1" value="1" max="{{ quantity }}">
                                 </div>
                                 <button style="width: 26.8vh;" type="submit" class="btn btn-primary mt-auto">add to cart</button>
                             </form>
@@ -49,13 +46,27 @@
 <script>
     const selectVariation = document.getElementById("exampleSelect");
     const priceElemeent = document.getElementById("price");
+    const quantity = document.getElementById("quantity")
+    const newQuantityMax = document.getElementById("quantity-max")
+    const QuantityDiscount = document.getElementById("product-discount")
 
     selectVariation.addEventListener("change", function () {
         const selectedOption = this.options[this.selectedIndex];
         const newPrice = selectedOption.getAttribute("data-preco");
+        const newQuantity = selectedOption.getAttribute("data-quantity");
+        const newDiscountPrice = selectedOption.getAttribute("data-discount");
+        newQuantityMax.max = selectedOption.getAttribute("data-quantity");
+        newQuantityMax.value = 1;
 
+
+        if (QuantityDiscount) {
+            QuantityDiscount.innerText = newDiscountPrice.replace();
+        }
         if (newPrice) {
             priceElemeent.innerText = newPrice.replace(".", ",");
+        }
+        if (newQuantity) {
+            quantity.innerText = newQuantity.replace();
         }
     });
 

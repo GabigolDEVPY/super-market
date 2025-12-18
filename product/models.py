@@ -35,9 +35,9 @@ class Product(models.Model):
     image = models.ImageField(upload_to='products/', null=True, blank=True)
     image_full = models.ImageField(upload_to='products/', null=True, blank=True)
     
-    def quantity(self):
-        stock = self.stocks.first()
-        return stock.quantity if stock else 0
+    def has_stock(self):
+        return self.variations.filter(stock__gt=0).exists()
+    
     
     def resize_image(self, img, new_width):
         img_full_path = os.path.join(settings.MEDIA_ROOT, img.name)
@@ -98,6 +98,7 @@ class Variation(models.Model):
             discount_amount = (self.price * self.product.discount.discount) / 100
             return self.price - discount_amount
         return self.price
+    
 
     def __str__(self):
         return self.name
