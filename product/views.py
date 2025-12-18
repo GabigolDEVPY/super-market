@@ -20,8 +20,10 @@ class ProductDetailView(DetailView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        variations_with_stock = self.object.variations.filter(stock__gt=0)
         stock = self.object.has_stock()
-        context["quantity"] = self.object.variations.first().stock if stock else None
+        context["quantity"] = self.object.variations.filter(stock__gt=0).first().stock if stock else None
+        context["variants"] = variations_with_stock
         images = [img.image.url for img in  self.object.images.all()]
         images.insert(0, self.object.image.url)
         context["images"] = images
@@ -80,7 +82,7 @@ def productbuynow(request):
         
     #aprovar compra no checkout
     urls = {"success_url": "inventory/", "cancel_url": f"product/{id}"} 
- 
+
     items = {
                 "price_data": {
                     "currency": "brl",

@@ -51,6 +51,7 @@
                                 <div class="col-12 col-md-3 text-md-end text-center p-3">
                                     <form action="{% url 'cart:cartremove' %}" method="post">
                                         {% csrf_token %}
+                                        <input type="hidden" name="variant_id" value="{{ item.variant.id }}">
                                         <input type="hidden" name="id" value="{{ item.id }}">
                                         <button class="btn btn-danger btn-sm">Remover</button>
                                     </form>

@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 from product.models import Product
 from cart.models import CartItem
 from django.http import HttpResponse
+from django.db.models import Prefetch
 import requests
 from payment.utils import create_checkout_session_product
 import random
@@ -20,15 +21,19 @@ def add_to_cart(request):
         if not created:
             item.quantity += quantity
             item.save()
+        variant.stock -= quantity
+        variant.save()  
     return id
     
 
 def cartremove(request):
     try:
         id = request.POST.get("id")
+        variant_id = request.POST.get("variant_id")
         user = request.user
         cart = user.cart
-        cart.items.filter(id=id).delete()
+        cart.items.filter(id=id, variant=variant_id).delete()
+        cart.save()
     except Exception as e:
         return HttpResponse(status=200)
     
@@ -55,5 +60,5 @@ def cartbuy(request):
 
 
 def items_random():
-    return Product.objects.order_by('?')[:7]
+    return Product.objects.filter(variations__stock__gt=0).distinct().order_by('?')[:7]
     

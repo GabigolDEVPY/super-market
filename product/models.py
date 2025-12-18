@@ -1,5 +1,5 @@
-from pickletools import decimalnl_long, optimize
 from django.db import models
+from decimal import Decimal, ROUND_HALF_UP
 from PIL import Image
 from django.conf import settings
 import os
@@ -65,9 +65,9 @@ class Product(models.Model):
     
     def apply_discount(self):
         if self.discount:
-            discount_amount = (self.price * self.discount.discount) / 100
-            return self.price - discount_amount
-        return self.price
+            discount_amount = (self.price * self.discount.discount) / Decimal("100")
+            return (self.price - discount_amount).quantize(Decimal("0.00"), rounding=ROUND_HALF_UP)
+        return (self.price).quantize(Decimal("0.00"))
 
 
 class DiscountCode(models.Model):
