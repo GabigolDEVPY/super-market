@@ -34,9 +34,10 @@
     display: flex;
     min-height: 90vh;
     flex-direction: column; 
-    width: 70.5rem;
+    width: 75.5rem;
     padding: 3vh;
     margin-top: 5vh;
+    margin-bottom: 5vh;
     background-color: white;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
