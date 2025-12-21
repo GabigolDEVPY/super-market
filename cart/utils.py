@@ -4,6 +4,7 @@ from product.models import Product
 from cart.models import CartItem
 from django.http import HttpResponse
 import requests
+from product.models import Variation
 from payment.utils import create_checkout_session_product
 import random
 
@@ -20,18 +21,18 @@ def add_to_cart(request):
         if not created:
             item.quantity += quantity
             item.save()
-        variant.stock -= quantity
-        variant.save()  
     return id
     
 
 def cartremove(request):
+    print("entrou aqui krl")
     try:
+        print("entrou no try")
         id = request.POST.get("id")
         variant_id = request.POST.get("variant_id")
         user = request.user
         cart = user.cart
-        cart.items.filter(id=id, variant=variant_id).delete()
+        item_cart = cart.items.filter(id=id, variant=variant_id).delete()
         cart.save()
     except Exception as e:
         return HttpResponse(status=200)
@@ -59,7 +60,17 @@ def cartbuy(request):
 
 
 def items_random():
-    items = Product.objects.filter(variations__stock__gt=0).distinct()
+    items = list(Product.objects.filter(variations__stock__gt=0).distinct())
     random.shuffle(items)
     return items[:7]
+
+def return_items(user):
+    items = user.cart.items.all()
+    items_return = []
+    for item in items:
+        if item.variant.stock < item.quantity:
+            item.delete()
+            continue
+        items_return.append(item)
+    return items_return
     
