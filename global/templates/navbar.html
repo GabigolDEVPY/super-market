@@ -1,42 +1,72 @@
-        <nav class="navbar navbar-expand-lg bg-body-tertiary w-100 fixed-top">
-            <div class="container-fluid d-flex justify-content-center align-items-center">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+<nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm">
+    <div class="container">
 
-                <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
-                    <ul class="navbar-nav mb-2 mb-lg-0 d-flex gap-4">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'market:home' %}">Inicio</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'cart:cart' %}">Carrinho</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'accounts:home' %}">Minha conta</a>
-                        </li>
-                        <li class="nav-item d-flex align-items-center">
-                            <form class="button-hover" action="{% url 'accounts:logout' %}" method="post">
-                                {% csrf_token %}
-                                <button 
-                                    type="submit" 
-                                    class="btn btn-link nav-link text-decoration-none p-0"
-                                    style="color: inherit;"
-                                >
-                                {% if user.is_authenticated %}
-                                    Sair
-                                {% else %}
-                                    Login
-                                {% endif %}
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
-                    
-                    <form class="d-flex ms-4" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Procurar" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Procurar</button>
-                    </form>
-                </div>
-            </div>
-        </nav>
+        <!-- Logo / Nome -->
+        <a class="navbar-brand fw-bold" href="{% url 'market:home' %}">
+            <i class="bi bi-bag-check me-1"></i> MyStore
+        </a>
+
+        <!-- Botão mobile -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Conteúdo -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+            <!-- Links -->
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-3">
+                <li class="nav-item">
+                    <a class="nav-link fw-medium" href="{% url 'market:home' %}">
+                        Início
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link fw-medium" href="{% url 'cart:cart' %}">
+                        <i class="bi bi-cart3 me-1"></i> Carrinho
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link fw-medium" href="{% url 'accounts:home' %}">
+                        Minha conta
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Busca -->
+            <form class="d-flex me-lg-3 mb-3 mb-lg-0" role="search">
+                <input
+                    class="form-control form-control-sm me-2"
+                    type="search"
+                    placeholder="Buscar produtos"
+                    aria-label="Search"
+                >
+                <button class="btn btn-outline-primary btn-sm" type="submit">
+                    Buscar
+                </button>
+            </form>
+
+            <!-- Login / Logout -->
+            <form action="{% url 'accounts:logout' %}" method="post">
+                {% csrf_token %}
+                <button
+                    type="submit"
+                    class="btn btn-sm {% if user.is_authenticated %}btn-outline-danger{% else %}btn-primary{% endif %}"
+                >
+                    {% if user.is_authenticated %}
+                        Sair
+                    {% else %}
+                        Entrar
+                    {% endif %}
+                </button>
+            </form>
+
+        </div>
+    </div>
+</nav>

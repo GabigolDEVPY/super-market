@@ -1,26 +1,65 @@
-<div class="block-scroll">
-    <div class="name-category">
-        <h5>{{ category.category }}</h5>
-    </div>
-        <div class="scroll-row p-2 d-flex gap-3 overflow-x-auto">
-            {% for product in items %}
-                <a href="{% url 'product:product' product.id %}">
-                    <div class="card product-hover pb-2" style="height: 25rem; width: 14rem;">
-                        <img src="{{ product.image.url }}" class="img-fluid product-img" alt="{{ product.name }}">
-                        <div class="card-body d-flex flex-column">
-                            <h6 style="font-size: 16px;" class="card-title">{{ product.name }}</h6>
-                                <div>
-                                    <s style="font-size: 14px;" class="text-muted">{% if product.discount %}R${{ product.price }}{% else %}&nbsp{% endif %}</s>
-                                    <h5 class="card-title mb-0">R$ {{ product.apply_discount }}</h5>
-                                    <p class="mb-0" style="color: #198754;">{% if product.discount %} {{ product.discount.discount }}% OFF {% endif %}</p>
-                                    <p class="pb-0 mb-0" style="color: #198754;">em até 12x sem juros no cartão</p>
-                                </div>
-                        </div>
+<div class="mb-4">
+
+    <!-- Categoria -->
+    <h5 class="fw-semibold mb-3">
+        {{ category.category }}
+    </h5>
+
+    <!-- Scroll horizontal -->
+    <div class="d-flex gap-3 overflow-auto pb-2">
+
+        {% for product in items %}
+            <a
+                href="{% url 'product:product' product.id %}"
+                class="text-decoration-none text-dark"
+            >
+                <div class="card shadow-sm border-0 rounded-3 h-100" style="width: 14rem;">
+
+                    <!-- Imagem -->
+                    <div class="p-3 text-center">
+                        <img
+                            src="{{ product.image.url }}"
+                            alt="{{ product.name }}"
+                            class="img-fluid rounded"
+                            style="max-height: 160px; object-fit: cover;"
+                        >
                     </div>
-                </a>
-            {% endfor %}
-        </div>  
-</div>        
 
+                    <!-- Conteúdo -->
+                    <div class="card-body d-flex flex-column">
 
+                        <h6 class="fw-semibold mb-2" style="font-size: 0.95rem;">
+                            {{ product.name }}
+                        </h6>
 
+                        <div class="mt-auto">
+
+                            {% if product.discount %}
+                                <small class="text-muted text-decoration-line-through">
+                                    R$ {{ product.price }}
+                                </small>
+                            {% endif %}
+
+                            <h5 class="fw-bold mb-0 text-success">
+                                R$ {{ product.apply_discount }}
+                            </h5>
+
+                            {% if product.discount %}
+                                <span class="badge bg-success mb-2">
+                                    {{ product.discount.discount }}% OFF
+                                </span>
+                            {% endif %}
+
+                            <p class="small text-success mb-0">
+                                em até 12x sem juros
+                            </p>
+
+                        </div>
+
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+
+    </div>
+</div>

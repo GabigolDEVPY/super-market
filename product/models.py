@@ -98,7 +98,7 @@ class Variation(models.Model):
         if self.product.discount:
             discount_amount = (self.price * self.product.discount.discount) / Decimal("100")
             return (self.price - discount_amount).quantize(Decimal("0.00"), rounding=ROUND_HALF_UP)
-        return (self.price).quanize(Decimal("0.00"))
+        return (self.price).quantize(Decimal("0.00"))
     
 
     def __str__(self):

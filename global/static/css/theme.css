@@ -1,0 +1,16 @@
+:root {
+  --primary: #0d6efd;      /* Azul Bootstrap refinado */
+  --secondary: #6c757d;    /* Cinza */
+  --success: #198754;
+  --danger: #dc3545;
+  --warning: #ffc107;
+  --info: #0dcaf0;
+
+  --bg-light: #f8f9fa;
+  --bg-dark: #212529;
+
+  --text-dark: #212529;
+  --text-muted: #6c757d;
+
+  --border-radius: 0.5rem;
+}

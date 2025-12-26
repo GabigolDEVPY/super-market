@@ -1,32 +1,82 @@
+<div class="mb-4">
 
-<div class="block-scroll">
-    <div class="name-category">
-        <h5>{{ category.category }}</h5>
-    </div>
-        <div class="scroll-row p-2 d-flex gap-3 overflow-x">
-            {% for product in items %}
-            <a href="{% url 'product:product' product.id %}">
-                <div class="card product-hover pb-2" style="height: 25rem; width: 14rem;">
-                    <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}" style="width: 100%; height: 200px; object-fit: contain;">
+    <!-- Linha de produtos com scroll -->
+    <div 
+        class="d-flex gap-3 overflow-auto pb-3 scroll-row"
+        style="scrollbar-width: thin;"
+    >
 
+        {% for product in items %}
+            <a 
+                href="{% url 'product:product' product.id %}" 
+                class="text-decoration-none text-dark"
+            >
+                <div class="card border-0 shadow-sm rounded-3 h-100" style="min-width: 220px;">
+
+                    <!-- Imagem -->
+                    <div class="d-flex align-items-center justify-content-center p-3">
+                        <img 
+                            src="{{ product.image.url }}" 
+                            class="img-fluid"
+                            alt="{{ product.name }}"
+                            style="height: 160px; object-fit: contain;"
+                        >
+                    </div>
+
+                    <!-- Corpo -->
                     <div class="card-body d-flex flex-column">
-                        <h6 style="font-size: 16px;" class="card-title">{{ product.name }}</h6>
+
+                        <h6 class="card-title mb-2">
+                            {{ product.name }}
+                        </h6>
+
                         {% if product.has_stock %}
-                            <div>
-                                <s style="font-size: 14px;" class="text-muted">{% if product.discount %}R${{ product.price }}{% else %}&nbsp{% endif %}</s>
-                                <h5 class="card-title mb-0">R$ {{ product.apply_discount }}</h5>
-                                <p class="mb-0" style="color: #198754;">{% if product.discount %} {{ product.discount.discount }}% OFF {% endif %}</p>
-                                <p class="pb-0 mb-0" style="color: #198754;">em até 12x sem juros no cartão</p>
+                            <div class="mt-auto">
+
+                                {% if product.discount %}
+                                    <small class="text-muted text-decoration-line-through">
+                                        R$ {{ product.price }}
+                                    </small>
+                                {% endif %}
+
+                                <h6 class="fw-bold mb-1">
+                                    R$ {{ product.apply_discount }}
+                                </h6>
+
+                                {% if product.discount %}
+                                    <span class="badge bg-success mb-1">
+                                        {{ product.discount.discount }}% OFF
+                                    </span>
+                                {% endif %}
+
+                                <p class="text-success small mb-0">
+                                    em até 12x sem juros
+                                </p>
+
                             </div>
                         {% else %}
-                            <p style="padding: 1vh">Produto Indisponível</p>
+                            <span class="badge bg-danger mt-auto">
+                                Indisponível
+                            </span>
                         {% endif %}
+
                     </div>
                 </div>
             </a>
-            {% endfor %}
-        </div>
-    </div>        
+        {% endfor %}
 
+    </div>
+</div>
 
-
+<!-- Scroll horizontal com mouse -->
+<script>
+document.querySelectorAll('.scroll-row').forEach(row => {
+    row.addEventListener('wheel', (event) => {
+        event.preventDefault();
+        row.scrollBy({
+            left: event.deltaY < 0 ? -120 : 120,
+            behavior: 'smooth'
+        });
+    });
+});
+</script>

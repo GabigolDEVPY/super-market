@@ -1,127 +1,158 @@
 {% extends "base.html" %}
-{% load static %}
+
+{% block title %}Carrinho{% endblock %}
+
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/cart.css' %}">
+<div class="container pt-5 mt-4">
+
 {% if items_cart %}
-    <div class="container py-4 mt-5">
-        <div class="row g-4">
+    <div class="row g-4">
 
-            <!-- LISTA DE PRODUTOS -->
-            <div class="card bg-light-subtle shadow-sm col-lg-8 p-4">
-                <h4 class="mb-3">Carrinho de Compras</h4>
-                    <div class="scroll-products pe-1"
-                        style="max-height: 350px; overflow-y: auto;">
-                        {% for item in items_cart %}
-                        <div class="product card mb-3 shadow-sm border-0 h-50" >
-                            <div class="row g-0 align-items-center justify-content-center">
+        <!-- LISTA DE PRODUTOS -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 rounded-3 p-4">
 
-                                <!-- Imagem -->
-                                <div class="col-4 col-md-3 text-center p-2">
-                                    <img src="{{ item.product.image.url }}"
-                                        alt="{{ item.product.name }}"
-                                        class="img-fluid rounded"
-                                        style="max-height: 130px; object-fit: cover;">
-                                </div>
+                <h4 class="fw-bold mb-4">Carrinho de compras</h4>
 
-                                <!-- Informações -->
-                                <div class="col-8 col-md-6">
-                                    <div class="card-body py-2">
-                                        <h5 class="card-title mb-2">{{ item.product.name }}</h5>
+                <div class="vstack gap-3" style="max-height: 420px; overflow-y: auto;">
 
-                                        <p class="mb-1 text-muted">
-                                            Quantidade:
-                                            <strong>{{ item.quantity }}</strong>
-                                        </p>
+                    {% for item in items_cart %}
+                    <div class="card border-0 shadow-sm">
+                        <div class="row g-0 align-items-center">
 
-                                        <p class="mb-1 text-muted">
-                                            Variação:
-                                            <strong>{{ item.variant.name }}</strong>
-                                        </p>
-
-                                        <h5 class="text-success fw-bold">
-                                            R$ {{ item.variant.apply_discount }}
-                                        </h5>
-                                    </div>
-                                </div>
-
-                                <!-- Remover -->
-                                <div class="col-12 col-md-3 text-md-end text-center p-3">
-                                    <form action="{% url 'cart:cartremove' %}" method="post">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="variant_id" value="{{ item.variant.id }}">
-                                        <input type="hidden" name="id" value="{{ item.id }}">
-                                        <button class="btn btn-danger btn-sm">Remover</button>
-                                    </form>
-                                </div>
-
+                            <!-- Imagem -->
+                            <div class="col-4 col-md-3 p-3 text-center">
+                                <img
+                                    src="{{ item.product.image.url }}"
+                                    alt="{{ item.product.name }}"
+                                    class="img-fluid rounded"
+                                    style="max-height: 120px; object-fit: cover;"
+                                >
                             </div>
+
+                            <!-- Info -->
+                            <div class="col-8 col-md-6">
+                                <div class="card-body py-2">
+                                    <h6 class="fw-semibold mb-2">
+                                        {{ item.product.name }}
+                                    </h6>
+
+                                    <p class="mb-1 text-muted small">
+                                        Quantidade: <strong>{{ item.quantity }}</strong>
+                                    </p>
+
+                                    <p class="mb-2 text-muted small">
+                                        Variação: <strong>{{ item.variant.name }}</strong>
+                                    </p>
+
+                                    <span class="fw-bold text-success fs-5">
+                                        R$ {{ item.variant.apply_discount }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Remover -->
+                            <div class="col-12 col-md-3 text-center text-md-end p-3">
+                                <form action="{% url 'cart:cartremove' %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="variant_id" value="{{ item.variant.id }}">
+                                    <input type="hidden" name="id" value="{{ item.id }}">
+                                    <button class="btn btn-outline-danger btn-sm">
+                                        Remover
+                                    </button>
+                                </form>
+                            </div>
+
                         </div>
-                        {% endfor %}
-
                     </div>
-            </div>
-
-            <!-- RESUMO DO CARRINHO -->
-            <div class="col-lg-4">
-                <div class="resume card shadow-sm border-1 p-4">
-
-                    <h5 class="mb-3">Resumo do Pedido</h5>
-
-                    <p class="mb-1">
-                        Quantidade de itens: <strong>{{ items_cart|length }}</strong>
-                    </p>
-
-                    <div class="mt-3 mb-2">
-                        <h6 class="mb-1">Total</h6>
-                        <h3 class="text-success fw-bold">R$ {{ cart_price }}</h3>
-                    </div>
-
-                    <div class="mt-4 small text-muted d-flex flex-column gap-2">
-
-                        <div class="d-flex align-items-center gap-2">
-                            <i data-lucide="truck" class="text-success"></i>
-                            <span>Frete grátis para todo o Brasil</span>
-                        </div>
-
-                        <div class="d-flex align-items-center gap-2">
-                            <i data-lucide="credit-card" class="text-primary"></i>
-                            <span>Até <strong>12x sem juros</strong></span>
-                        </div>
-
-                        <div class="d-flex align-items-center gap-2">
-                            <i data-lucide="shield-check" class="text-secondary"></i>
-                            <span>Pagamento seguro</span>
-                        </div>
-
-                    </div>
-
-                    <div class="mt-4">
-                        <a href="{% url 'accounts:home' %}">Adicionar endereço</a>
-                        <form action="">
-                            <select name="state" id="inputState" class="form-select" required>
-                                <option value="" selected disable>Selecionar...</option>
-                                {% for address in address %}
-                                <option value="{{ address.name }}">{{ address.name }}</option>
-                                {% endfor %}
-                            </select>
-                            <button class="btn btn-success w-100 mt-1 py-2 fs-5">Finalizar Compra</button>
-                        </form>
-                    </div>
+                    {% endfor %}
 
                 </div>
             </div>
+        </div>
 
+        <!-- RESUMO -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 rounded-3 p-4">
+
+                <h5 class="fw-bold mb-3">Resumo do pedido</h5>
+
+                <p class="mb-2">
+                    Itens no carrinho:
+                    <strong>{{ items_cart|length }}</strong>
+                </p>
+
+                <hr>
+
+                <div class="mb-3">
+                    <span class="text-muted">Total</span>
+                    <h3 class="fw-bold text-success">
+                        R$ {{ cart_price }}
+                    </h3>
+                </div>
+
+                <ul class="list-unstyled small text-muted mb-4">
+                    <li class="mb-1">
+                        <i class="bi bi-truck me-1 text-success"></i>
+                        Frete grátis para todo o Brasil
+                    </li>
+                    <li class="mb-1">
+                        <i class="bi bi-credit-card me-1 text-primary"></i>
+                        Até 12x sem juros
+                    </li>
+                    <li>
+                        <i class="bi bi-shield-check me-1 text-secondary"></i>
+                        Pagamento seguro
+                    </li>
+                </ul>
+
+                <div class="mb-3">
+                    <a href="{% url 'accounts:home' %}" class="small text-decoration-none">
+                        + Adicionar endereço
+                    </a>
+                </div>
+
+                <form>
+                    <select class="form-select mb-3" required>
+                        <option value="" selected disabled>Selecionar endereço...</option>
+                        {% for address in address %}
+                            <option value="{{ address.name }}">
+                                {{ address.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <button class="btn btn-success w-100 py-2 fs-5">
+                        Finalizar compra
+                    </button>
+                </form>
+
+            </div>
         </div>
-        <div class="card p-3 bg-white rounded-3 mt-5">
-            <p class="fs-5">Você também pode gostar</p>
-            {% include "cart/scroll-product.html" %}
-        </div>
+
     </div>
+
+    <!-- RECOMENDADOS -->
+    <div class="card border-0 shadow-sm rounded-3 p-3 mt-5">
+        <h5 class="fw-semibold mb-3">
+            Você também pode gostar
+        </h5>
+        {% include "cart/scroll-product.html" %}
+    </div>
+
 {% else %}
-    <div class="d-flex flex-column align-items-center justify-content-center">
-        <img src="https://unpkg.com/heroicons@2.1.1/24/outline/shopping-bag.svg" width="58" class="mb-2">
-        <h5 class="text-muted mb-4">Carrinho Vazio</h5>    
-        <a href="{% url 'market:home' %}" class="btn btn-primary">Ir para produtos</a>
+
+    <!-- CARRINHO VAZIO -->
+    <div class="d-flex flex-column align-items-center justify-content-center text-center" style="min-height: 60vh;">
+        <i class="bi bi-cart-x fs-1 text-muted mb-3"></i>
+        <h5 class="text-muted mb-4">
+            Seu carrinho está vazio
+        </h5>
+        <a href="{% url 'market:home' %}" class="btn btn-primary">
+            Ir para produtos
+        </a>
     </div>
+
 {% endif %}
+</div>
 {% endblock content %}

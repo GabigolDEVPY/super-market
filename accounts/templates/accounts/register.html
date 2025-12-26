@@ -1,27 +1,58 @@
 {% extends "base.html" %}
 {% load widget_tweaks %}
-{% load static %}
-{% block content %}
-    <link rel="stylesheet" href="{% static 'css/accounts.css' %}">
-    <div class="box-layout">
-        <form class="space-form-register" method="POST">
-            {% csrf_token %}
-            <div>
-                {% for field in form %}
-                    <div class="block_orientation">
-                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-                        {% render_field field class+="form-control" %}
-                        {% for error in field.errors %}
-                            <p class="message_error">{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                {% endfor %}
-            </div>
-            <div>
-                <button class="btn btn-primary" type="submit">Registrar</button>
-                <a class="btn btn-primary" href="{% url "accounts:login" %}">Voltar</a>
-            </div>
-        </form>
-    </div>
-{% endblock content %}
 
+{% block title %}Criar conta{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+        <div class="col-12 col-md-7 col-lg-5">
+
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body p-4">
+
+                    <h4 class="text-center fw-bold mb-4">
+                        Criar conta
+                    </h4>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="row g-3">
+
+                            {% for field in form %}
+                                <div class="col-12">
+                                    <label class="form-label" for="{{ field.id_for_label }}">
+                                        {{ field.label }}
+                                    </label>
+
+                                    {% render_field field class+="form-control" %}
+
+                                    {% if field.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ field.errors|striptags }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                Criar conta
+                            </button>
+                            <a href="{% url 'accounts:login' %}" class="btn btn-outline-secondary">
+                                Voltar para login
+                            </a>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock content %}

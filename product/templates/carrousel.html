@@ -1,29 +1,58 @@
-<div class="carousel-size">
-  <div id="carouselExampleIndicators" class="carousel slide">
+<div class="container my-4">
+  <div 
+    id="carouselExampleIndicators" 
+    class="carousel slide card shadow-sm border-0 rounded-3 overflow-hidden"
+    data-bs-ride="carousel"
+  >
+
+    <!-- Indicators -->
     <div class="carousel-indicators">
       {% for image in images %}
-        <button type="button"
+        <button
+          type="button"
           data-bs-target="#carouselExampleIndicators"
           data-bs-slide-to="{{ forloop.counter0 }}"
-          {% if forloop.first %}class="active" aria-current="true"{% endif %}
+          class="{% if forloop.first %}active{% endif %}"
+          {% if forloop.first %}aria-current="true"{% endif %}
           aria-label="Slide {{ forloop.counter }}">
         </button>
       {% endfor %}
     </div>
-    <div class="carousel-inner">
+
+    <!-- Images -->
+    <div class="carousel-inner bg-white">
       {% for image in images %}
         <div class="carousel-item {% if forloop.first %}active{% endif %}">
-          <img style="object-fit: contain;" class="image-class-product" src="{{ image.url|default:image }}" alt="...">
+          <img 
+            src="{{ image.url|default:image }}"
+            class="d-block w-100"
+            alt="Imagem do produto"
+            style="max-height: 420px; object-fit: contain;"
+          >
         </div>
       {% endfor %}
     </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+
+    <!-- Controls -->
+    <button 
+      class="carousel-control-prev"
+      type="button"
+      data-bs-target="#carouselExampleIndicators"
+      data-bs-slide="prev"
+    >
+      <span class="carousel-control-prev-icon"></span>
       <span class="visually-hidden">Anterior</span>
     </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+
+    <button 
+      class="carousel-control-next"
+      type="button"
+      data-bs-target="#carouselExampleIndicators"
+      data-bs-slide="next"
+    >
+      <span class="carousel-control-next-icon"></span>
       <span class="visually-hidden">Próximo</span>
     </button>
+
   </div>
 </div>

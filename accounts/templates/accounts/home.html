@@ -1,8 +1,61 @@
 {% extends "base.html" %}
-{% load static %}
-{% block content %}
-    <h1>User</h1>
-    <a role="button" data-bs-toggle="modal" data-bs-target="#modal">Adicionar endereço</a>
-    {% include "accounts/form.html" %}
-{% endblock content %}
 
+{% block title %}Minha conta{% endblock %}
+
+{% block content %}
+<div class="container pt-5 mt-4">
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+
+            <!-- Card da conta -->
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body p-4">
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="fw-bold mb-0">
+                            Minha conta
+                        </h4>
+
+                        <button
+                            class="btn btn-primary btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addressModal"
+                        >
+                            <i class="bi bi-plus-circle me-1"></i>
+                            Adicionar endereço
+                        </button>
+                    </div>
+
+                    <!-- Info do usuário -->
+                    <div class="mb-3">
+                        <span class="text-muted">Usuário:</span><br>
+                        <strong>{{ user.username }}</strong>
+                    </div>
+
+                    <div class="mb-3">
+                        <span class="text-muted">E-mail:</span><br>
+                        <strong>{{ user.email }}</strong>
+                    </div>
+
+                    <hr>
+
+                    <!-- Endereços (futuro) -->
+                    <div>
+                        <h6 class="fw-semibold mb-3">Endereços cadastrados</h6>
+                        <p class="text-muted mb-0">
+                            Nenhum endereço cadastrado.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal de endereço -->
+{% include "accounts/form.html" %}
+
+{% endblock content %}

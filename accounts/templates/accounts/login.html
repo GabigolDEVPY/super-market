@@ -1,31 +1,76 @@
 {% extends "base.html" %}
-{% load static %}
+
+{% block title %}Login{% endblock %}
+
 {% block content %}
-    <link rel="stylesheet" href="{% static 'css/accounts.css' %}">
-    <div class="box-layout" style="height: 40vh;">
-        <form class="space-form-register" method="post" action="{% url 'accounts:login' %}">
-            <div>
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Login</label>
-                    <input name="username" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                </div>
-                <div class="mb-3">
-                    <label for="exampleInputPassword1" class="form-label">Senha</label>
-                    <input name="password" type="password" class="form-control" id="exampleInputPassword1">
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="form-text">{{ message }}</div>      
-                        {% endfor %}
-                    {% endif %}
+<div class="container">
+    <div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+        <div class="col-12 col-md-6 col-lg-4">
+
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body p-4">
+
+                    <h4 class="text-center fw-bold mb-4">
+                        Entrar na conta
+                    </h4>
+
+                    <form method="post" action="{% url 'accounts:login' %}">
+                        {% csrf_token %}
+
+                        <!-- Usuário -->
+                        <div class="mb-3">
+                            <label class="form-label">Login</label>
+                            <input 
+                                name="username"
+                                type="text"
+                                class="form-control"
+                                placeholder="Seu usuário"
+                                required
+                            >
+                        </div>
+
+                        <!-- Senha -->
+                        <div class="mb-3">
+                            <label class="form-label">Senha</label>
+                            <input 
+                                name="password"
+                                type="password"
+                                class="form-control"
+                                placeholder="Sua senha"
+                                required
+                            >
+
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="form-text text-danger">
+                                        {{ message }}
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        <!-- Botão -->
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                Entrar
+                            </button>
+                        </div>
+                    </form>
+
+                    <hr class="my-4">
+
+                    <!-- Registrar -->
+                    <div class="text-center">
+                        <span class="text-muted">Ainda não tem conta?</span><br>
+                        <a href="{% url 'accounts:register' %}" class="btn btn-outline-primary btn-sm mt-2">
+                            Criar conta
+                        </a>
+                    </div>
+
                 </div>
             </div>
-            <div>
-                <button type="submit" class="btn btn-primary">Login</button>
-                <a class="btn btn-primary" href="{% url "accounts:register" %}">Registrar</a>
-            </div>
-        </form>
+
+        </div>
     </div>
+</div>
 {% endblock content %}
-
-

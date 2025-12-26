@@ -1,68 +1,84 @@
 {% load widget_tweaks %}
+
 {% if messages %}
   {% for message in messages %}
     {% if "open_modal" in message.tags %}
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const modal = new bootstrap.Modal(document.getElementById("modal"));
-        modal.show();
-      });
-    </script>
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const modal = new bootstrap.Modal(document.getElementById("addressModal"));
+          modal.show();
+        });
+      </script>
     {% endif %}
   {% endfor %}
 {% endif %}
 
-<div class="modal fade" id="modal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
+<div class="modal fade" id="addressModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow rounded-3">
+
+      <!-- Header -->
+      <div class="modal-header">
+        <h5 class="modal-title fw-semibold">
+          <i class="bi bi-geo-alt me-1"></i> Novo endereço
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Body -->
       <div class="modal-body">
-        <div class="modal-header mb-2">
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
         <form action="{% url 'accounts:addaddress' %}" method="post">
           {% csrf_token %}
-          <div class="row g-3 mx-auto" style="max-width: 600px; width: 100%;"> 
 
-            {% if messages %}
-              <div class="container mt-3">
-                  {% for message in messages %}
-                  <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                      {{ message }}
-                      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                  </div>
-                  {% endfor %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
               </div>
-            {% endif %}
-            
+            {% endfor %}
+          {% endif %}
+
+          <div class="row g-3">
+
             {% for field in form %}
+
               {% if field.name == "state" %}
                 <div class="col-md-6">
-                  <label for="inputState" class="form-label">Estado</label>
-                  <select name="state" id="inputState" class="form-select" required>
-                    <option value="" selected disable>Selecionar...</option>
+                  <label class="form-label">Estado</label>
+                  <select name="state" class="form-select" required>
+                    <option value="" selected disabled>Selecionar...</option>
                     {% for state in states %}
                       <option value="{{ state }}">{{ state }}</option>
                     {% endfor %}
                   </select>
                 </div>
+              {% else %}
+                <div class="col-md-6">
+                  <label class="form-label" for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                  </label>
+                  {% render_field field class+="form-control" %}
+                </div>
               {% endif %}
-              <div class="col-md-6">
-                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {% render_field field class+="form-control" %}
-              </div>
+
             {% endfor %}
 
-
-            
-            
-            <div class="col-12">
-              <button type="submit" class="btn btn-success">Add Address</button>
-              <button  type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-            </div>
           </div>
+
+          <!-- Footer -->
+          <div class="d-flex justify-content-end gap-2 mt-4">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-success">
+              Salvar endereço
+            </button>
+          </div>
+
         </form>
-      </div>    
+      </div>
+
     </div>
   </div>
 </div>
-
