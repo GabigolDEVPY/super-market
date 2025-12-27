@@ -5,7 +5,9 @@
     {% if "open_modal" in message.tags %}
       <script>
         document.addEventListener("DOMContentLoaded", () => {
-          const modal = new bootstrap.Modal(document.getElementById("addressModal"));
+          const modal = new bootstrap.Modal(
+            document.getElementById("addressModal")
+          );
           modal.show();
         });
       </script>
@@ -41,28 +43,61 @@
 
           <div class="row g-3">
 
-            {% for field in form %}
+            <!-- Nome -->
+            <div class="col-12">
+              <label class="form-label">{{ form.name.label }}</label>
+              {% render_field form.name class="form-control" %}
+            </div>
 
-              {% if field.name == "state" %}
-                <div class="col-md-6">
-                  <label class="form-label">Estado</label>
-                  <select name="state" class="form-select" required>
-                    <option value="" selected disabled>Selecionar...</option>
-                    {% for state in states %}
-                      <option value="{{ state }}">{{ state }}</option>
-                    {% endfor %}
-                  </select>
-                </div>
-              {% else %}
-                <div class="col-md-6">
-                  <label class="form-label" for="{{ field.id_for_label }}">
-                    {{ field.label }}
-                  </label>
-                  {% render_field field class+="form-control" %}
-                </div>
-              {% endif %}
+            <!-- Telefone / CEP -->
+            <div class="col-md-6">
+              <label class="form-label">{{ form.tel.label }}</label>
+              {% render_field form.tel class="form-control" %}
+            </div>
 
-            {% endfor %}
+            <div class="col-md-6">
+              <label class="form-label">{{ form.cep.label }}</label>
+              {% render_field form.cep class="form-control" %}
+            </div>
+
+            <!-- Endereço / Número -->
+            <div class="col-md-8">
+              <label class="form-label">{{ form.address.label }}</label>
+              {% render_field form.address class="form-control" %}
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">{{ form.number.label }}</label>
+              {% render_field form.number class="form-control" %}
+            </div>
+
+            <!-- Complemento -->
+            <div class="col-12">
+              <label class="form-label">{{ form.complement.label }}</label>
+              {% render_field form.complement class="form-control" %}
+            </div>
+
+            <!-- Bairro / Cidade -->
+            <div class="col-md-6">
+              <label class="form-label">{{ form.neighborhood.label }}</label>
+              {% render_field form.neighborhood class="form-control" %}
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">{{ form.city.label }}</label>
+              {% render_field form.city class="form-control" %}
+            </div>
+
+            <!-- Estado -->
+            <div class="col-md-6">
+              <label class="form-label">Estado</label>
+              <select name="state" class="form-select" required>
+                <option value="" selected disabled>Selecionar...</option>
+                {% for state in states %}
+                  <option value="{{ state }}">{{ state }}</option>
+                {% endfor %}
+              </select>
+            </div>
 
           </div>
 
