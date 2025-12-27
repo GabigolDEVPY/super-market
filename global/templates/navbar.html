@@ -50,8 +50,9 @@
       </ul>
 
       <!-- Busca -->
-      <form class="d-flex me-lg-3 mb-3 mb-lg-0" role="search">
+      <form action="{% url 'market:search' %}" class="d-flex me-lg-3 mb-3 mb-lg-0" role="search">
         <input
+          name="parameter"
           class="form-control form-control-sm me-2"
           type="search"
           placeholder="Buscar produtos"

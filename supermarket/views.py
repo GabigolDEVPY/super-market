@@ -18,7 +18,7 @@ class AllProducts(ListView):
     model = Product
     template_name = "allproducts.html"
     context_object_name = "products"
-    paginate_by = 6
+    paginate_by = 3
     ordering = ["id"]
 
 class SearchProduct(AllProducts):
@@ -29,7 +29,7 @@ class SearchProduct(AllProducts):
         query_set = super().get_queryset(*args, **kwargs)
         query_set = query_set.filter(
             Q(name__icontains=search_parameter) |
-            Q(category__icontains=search_parameter) |
+            Q(price__icontains=search_parameter) |
             Q(description__icontains=search_parameter) 
             )
         return query_set

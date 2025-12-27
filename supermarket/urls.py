@@ -9,4 +9,5 @@ urlpatterns = [
     # home
     path("", views.HomeView.as_view(), name='home'),
     path("all/", views.AllProducts.as_view(), name='all'),
+    path("search/", views.SearchProduct.as_view(), name='search'),
 ]
