@@ -12,41 +12,77 @@
             <div class="card shadow-sm border-0 rounded-3">
                 <div class="card-body p-4">
 
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h4 class="fw-bold mb-0">
-                            Minha conta
-                        </h4>
-
-                        <button
-                            class="btn btn-primary btn-sm"
-                            data-bs-toggle="modal"
-                            data-bs-target="#addressModal"
-                        >
-                            <i class="bi bi-plus-circle me-1"></i>
-                            Adicionar endereço
-                        </button>
+                    <!-- Cabeçalho com imagem e título -->
+                    <div class="d-flex align-items-center mb-4">
+                        {% if user.image %}
+                        <img src="{{ user.image.url }}" alt="Foto do usuário" class="rounded-circle me-3" style="width: 80px; height: 80px; object-fit: cover;">
+                        {% else %}
+                        <div class="bg-secondary rounded-circle me-3 d-flex justify-content-center align-items-center" style="width: 80px; height: 80px; color: white;">
+                            {{ user.username|slice:":1"|upper }}
+                        </div>
+                        {% endif %}
+                        <h4 class="fw-bold mb-0">Minha Conta</h4>
                     </div>
 
-                    <!-- Info do usuário -->
-                    <div class="mb-3">
-                        <span class="text-muted">Usuário:</span><br>
+                    <!-- Informações do usuário -->
+                    <div class="mb-4">
+                        <p class="mb-1 text-muted">Usuário:</p>
                         <strong>{{ user.username }}</strong>
                     </div>
 
-                    <div class="mb-3">
-                        <span class="text-muted">E-mail:</span><br>
+                    <div class="mb-4">
+                        <p class="mb-1 text-muted">E-mail:</p>
                         <strong>{{ user.email }}</strong>
+                        <div class="mt-2">
+                            <a href="{}" class="btn btn-outline-primary btn-sm">Alterar E-mail</a>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <p class="mb-1 text-muted">Telefone:</p>
+                        {% if user.phone %}
+                        <strong>{{ user.phone }}</strong>
+                        {% else %}
+                        <span class="text-muted">Nenhum telefone cadastrado</span>
+                        {% endif %}
+                        <div class="mt-2">
+                            <a href="" class="btn btn-outline-primary btn-sm">
+                                {% if user.phone %}Alterar Telefone{% else %}Adicionar Telefone{% endif %}
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <a href="{% url '" class="btn btn-outline-danger btn-sm">Trocar Senha</a>
                     </div>
 
                     <hr>
 
-                    <!-- Endereços (futuro) -->
-                    <div>
-                        <h6 class="fw-semibold mb-3">Endereços cadastrados</h6>
-                        <p class="text-muted mb-0">
-                            Nenhum endereço cadastrado.
-                        </p>
+                    <!-- Endereços -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-semibold mb-0">Endereços cadastrados</h6>
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addressModal">
+                            <i class="bi bi-plus-circle me-1"></i>Adicionar endereço
+                        </button>
                     </div>
+
+                    {% if address %}
+                        <div class="list-group mb-3">
+                        {% for add in address %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ add.name }}
+                                <form action="{% url 'accounts:deleteaddress' %}" method="post" class="mb-0">
+                                    {% csrf_token %}
+                                    <input name="name" type="hidden" value="{{ add.name }}">
+                                    <input name="user" type="hidden" value="{{ add.user.id }}">
+                                    <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+                                </form>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">Nenhum endereço cadastrado.</p>
+                    {% endif %}
 
                 </div>
             </div>

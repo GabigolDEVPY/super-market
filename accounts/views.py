@@ -1,11 +1,13 @@
+from urllib import request
 from django.contrib import messages
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 from django.views.generic import FormView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from accounts.models import Address
 from .utils import add_cep, validade_cep, create_inventory_and_cart
 from .forms import RegisterForm, AdressForm
 from accounts.states import states
@@ -64,7 +66,7 @@ class AddAdress(LoginRequiredMixin, View):
                 messages.error(request, error, extra_tags="open_modal")
             return redirect("accounts:home")
         messages.error(request, "Insira o CEP", extra_tags="open_modal")
-        return redirect("accounts:home")
+        return redirect("home")
         
 
 class Home(LoginRequiredMixin, TemplateView):
@@ -74,5 +76,13 @@ class Home(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context["form"] = AdressForm()
         context["states"] = states
+        context["address"] = self.request.user.address.all()
         return context
-    
+
+class DeleteAddress(LoginRequiredMixin, View):
+    def post(self, request):
+        user = request.POST.get("user")
+        name = request.POST.get("name")
+        address = get_object_or_404(Address, user=user, name=name)
+        address.delete()
+        return redirect("accounts:home")

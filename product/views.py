@@ -33,17 +33,18 @@ class ProductDetailView(DetailView):
 class BuyNowView(LoginRequiredMixin, View):
     def get(self, request, id):
         product = Product.objects.get(id=id)
-        stock = product.stocks.first()
-        if not stock or stock.quantity < 1:
-            return render(request, "payment.html", {"product": product})
-        return render(request, "payment.html", {"product": product, "stock": stock})
+        # stock = product.stocks.first()
+        # if not stock or stock.quantity < 1:
+        #     return render(request, "payment.html", {"product": product})
+        # return render(request, "payment.html", {"product": product, "stock": stock})
+        return render(request, "payment.html", {"product": product})
     
     
     #apply discount cupom
     def post(self, request, id):
         discount = request.POST.get("discount") or None
         product = Product.objects.get(id=id)
-        stock = product.stocks.first()
+        # stock = product.stocks.first()
         previous_discount = request.session.get("discount_name")
         previous_price = request.session.get("discount_price", 0)
         
@@ -53,13 +54,16 @@ class BuyNowView(LoginRequiredMixin, View):
                 previous_discount = request.session.get("discount_name")
                 previous_price = request.session.get("discount_price")
                 messages.error(request, "Cupom Inválido!")
+                return render(request, 'payment.html', {"product": product, "discount_price": previous_price, "discount": previous_discount})
                 return render(request, 'payment.html', {"product": product, "stock": stock, "discount_price": previous_price, "discount": previous_discount})
             discount_price = float(product.apply_discount() - (product.price / 100 * discount_search.discount))
             request.session["discount_name"] = discount_search.name
             request.session["discount_price"] = discount_price      
             messages.success(request, "Cupom de desconto aplicado com sucesso!!")
-            return render(request, 'payment.html', {"product": product, "stock": stock, "discount_price": discount_price})
+            return render(request, 'payment.html', {"product": product, "discount_price": discount_price})
+            # return render(request, 'payment.html', {"product": product, "stock": stock, "discount_price": discount_price})
         messages.success(request, "Insira um cupom de desconto!!")
+        return render(request, 'payment.html', {"product": product, "discount_price": previous_price})
         return render(request, 'payment.html', {"product": product, "stock": stock, "discount_price": previous_price})
 
 
@@ -70,9 +74,9 @@ def productbuynow(request):
     quantity = int(request.POST.get("quantity"))
     id = request.POST.get("id")
     product = Product.objects.get(id=id)
-    stock = product.stocks.first()
-    if not stock or stock.quantity < quantity:
-        return redirect("market:home")
+    # stock = product.stocks.first()
+    # if not stock or stock.quantity < quantity:
+    #     return redirect("market:home")
     
     discount_price = request.session.get("discount_price")
     if discount_price is not None:
