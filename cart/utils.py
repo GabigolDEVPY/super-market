@@ -19,7 +19,8 @@ def add_to_cart(request):
     if variant and variant.stock >= 1:
         item, created = CartItem.objects.get_or_create(cart=cart, product=product, variant=variant, defaults={'quantity': quantity,})
         if not created:
-            item.quantity += quantity
+            if variant.stock > item.quantity:
+                item.quantity += quantity
             item.save()
     return id
     
@@ -64,7 +65,8 @@ def items_random():
     random.shuffle(items)
     return items[:7]
 
-def return_items(user):
+def return_items(request):
+    user = request.user
     items = user.cart.items.all()
     items_return = []
     for item in items:
@@ -73,4 +75,3 @@ def return_items(user):
             continue
         items_return.append(item)
     return items_return
-    

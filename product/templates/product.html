@@ -1,152 +1,95 @@
 {% extends "base.html" %}
-{% load static %}
 {% block content %}
 
-<div class="container py-5">
+<div class="container my-5">
+  <div class="row g-5">
 
-    <!-- Nome do produto -->
-    <h3 class="fw-semibold mb-4">{{ product.name }}</h3>
+    <!-- GALERIA -->
+    <div class="col-lg-7 text-center">
 
-    <div class="row g-5">
+      <img
+        id="mainImage"
+        src="{{ product.image.url }}"
+        class="img-fluid rounded shadow mb-4"
+        style="width:600px;"
+        alt="{{ product.name }}"
+      >
 
-        <!-- GALERIA -->
-        <div class="col-lg-6">
-            {% include "carrousel.html" %}
+        {% if images|length > 1 %}
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                {% for image in images %}
+                    <img src="{{ image.url|default:image }}"
+                    class="img-thumbnail shadow active"
+                    width="90"
+                    onclick="changeImage(this.src, this)">
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+        
+    <div class="col-lg-5">
+      <div class="bg-white shadow rounded p-4 h-100 d-flex flex-column">
+
+        <span class="badge bg-success mb-3">Disponíveis <strong id="quantity">{{ quantity }}</strong></span>
+
+        <h1 class="h4 fw-bold">{{ product.name }}</h1>
+
+        <div class="mb-4">
+            {% if product.discount %}
+                <span id="product-discount" class="text-decoration-line-through text-muted me-2">R$ {{ product.price }}</span>
+                <span class="text-success fw-bold">{{ product.discount }}</span><br>
+            {% endif %}
+            <span id="price" class="fs-2 fw-bold text-success">R$ {{ product.apply_discount }}</span><br>
+            <span class="fs-6">em até <strong>12x de {{ product.twelvetimes }} sem juros</strong></span>
         </div>
+        <form action="{% url 'cart:addcart' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="id" value="{{product.id}}">
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Cor</label>
+                <select class="form-select" name="variantid" id="exampleSelect" required>
+                    {% for variant in variants %}
+                        <option value="{{ variant.id }}" data-preco="{{ variant.apply_discount }}" data-quantity="{{ variant.stock }}" data-discount="{{ variant.price }}">{{ variant.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="w-25">
+                <label class="form-label fw-semibold">
+                    Quantidade
+                </label>
+                <input
+                    type="number" name="quantity" id="quantity-max" class="form-control text-center mb-4" min="1" max="{{ quantity }}" value="1"
+                >
+            </div>
+            <div class="mt-auto">
+                <div class="d-grid gap-3">
+                    <button type="submit" class="btn btn-success btn-lg">Adicionar ao carrinho</button>
+                    <a href="{% url 'product:buynow' product.id %}" class="btn btn-outline-primary btn-lg">Comprar agora</a>
+                </div>
+        </form>
 
-        <!-- INFORMAÇÕES -->
-        <div class="col-lg-6">
-
-            <div class="card shadow-sm border-0 rounded-3 p-4 h-100 d-flex flex-column">
-
-                <!-- Estoque -->
-                <span class="text-muted mb-2">
-                    <strong id="quantity">{{ quantity }}</strong> disponíveis
-                </span>
-
-                {% if quantity > 0 %}
-
-                    <!-- Preço -->
-                    {% if product.discount %}
-                        <span class="badge bg-success w-fit mb-2">
-                            {{ product.discount.discount }}% OFF
-                        </span>
-                    {% endif %}
-
-                    {% if product.discount %}
-                        <small
-                            id="product-discount"
-                            class="text-muted text-decoration-line-through"
-                        >
-                            R$ {{ product.price }}
-                        </small>
-                    {% endif %}
-
-                    <h3 class="fw-bold text-success mb-4">
-                        R$ <span id="price">{{ product.apply_discount }}</span>
-                    </h3>
-
-                    <!-- FORM -->
-                    <form
-                        action="{% url 'cart:addcart' %}"
-                        method="post"
-                        class="d-flex flex-column gap-3"
-                    >
-                        {% csrf_token %}
-
-                        <input type="hidden" name="id" value="{{ product.id }}">
-
-                        <!-- Variação -->
-                        <div>
-                            <label class="form-label fw-semibold">
-                                Escolha a variação
-                            </label>
-                            <select
-                                name="variantid"
-                                id="exampleSelect"
-                                class="form-select"
-                                required
-                            >
-                                {% for variation in variants %}
-                                    <option
-                                        value="{{ variation.id }}"
-                                        data-preco="{{ variation.apply_discount }}"
-                                        data-quantity="{{ variation.stock }}"
-                                        data-discount="{{ variation.price }}"
-                                    >
-                                        {{ variation.name }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <!-- Quantidade -->
-                        <div class="w-25">
-                            <label class="form-label fw-semibold">
-                                Quantidade
-                            </label>
-                            <input
-                                type="number"
-                                name="quantity"
-                                id="quantity-max"
-                                class="form-control text-center"
-                                min="1"
-                                max="{{ quantity }}"
-                                value="1"
-                            >
-                        </div>
-
-                        <!-- Ações -->
-                        <div class="d-grid gap-2 mt-3">
-
-                            <button
-                                type="submit"
-                                class="btn btn-primary btn-lg"
-                            >
-                                Adicionar ao carrinho
-                            </button>
-
-                            <a
-                                href="{% url "product:buynow" product.id %}"
-                                class="btn btn-success btn-lg"
-                            >
-                                Comprar agora
-                            </a>
-
-                        </div>
-
-                    </form>
-
-                {% else %}
-                    <div class="alert alert-warning">
-                        Produto indisponível no momento
-                    </div>
-                {% endif %}
-
+            <div class="border-top pt-3 small text-muted">
+                <div>🛡 Compra 100% segura</div>
+                <div>🔄 Garantia de 30 dias</div>
+                <div>🚚 Frete grátis acima de R$ 299</div>
             </div>
         </div>
 
+      </div>
     </div>
-
-    <!-- DESCRIÇÃO -->
-    <div class="mt-5">
-        <h4 class="fw-semibold mb-3">Descrição</h4>
-        <p class="text-muted">
-            {{ product.description }}
-        </p>
-    </div>
-
+  </div>
 </div>
 
 <script>
-    const selectVariation = document.getElementById("exampleSelect");
+    const selectvariant = document.getElementById("exampleSelect");
     const priceElemeent = document.getElementById("price");
     const quantity = document.getElementById("quantity");
     const newQuantityMax = document.getElementById("quantity-max");
     const QuantityDiscount = document.getElementById("product-discount");
 
-    if (selectVariation) {
-        selectVariation.addEventListener("change", function () {
+    if (selectvariant) {
+        selectvariant.addEventListener("change", function () {
             const selectedOption = this.options[this.selectedIndex];
 
             const newPrice = selectedOption.getAttribute("data-preco");
@@ -169,6 +112,16 @@
             }
         });
     }
+function changeImage(src, elem) {
+  document.getElementById("mainImage").src = src;
+  document.querySelectorAll('.img-thumbnail').forEach(img => img.classList.remove('border-primary'));
+  elem.classList.add('border-primary');
+}
+
+function calcularFrete() {
+  document.getElementById("freteInfo").innerText =
+    "Frete grátis • Entrega em até 5 dias úteis";
+}
 </script>
 
 {% endblock content %}

@@ -1,4 +1,3 @@
-from pydoc import describe
 from django.db import models
 from decimal import Decimal, ROUND_HALF_UP
 from PIL import Image
@@ -69,6 +68,9 @@ class Product(models.Model):
             discount_amount = (self.price * self.discount.discount) / Decimal("100")
             return (self.price - discount_amount).quantize(Decimal("0.00"), rounding=ROUND_HALF_UP)
         return (self.price).quantize(Decimal("0.00"))
+    
+    def twelvetimes(self):
+        return (self.apply_discount() / 12).quantize(Decimal("0.00"))
 
 
 class DiscountCode(models.Model):

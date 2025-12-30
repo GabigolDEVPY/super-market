@@ -2,63 +2,108 @@
 {% block content %}
 
 <div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
+  <div class="row g-4 justify-content-center">
 
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h4 class="mb-3">{{ product.name }}</h4>
+    <!-- COLUNA ESQUERDA — PRODUTO -->
+    <div class="col-lg-6">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body">
 
-                    <img 
-                        src="{{ product.image.url }}" 
-                        class="img-fluid mb-3 rounded"
-                        alt="{{ product.name }}">
+          <h3 class="fw-semibold mb-3">{{ product.name }}</h3>
 
-                    <h5 class="text-success fw-bold">
-                        R$ {{ discount_price|default:product.apply_discount }}
-                    </h5>
+          <div class="text-center mb-4">
+            <img 
+              src="{{ product.image.url }}" 
+              class="img-fluid rounded"
+              style="max-height: 350px; object-fit: contain;"
+              alt="{{ product.name }}">
+          </div>
 
-                    <hr>
+          <div class="d-flex align-items-center gap-3">
+            <h2 class="fw-bold text-primary mb-0">
+              R$ {{ discount_price|default:product.apply_discount }}
+            </h2>
+            <span class="badge bg-success">À vista</span>
+          </div>
 
-                    <form method="post" action="{% url 'product:buynow' product.id %}" class="mb-3">
-                        {% csrf_token %}
-                        <label class="form-label">Cupom de desconto</label>
-                        <div class="input-group">
-                            <input type="text" name="discount" class="form-control">
-                            <button class="btn btn-outline-primary" type="submit">
-                                Aplicar
-                            </button>
-                        </div>
-                    </form>
-
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-warning">{{ message }}</div>
-                        {% endfor %}
-                    {% endif %}
-
-                    <form method="post" action="{% url 'product:productbuynow' %}">
-                        {% csrf_token %}
-                        <input type="hidden" name="id" value="{{ product.id }}">
-
-                        <label class="form-label">Quantidade</label>
-                        <input 
-                            type="number" 
-                            name="quantity" 
-                            class="form-control mb-3"
-                            min="1" 
-                            value="1" 
-                            max="{{ stock.quantity }}">
-
-                        <button class="btn btn-success w-100 btn-lg">
-                            Finalizar compra
-                        </button>
-                    </form>
-                </div>
-            </div>
+          <p class="text-muted mt-2 mb-0">
+            Produto enviado com segurança • Garantia inclusa
+          </p>
 
         </div>
+      </div>
     </div>
+
+    <!-- COLUNA DIREITA — CHECKOUT -->
+    <div class="col-lg-5">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+
+          <h5 class="fw-semibold mb-4">Finalizar compra</h5>
+
+          <!-- CUPOM -->
+          <form method="post" action="{% url 'product:buynow' product.id %}" class="mb-4">
+            {% csrf_token %}
+            <label class="form-label">Cupom de desconto</label>
+            <div class="input-group">
+              <input 
+                type="text" 
+                name="discount" 
+                class="form-control"
+                placeholder="Digite seu cupom">
+              <button class="btn btn-outline-primary" type="submit">
+                Aplicar
+              </button>
+            </div>
+          </form>
+
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-warning py-2">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+
+          <!-- FORM FINAL -->
+          <form method="post" action="{% url 'product:productbuynow' %}">
+            {% csrf_token %}
+            <input type="hidden" name="id" value="{{ product.id }}">
+
+            <div class="mb-3">
+              <label class="form-label">Endereço de entrega</label>
+              <select name="address" class="form-select">
+                <option value="">Selecione um endereço</option>
+              </select>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">Quantidade</label>
+              <input 
+                type="number" 
+                name="quantity"
+                class="form-control"
+                min="1"
+                max="{{ stock.quantity }}"
+                value="1">
+              <small class="text-muted">
+                Estoque disponível: {{ stock.quantity }}
+              </small>
+            </div>
+
+            <button class="btn btn-primary w-100 btn-lg fw-semibold">
+              Finalizar compra
+            </button>
+
+            <p class="text-muted text-center mt-3 mb-0" style="font-size: 0.85rem;">
+              Pagamento 100% seguro • Seus dados protegidos
+            </p>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 {% endblock content %}

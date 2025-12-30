@@ -18,7 +18,7 @@ class CartView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['items'] = items_random()
         context['address'] = self.request.user.address.all()
-        context["items_cart"] = return_items(self.request.user)
+        context["items_cart"] = return_items(self.request)
         context["cart_price"] = self.request.user.cart.total_price
         return context
     
