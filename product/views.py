@@ -10,7 +10,6 @@ from django.contrib import messages
 from utils.decorators import clear_session_data
 from django.utils.decorators import method_decorator
 from payment.utils import create_checkout_session_product
-from .utils import get_flag
 
 
 @method_decorator(clear_session_data(["discount_name", "discount_price"]), name="dispatch")
@@ -28,7 +27,6 @@ class ProductDetailView(DetailView):
         images = [img.image.url for img in  self.object.images.all()]
         images.insert(0, self.object.image.url)
         context["images"] = images
-        context["flag_cart"] = get_flag(self.request)
 
         return context
     

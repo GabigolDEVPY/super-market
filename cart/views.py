@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import redirect
 from django.views import View
 from django.views.generic import  TemplateView
@@ -27,7 +28,10 @@ class CartView(LoginRequiredMixin, TemplateView):
 #Logica pra adicionar produto ao carrinho 
 class AddCart(LoginRequiredMixin, View):
     def post(self, request):
-        id = add_to_cart(request)
+        id, error = add_to_cart(request)
+        if error:
+            messages.error(request, "A quantidade máxima já foi adicionada ao carrinho")
+            return redirect("product:product", id)
         return redirect("product:product", id)
 
 

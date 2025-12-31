@@ -62,6 +62,14 @@
                     type="number" name="quantity" id="quantity-max" class="form-control text-center mb-4" min="1" max="{{ quantity }}" value="1"
                 >
             </div>
+            {% if messages %}
+                {% for message  in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show alert-danger" role="alert">
+                        {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
             <div class="mt-auto">
                 <div class="d-grid gap-3">
                     <button type="submit" class="btn btn-success btn-lg">Adicionar ao carrinho</button>
