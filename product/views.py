@@ -1,4 +1,4 @@
-from django import dispatch
+from django.http import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views import View
@@ -31,21 +31,21 @@ class ProductDetailView(DetailView):
         return context
     
 class BuyNowView(LoginRequiredMixin, View):
-    def get(self, request, id):
-        product = Product.objects.get(id=id)
-        # stock = product.stocks.first()
-        # if not stock or stock.quantity < 1:
-        #     return render(request, "payment.html", {"product": product})
-        # return render(request, "payment.html", {"product": product, "stock": stock})
+    def get(self, request, product_id, variant_id):
+        product = Product.objects.get(id=product_id)
+        variant = product.variations.get(id=variant_id)
         address = self.request.user.address.all()
-        return render(request, "payment.html", {"product": product, "address": address })
+        if not variant.stock or variant.stock < 1:
+            raise Http404("product without stock avaliable")
+        return render(request, "payment.html", {"product": product, "stock": variant.stock, "variant": variant, "address": address})
     
     
     #apply discount cupom
-    def post(self, request, id):
+    def post(self, request, product_id, variant_id):
         discount = request.POST.get("discount") or None
         product = Product.objects.get(id=id)
-        # stock = product.stocks.first()
+        variant = product.variations.get(id=variant_id)
+        stock = variant.stock
         previous_discount = request.session.get("discount_name")
         previous_price = request.session.get("discount_price", 0)
         
@@ -65,7 +65,6 @@ class BuyNowView(LoginRequiredMixin, View):
             # return render(request, 'payment.html', {"product": product, "stock": stock, "discount_price": discount_price})
         messages.success(request, "Insira um cupom de desconto!!")
         return render(request, 'payment.html', {"product": product, "discount_price": previous_price})
-        return render(request, 'payment.html', {"product": product, "stock": stock, "discount_price": previous_price})
 
 
 

@@ -48,9 +48,10 @@
             <input type="hidden" name="id" value="{{product.id}}">
             <div class="mb-4">
                 <label class="form-label fw-semibold">Cor</label>
-                <select class="form-select" name="variantid" id="exampleSelect" required>
-                    {% for variant in variants %}
-                        <option value="{{ variant.id }}" data-preco="{{ variant.apply_discount }}" data-quantity="{{ variant.stock }}" data-discount="{{ variant.price }}">{{ variant.name }}</option>
+                <select id="variantSelect" class="form-select form-select-lg">
+                    <option value="">Selecione uma variação</option>
+                    {% for v in variants %}
+                        <option value="{{ v.id }}">{{ v.name }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -73,15 +74,28 @@
             <div class="mt-auto">
                 <div class="d-grid gap-3">
                     <button type="submit" class="btn btn-success btn-lg">Adicionar ao carrinho</button>
-                    <a href="{% url 'product:buynow' product.id %}" class="btn btn-outline-primary btn-lg">Comprar agora</a>
+                    <a id="buyNowBtn"class="btn btn-outline-primary btn-lg disabled">Comprar agora</a>
                 </div>
         </form>
 
-            <div class="border-top pt-3 small text-muted">
-                <div>🛡 Compra 100% segura</div>
-                <div>🔄 Garantia de 30 dias</div>
-                <div>🚚 Frete grátis acima de R$ 299</div>
+        <div class="border-top pt-3 small text-muted">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-shield-lock"></i>
+                <span>Compra 100% segura</span>
             </div>
+
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-arrow-repeat"></i>
+                <span>Garantia de 30 dias</span>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-truck"></i>
+                <span>Frete grátis para compras acima de R$ 299</span>
+            </div>
+        </div>
+
+
         </div>
 
       </div>
@@ -137,10 +151,20 @@ function changeImage(src, elem) {
   elem.classList.add('border-primary');
 }
 
-function calcularFrete() {
-  document.getElementById("freteInfo").innerText =
-    "Frete grátis • Entrega em até 5 dias úteis";
-}
+  const variantSelect = document.getElementById("variantSelect");
+  const buyNowBtn = document.getElementById("buyNowBtn");
+
+  variantSelect.addEventListener("change", function () {
+    const variantId = this.value;
+
+    if (variantId) {
+      buyNowBtn.href = `/product/buy/{{ product.id }}/variant/${variantId}/`;
+      buyNowBtn.classList.remove("disabled");
+    } else {
+      buyNowBtn.removeAttribute("href");
+      buyNowBtn.classList.add("disabled");
+    }
+  });
 </script>
 
 {% endblock content %}

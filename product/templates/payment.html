@@ -42,7 +42,7 @@
           <h5 class="fw-semibold mb-4">Finalizar compra</h5>
 
           <!-- CUPOM -->
-          <form method="post" action="{% url 'product:buynow' product.id %}" class="mb-4">
+          <form method="post" action="{% url 'product:buynow' product.id variant.id %}" class="mb-4">
             {% csrf_token %}
             <label class="form-label">Cupom de desconto</label>
             <div class="input-group">
