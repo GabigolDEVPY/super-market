@@ -37,7 +37,8 @@ class BuyNowView(LoginRequiredMixin, View):
         # if not stock or stock.quantity < 1:
         #     return render(request, "payment.html", {"product": product})
         # return render(request, "payment.html", {"product": product, "stock": stock})
-        return render(request, "payment.html", {"product": product})
+        address = self.request.user.address.all()
+        return render(request, "payment.html", {"product": product, "address": address })
     
     
     #apply discount cupom

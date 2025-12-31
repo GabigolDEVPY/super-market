@@ -29,15 +29,19 @@
         {% include "navbar.html" %}
     {% endif %}
 
+    
     <!-- Conteúdo principal -->
     <main class="flex-fill" style="padding-top: 72px;">
         {% block content %}{% endblock %}
     </main>
-
+    
+    {% if not hide_navbar %}
+        {% include 'footer.html' %}
+    {% endif %}
     <!-- Bootstrap JS -->
     <script 
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-    </script>
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
 
 </body>
 </html>

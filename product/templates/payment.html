@@ -70,8 +70,11 @@
 
             <div class="mb-3">
               <label class="form-label">Endereço de entrega</label>
-              <select name="address" class="form-select">
+              <select name="address" class="form-select" required>
                 <option value="">Selecione um endereço</option>
+                {% for add in address %}
+                  <option value="{{ add.id }}">{{ add.name }}</option>
+                {% endfor %}
               </select>
             </div>
 
