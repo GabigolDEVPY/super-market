@@ -1,5 +1,4 @@
-from operator import invert
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 import requests
 from .models import Address, Inventory
 from cart.models import Cart
@@ -36,3 +35,9 @@ def create_inventory_and_cart(user):
     Inventory.objects.create(user=user)
     Cart.objects.create(user=user)
     return
+
+def delete_address(request):
+    user = request.POST.get("user")
+    name = request.POST.get("name")
+    address = get_object_or_404(Address, user=user, name=name)
+    address.delete()

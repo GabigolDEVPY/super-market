@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import FormView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from accounts.models import Address
-from .utils import add_cep, validade_cep, create_inventory_and_cart
+from .utils import add_cep, validade_cep, create_inventory_and_cart, delete_address
 from .forms import RegisterForm, AdressForm
 from accounts.states import states
 
@@ -40,7 +40,6 @@ class RegisterView(FormView):
     form_class = RegisterForm
     success_url = reverse_lazy("accounts:login")
     extra_context = {"hide_navbar": True}
-    
     
     def form_valid(self, form):
         user = form.save(commit=False)
@@ -81,8 +80,5 @@ class Home(LoginRequiredMixin, TemplateView):
 
 class DeleteAddress(LoginRequiredMixin, View):
     def post(self, request):
-        user = request.POST.get("user")
-        name = request.POST.get("name")
-        address = get_object_or_404(Address, user=user, name=name)
-        address.delete()
+        delete_address(request)
         return redirect("accounts:home")
