@@ -13,6 +13,8 @@ def add_to_cart(request):
     cart = user.cart
     variant_id = request.POST.get("variantid")
     id = request.POST.get("id")
+    print(request.POST)
+    print(id, variant_id)
     quantity = int(request.POST.get("quantity"))
     product = Product.objects.get(id=id)
     variant = product.variations.get(id=variant_id)
@@ -27,14 +29,12 @@ def add_to_cart(request):
     
 
 def cartremove(request):
-    print("entrou aqui krl")
     try:
-        print("entrou no try")
-        id = request.POST.get("id")
+        product_id = request.POST.get("id")
         variant_id = request.POST.get("variant_id")
         user = request.user
         cart = user.cart
-        item_cart = cart.items.filter(id=id, variant=variant_id).delete()
+        item_cart = cart.items.get(id=product_id, variant=variant_id).delete()
         cart.save()
     except Exception as e:
         return HttpResponse(status=200)

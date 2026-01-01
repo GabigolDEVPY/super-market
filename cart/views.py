@@ -8,8 +8,6 @@ from django.utils.decorators import method_decorator
 from .utils import add_to_cart, cartremove, cartbuy, items_random, return_items
 
 
-
-
 #retornar a tela do carrinho do cliente!
 @method_decorator(clear_session_data(["discount_price", "discount_name"]), name="dispatch")
 class CartView(LoginRequiredMixin, TemplateView):

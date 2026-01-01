@@ -6,7 +6,6 @@
 
     <!-- GALERIA -->
     <div class="col-lg-7 text-center">
-
       <img
         id="mainImage"
         src="{{ product.image.url }}"
@@ -15,98 +14,131 @@
         alt="{{ product.name }}"
       >
 
-        {% if images|length > 1 %}
-            <div class="d-flex justify-content-center gap-3 flex-wrap">
-                {% for image in images %}
-                    <img src="{{ image.url|default:image }}"
-                    class="img-thumbnail shadow active"
-                    width="90"
-                    onclick="changeImage(this.src, this)">
-                {% endfor %}
-            </div>
-        {% endif %}
+      {% if images|length > 1 %}
+      <div class="d-flex justify-content-center gap-3 flex-wrap">
+        {% for image in images %}
+        <img
+          src="{{ image.url|default:image }}"
+          class="img-thumbnail shadow"
+          width="90"
+          onclick="changeImage(this.src, this)"
+        >
+        {% endfor %}
+      </div>
+      {% endif %}
     </div>
 
-        
+    <!-- INFO PRODUTO -->
     <div class="col-lg-5">
       <div class="bg-white shadow rounded p-4 h-100 d-flex flex-column">
 
-        <span class="badge bg-success mb-3">Disponíveis <strong id="quantity">{{ quantity }}</strong></span>
+        <span class="badge bg-success mb-3">
+          Disponíveis <strong id="stockQuantity">{{ quantity }}</strong>
+        </span>
 
         <h1 class="h4 fw-bold">{{ product.name }}</h1>
 
         <div class="mb-4">
-            {% if product.discount %}
-                <span id="product-discount" class="text-decoration-line-through text-muted me-2">R$ {{ product.price }}</span>
-                <span class="text-success fw-bold">{{ product.discount }}</span><br>
-            {% endif %}
-            <span id="price" class="fs-2 fw-bold text-success">R$ {{ product.apply_discount }}</span><br>
-            <span class="fs-6">em até <strong>12x de {{ product.twelvetimes }} sem juros</strong></span>
+          {% if product.discount %}
+            <span
+              id="product-discount"
+              class="text-decoration-line-through text-muted me-2"
+            >
+              R$ {{ product.price }}
+            </span>
+          {% endif %}
+
+          <span id="price" class="fs-2 fw-bold text-success">
+            R$ {{ product.apply_discount }}
+          </span><br>
+
+          <span class="fs-6">
+            em até <strong>12x de {{ product.twelvetimes }} sem juros</strong>
+          </span>
         </div>
+
         <form action="{% url 'cart:addcart' %}" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="id" value="{{product.id}}">
-            <div class="mb-4">
-                <label class="form-label fw-semibold">Cor</label>
-                <select id="variantSelect" class="form-select form-select-lg">
-                    <option value="">Selecione uma variação</option>
-                    {% for v in variants %}
-                        <option value="{{ v.id }}">{{ v.name }}</option>
-                    {% endfor %}
-                </select>
+          {% csrf_token %}
+          <input type="hidden" name="id" value="{{ product.id }}">
+
+          <!-- VARIAÇÃO -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Cor</label>
+            <select
+              name="variantid"
+              id="variantSelect"
+              class="form-select form-select-lg"
+              required
+            >
+              <option value="">Selecione uma variação</option>
+              {% for v in variants %}
+              <option
+                value="{{ v.id }}"
+                data-price="{{ v.apply_discount }}"
+                data-discount="{{ v.price }}"
+                data-quantity="{{ v.stock }}"
+              >
+                {{ v.name }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- QUANTIDADE -->
+          <div class="w-25">
+            <label class="form-label fw-semibold">Quantidade</label>
+            <input
+              type="number"
+              name="quantity"
+              id="quantityInput"
+              class="form-control text-center mb-4"
+              min="1"
+              max="{{ quantity }}"
+              value="1"
+            >
+          </div>
+
+          {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-danger alert-dismissible fade show">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-            <div class="w-25">
-                <label class="form-label fw-semibold">
-                    Quantidade
-                </label>
-                <input
-                    type="number" name="quantity" id="quantity-max" class="form-control text-center mb-4" min="1" max="{{ quantity }}" value="1"
-                >
-            </div>
-            {% if messages %}
-                {% for message  in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show alert-danger" role="alert">
-                        {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                {% endfor %}
-            {% endif %}
-            <div class="mt-auto">
-                <div class="d-grid gap-3">
-                    <button type="submit" class="btn btn-success btn-lg">Adicionar ao carrinho</button>
-                    <a id="buyNowBtn"class="btn btn-outline-primary btn-lg disabled">Comprar agora</a>
-                </div>
+            {% endfor %}
+          {% endif %}
+
+          <div class="mt-auto d-grid gap-3">
+            <button type="submit" class="btn btn-success btn-lg">
+              Adicionar ao carrinho
+            </button>
+            <a id="buyNowBtn" class="btn btn-outline-primary btn-lg disabled">
+              Comprar agora
+            </a>
+          </div>
         </form>
 
-        <div class="border-top pt-3 small text-muted">
-            <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-shield-lock"></i>
-                <span>Compra 100% segura</span>
-            </div>
-
-            <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-arrow-repeat"></i>
-                <span>Garantia de 30 dias</span>
-            </div>
-
-            <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-truck"></i>
-                <span>Frete grátis para compras acima de R$ 299</span>
-            </div>
-        </div>
-
-
+        <div class="border-top pt-3 small text-muted mt-4">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-shield-lock"></i> Compra 100% segura
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-arrow-repeat"></i> Garantia de 30 dias
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-truck"></i> Frete grátis acima de R$ 299
+          </div>
         </div>
 
       </div>
     </div>
   </div>
+
+  <!-- DESCRIÇÃO -->
   <div class="row mt-5">
     <div class="col-12">
       <div class="bg-white shadow rounded p-4">
         <h4 class="fw-bold mb-3">Descrição do produto</h4>
-  
-        <div class="text-muted" style="line-height: 1.8;">
+        <div class="text-muted" style="line-height:1.8;">
           {{ product.description|linebreaks }}
         </div>
       </div>
@@ -115,56 +147,51 @@
 </div>
 
 <script>
-    const selectvariant = document.getElementById("exampleSelect");
-    const priceElemeent = document.getElementById("price");
-    const quantity = document.getElementById("quantity");
-    const newQuantityMax = document.getElementById("quantity-max");
-    const QuantityDiscount = document.getElementById("product-discount");
-
-    if (selectvariant) {
-        selectvariant.addEventListener("change", function () {
-            const selectedOption = this.options[this.selectedIndex];
-
-            const newPrice = selectedOption.getAttribute("data-preco");
-            const newQuantity = selectedOption.getAttribute("data-quantity");
-            const newDiscountPrice = selectedOption.getAttribute("data-discount");
-
-            newQuantityMax.max = newQuantity;
-            newQuantityMax.value = 1;
-
-            if (QuantityDiscount && newDiscountPrice) {
-                QuantityDiscount.innerText = "R$ " + newDiscountPrice;
-            }
-
-            if (newPrice) {
-                priceElemeent.innerText = newPrice.replace(".", ",");
-            }
-
-            if (newQuantity) {
-                quantity.innerText = newQuantity;
-            }
-        });
-    }
-function changeImage(src, elem) {
-  document.getElementById("mainImage").src = src;
-  document.querySelectorAll('.img-thumbnail').forEach(img => img.classList.remove('border-primary'));
-  elem.classList.add('border-primary');
-}
-
   const variantSelect = document.getElementById("variantSelect");
+  const priceElement = document.getElementById("price");
+  const discountElement = document.getElementById("product-discount");
+  const stockQuantity = document.getElementById("stockQuantity");
+  const quantityInput = document.getElementById("quantityInput");
   const buyNowBtn = document.getElementById("buyNowBtn");
 
   variantSelect.addEventListener("change", function () {
-    const variantId = this.value;
+    const option = this.options[this.selectedIndex];
+
+    const price = option.dataset.price;
+    const discount = option.dataset.discount;
+    const stock = option.dataset.quantity;
+    const variantId = option.value;
+
+    if (price) {
+      priceElement.innerText = "R$ " + price.replace(".", ",");
+    }
+
+    if (discountElement && discount) {
+      discountElement.innerText = "R$ " + discount.replace(".", ",");
+    }
+
+    if (stock) {
+      stockQuantity.innerText = stock;
+      quantityInput.max = stock;
+      quantityInput.value = 1;
+    }
 
     if (variantId) {
       buyNowBtn.href = `/product/buy/{{ product.id }}/variant/${variantId}/`;
       buyNowBtn.classList.remove("disabled");
     } else {
-      buyNowBtn.removeAttribute("href");
       buyNowBtn.classList.add("disabled");
+      buyNowBtn.removeAttribute("href");
     }
   });
+
+  function changeImage(src, el) {
+    document.getElementById("mainImage").src = src;
+    document
+      .querySelectorAll(".img-thumbnail")
+      .forEach(img => img.classList.remove("border-primary"));
+    el.classList.add("border-primary");
+  }
 </script>
 
-{% endblock content %}
+{% endblock %}

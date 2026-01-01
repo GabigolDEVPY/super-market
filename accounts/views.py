@@ -60,7 +60,8 @@ class AddAdress(LoginRequiredMixin, View):
                 messages.error(request, "Cep Inválido", extra_tags="open_modal")
             elif response == "Timeout":
                 messages.error(request, "O servidor demorou muito!", extra_tags="open_modal")
-            form, error = add_cep(request)
+                # adicionando o o cep abaixo
+            form, error = add_cep(request) 
             if error:
                 messages.error(request, error, extra_tags="open_modal")
             return redirect("accounts:home")

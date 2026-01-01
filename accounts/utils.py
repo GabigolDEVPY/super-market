@@ -23,7 +23,6 @@ def add_cep(request):
         form = AdressForm(form_copy)
         
         if form.is_valid():
-            print("válido")
             address = form.save(commit=False)
             address.user = request.user
             address.save()
