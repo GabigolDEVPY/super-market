@@ -22,8 +22,8 @@ def add_to_cart(request):
             if variant.stock > item.quantity:
                 item.quantity += quantity
                 item.save()
-            return id, True
-    return id, False
+            return product.id, True
+    return product.id, False
     
 
 def cartremove(request):

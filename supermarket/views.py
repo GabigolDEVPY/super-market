@@ -22,10 +22,13 @@ class AllProducts(ListView):
     ordering = ["id"]
 
 class SearchProduct(AllProducts):
+    def dispatch(self, request, *args, **kwargs):
+        if not self.request.GET.get("parameter"):
+            return redirect("market:home")
+        return super().dispatch(request, *args, **kwargs)
+    
     def get_queryset(self, *args, **kwargs):
         search_parameter = self.request.GET.get("parameter")
-        if not search_parameter:
-            return redirect("home")
         query_set = super().get_queryset(*args, **kwargs)
         query_set = query_set.filter(
             Q(name__icontains=search_parameter) |
