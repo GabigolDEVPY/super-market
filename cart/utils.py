@@ -9,17 +9,15 @@ from payment.utils import create_checkout_session_product
 import random
 
 def add_to_cart(request):
-    user = request.user
-    cart = user.cart
-    variant_id = request.POST.get("variantid")
-    id = request.POST.get("id")
-    print(request.POST)
-    print(id, variant_id)
+    product = Product.objects.get(id=request.POST.get("id"))
+    variant = product.variations.get(id=request.POST.get("variantid"))
     quantity = int(request.POST.get("quantity"))
-    product = Product.objects.get(id=id)
-    variant = product.variations.get(id=variant_id)
     if variant and variant.stock >= 1:
-        item, created = CartItem.objects.get_or_create(cart=cart, product=product, variant=variant, defaults={'quantity': quantity,})
+        item, created = CartItem.objects.get_or_create(
+            cart= request.user.cart, 
+            product= product,
+            variant= variant, 
+            defaults={'quantity': quantity})
         if not created:
             if variant.stock > item.quantity:
                 item.quantity += quantity
@@ -30,11 +28,8 @@ def add_to_cart(request):
 
 def cartremove(request):
     try:
-        product_id = request.POST.get("id")
-        variant_id = request.POST.get("variant_id")
-        user = request.user
-        cart = user.cart
-        item_cart = cart.items.get(id=product_id, variant=variant_id).delete()
+        cart = request.user.cart
+        item_cart = cart.items.get(id=request.POST.get("id"), variant=request.POST.get("variant_id")).delete()
         cart.save()
     except Exception as e:
         return HttpResponse(status=200)
@@ -67,12 +62,11 @@ def items_random():
     return items[:7]
 
 def return_items(request):
-    user = request.user
-    items = user.cart.items.all()
+    items = request.user.cart.items.all()
     items_return = []
     for item in items:
         if item.variant.stock < item.quantity:
-            item.delete()
+            item.quantity = item.variant.stock
             continue
         items_return.append(item)
     return items_return
