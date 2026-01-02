@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from utils.decorators import clear_session_data
 from django.utils.decorators import method_decorator
 from .utils import add_to_cart, cartremove, cartbuy, items_random, return_items
+from payment.utils import create_checkout_session_product
 
 
 #retornar a tela do carrinho do cliente!
@@ -47,5 +48,29 @@ class CartBuy(LoginRequiredMixin, View):
         redirect("payment:cart")
     
 
+class CartBuyNow(View):
+    def post(self, request, *args, **kwargs):
+        user = request.user 
+        cart = user.cart      
+        #aprovar compra no checkout
+        urls = {"success_url": "accounts/home/", "cancel_url": f"cart/"} 
+        items = []
+        for item in cart.items.all():
+            items.append({
+                    "price_data": {
+                        "currency": "brl",
+                        "unit_amount": int((item.product.apply_discount()) * 100),
+                        "product": item.product.id_stripe,
+                    },
+                    "quantity": item.quantity
+                })
+            
+        metadata={
+                "product_id": str(id),
+                "user_id": str(user.id),
+                "event_mode": str("cart"),
+            }
+        url = create_checkout_session_product(metadata, items, urls);
+        return redirect(url)
 
 

@@ -10,7 +10,6 @@ class TempItem:
         self.quantity = quantity
 
 def payment(metadata):
-    print("entrou no handler paymenty")
     user = User.objects.get(id=metadata["user_id"])
     inventory = user.inventory
     if metadata["event_mode"] == "cart":
@@ -23,15 +22,15 @@ def payment(metadata):
         items = [TempItem(product, variant, quantity)]
         
     for item in items:
-        stock = item.variant.stock
         inv_item, created = InventoryItem.objects.get_or_create(
             inventory=inventory, product=item.product, variant=item.variant)
+        item.variant.stock -= item.quantity
+        item.variant.save()
         if not created:
             inv_item.quantity += item.quantity
-            stock.quantity -= item.quantity
-            stock.save()
             inv_item.save()
-        if metadata["event_mode"] == "cart":
-            cart.items.all().delete()
+    if metadata["event_mode"] == "cart":
+        cart.items.all().delete()
+        cart.save()
     
     
