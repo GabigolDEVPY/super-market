@@ -25,9 +25,8 @@ def create_checkout_session_product(metadata, items, urls):
     return session.url
 
 
-
-
 def paymentbuy(request):
+    print("entrou aqui")
     form = request.POST.dict()
     user = request.user
     return redirect(create_checkout_session_product(metadata, line_items, urls))

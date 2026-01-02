@@ -2,7 +2,7 @@ from tabnanny import verbose
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from django.contrib.auth.models import User
-from product.models import Product
+from product.models import Product, Variation
 from stripe import Balance
 
 # Create your models here.
@@ -33,6 +33,7 @@ class Inventory(models.Model):
 class InventoryItem(models.Model):
     inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE, related_name="items")
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    variant = models.ForeignKey(Variation, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     added_at = models.DateTimeField(auto_now_add=True)
     

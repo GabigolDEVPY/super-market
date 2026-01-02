@@ -50,7 +50,7 @@
 
           <span id="price" class="fs-2 fw-bold text-success">
             R$ {{ product.apply_discount }}
-          </span><br>
+          </span>{{ product.discount.discount }}% OFF<br>
 
           <span class="fs-6">
             em até <strong>12x de {{ product.twelvetimes }} sem juros</strong>

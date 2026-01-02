@@ -10,6 +10,7 @@
         <div class="card-body">
 
           <h3 class="fw-semibold mb-3">{{ product.name }}</h3>
+          <h3 class="fw-semibold mb-3">{{ variant.name }}</h4>
 
           <div class="text-center mb-4">
             <img 
@@ -67,6 +68,7 @@
           <form method="post" action="{% url 'product:productbuynow' %}">
             {% csrf_token %}
             <input type="hidden" name="id" value="{{ product.id }}">
+            <input type="hidden" name="variant_id" value="{{ variant.id }}">
 
             <div class="mb-3">
               <label class="form-label">Endereço de entrega</label>

@@ -73,6 +73,7 @@ def productbuynow(request):
     user = request.user
     quantity = int(request.POST.get("quantity"))
     id = request.POST.get("id")
+    variant_id = request.POST.get("variant_id")
     product = Product.objects.get(id=id)
     # stock = product.stocks.first()
     # if not stock or stock.quantity < quantity:
@@ -85,7 +86,7 @@ def productbuynow(request):
         price = int(product.price * 100)
         
     #aprovar compra no checkout
-    urls = {"success_url": "inventory/", "cancel_url": f"product/{id}"} 
+    urls = {"success_url": "accounts/home/", "cancel_url": f"product/{id}"} 
 
     items = {
                 "price_data": {
@@ -97,9 +98,11 @@ def productbuynow(request):
             },
         
     metadata={
-            "product_id": str(product.id),
+            "product_id": str(id),
+            "variant_id": str(variant_id),
             "user_id": str(user.id),
             "quantity": str(quantity),
+            "event_mode": str("product"),
         }
     url = create_checkout_session_product(metadata, items, urls);
     return redirect(url)

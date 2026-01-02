@@ -1,0 +1,7 @@
+arrumar integração stripe
+arrumar tela de usuário
+fazer tela de pedidos do admin
+arrumar pedidos do usuário
+% desconto tela produto __OK__
+refatorar product
+refatorar payment
