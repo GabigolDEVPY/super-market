@@ -6,9 +6,6 @@ from . models import InfosForm, Order, OrderItem
 class InfosForm(admin.ModelAdmin):
     list_display = ("user",) 
     
-    
-    
-
 class OrderItem(admin.TabularInline):
     model = OrderItem
     extra = 1
@@ -19,5 +16,4 @@ class Order(admin.ModelAdmin):
     inlines = [
         OrderItem
     ]
-    
     list_display = ("pk",) 

@@ -1,11 +1,7 @@
-from email.policy import default
-from pyexpat import model
-from random import choice, choices
 from django.db import models
 from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
 from product.models import Product
-from stripe import Balance
 
 # Create your models here.
 class InfosForm(models.Model):
