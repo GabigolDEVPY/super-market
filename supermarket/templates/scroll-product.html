@@ -1,74 +1,194 @@
-<div class="mb-4">
+<div class="mb-5">
     <div 
-        class="d-flex gap-3 overflow-auto pb-3 scroll-row"
-        style="scrollbar-width: thin;"
+        class="d-flex gap-3 overflow-auto pb-3 position-relative"
+        style="scrollbar-width: thin; scroll-behavior: smooth;"
+        id="productCarousel"
     >
         {% for product in items %}
             <a 
                 href="{% url 'product:product' product.id %}" 
-                class="text-decoration-none text-dark flex-shrink-0"
+                class="text-decoration-none text-dark flex-shrink-0 product-card-link"
             >
                 <div 
-                    class="card border-0 shadow-sm rounded-3 h-100"
-                    style="width: 220px; height: 380px;"
+                    class="card border-0 shadow h-100 position-relative overflow-hidden"
+                    style="width: 240px; transition: all 0.3s ease;"
+                    onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 24px rgba(0,0,0,0.15)'"
+                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.1)'"
                 >
+                    <!-- Badge de desconto (se houver) -->
+                    {% if product.discount and product.has_stock %}
+                        <div 
+                            class="position-absolute top-0 end-0 m-2 badge bg-danger d-flex align-items-center justify-content-center"
+                            style="width: 50px; height: 50px; border-radius: 50%; font-size: 0.85rem; z-index: 10;"
+                        >
+                            <div class="text-center lh-1">
+                                <div class="fw-bold">{{ product.discount.discount }}%</div>
+                                <small style="font-size: 0.65rem;">OFF</small>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- Badge de indisponível -->
+                    {% if not product.has_stock %}
+                        <div 
+                            class="position-absolute top-0 start-0 end-0 bottom-0 d-flex align-items-center justify-content-center"
+                            style="background: rgba(0,0,0,0.6); z-index: 5;"
+                        >
+                            <span class="badge bg-danger fs-6 px-4 py-2">
+                                Indisponível
+                            </span>
+                        </div>
+                    {% endif %}
+
                     <!-- Imagem -->
-                    <div class="d-flex align-items-center justify-content-center p-3" style="height: 180px;">
+                    <div 
+                        class="d-flex align-items-center justify-content-center p-3 bg-light"
+                        style="height: 200px; transition: background-color 0.3s ease;"
+                        onmouseover="this.style.backgroundColor='#f0f0f0'"
+                        onmouseout="this.style.backgroundColor='#f8f9fa'"
+                    >
                         <img 
                             src="{{ product.image.url }}" 
                             class="img-fluid"
                             alt="{{ product.name }}"
-                            style="max-height: 160px; max-width: 100%; object-fit: contain;"
+                            style="max-height: 180px; max-width: 100%; object-fit: contain; transition: transform 0.3s ease;"
+                            onmouseover="this.style.transform='scale(1.05)'"
+                            onmouseout="this.style.transform='scale(1)'"
                         >
                     </div>
 
                     <!-- Corpo -->
-                    <div class="card-body d-flex flex-column p-3" style="height: 200px;">
-                        <!-- Nome do produto (altura fixa com ellipsis) -->
+                    <div class="card-body d-flex flex-column p-3">
+                        <!-- Nome do produto -->
                         <h6 
-                            class="card-title mb-2 lh-sm" 
+                            class="card-title mb-3 lh-sm fw-semibold" 
                             style="
-                                height: 40px;
+                                height: 44px;
                                 overflow: hidden;
                                 display: -webkit-box;
                                 -webkit-line-clamp: 2;
                                 -webkit-box-orient: vertical;
                                 font-size: 0.95rem;
+                                color: #2c3e50;
                             "
+                            title="{{ product.name }}"
                         >
                             {{ product.name }}
                         </h6>
 
                         {% if product.has_stock %}
                             <div class="mt-auto">
+                                <!-- Preço antigo -->
                                 {% if product.discount %}
-                                    <small class="text-muted text-decoration-line-through d-block mb-1">
-                                        R$ {{ product.price }}
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <small class="text-muted text-decoration-line-through">
+                                            R$ {{ product.price }}
+                                        </small>
+                                    </div>
+                                {% endif %}
+
+                                <!-- Preço atual -->
+                                <div class="mb-2">
+                                    <h5 class="fw-bold mb-0 text-success" style="font-size: 1.4rem; letter-spacing: -0.5px;">
+                                        R$ {{ product.apply_discount }}
+                                    </h5>
+                                </div>
+
+                                <!-- Parcelamento -->
+                                <div class="d-flex align-items-center gap-1 mb-2">
+                                    <svg width="14" height="14" fill="currentColor" class="text-success" viewBox="0 0 16 16">
+                                        <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z"/>
+                                        <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z"/>
+                                    </svg>
+                                    <small class="text-success fw-medium" style="font-size: 0.8rem;">
+                                        12x sem juros
                                     </small>
-                                {% endif %}
+                                </div>
 
-                                <h6 class="fw-bold mb-2" style="font-size: 1.1rem;">
-                                    R$ {{ product.apply_discount }}
-                                </h6>
-
-                                {% if product.discount %}
-                                    <span class="badge bg-success mb-2" style="font-size: 0.75rem;">
-                                        {{ product.discount.discount }}% OFF
-                                    </span>
-                                {% endif %}
-
-                                <p class="text-success small mb-0" style="font-size: 0.8rem;">
-                                    em até 12x sem juros
-                                </p>
+                                <!-- Botão de ação -->
+                                <div class="d-grid mt-2">
+                                    <button 
+                                        class="btn btn-outline-primary btn-sm fw-semibold"
+                                        style="transition: all 0.3s ease; border-width: 2px;"
+                                        onmouseover="this.style.backgroundColor='#0d6efd'; this.style.color='white'; this.style.transform='scale(1.02)'"
+                                        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#0d6efd'; this.style.transform='scale(1)'"
+                                        onclick="event.preventDefault(); window.location.href='{% url 'product:product' product.id %}'"
+                                    >
+                                        Ver detalhes
+                                    </button>
+                                </div>
                             </div>
                         {% else %}
-                            <span class="badge bg-danger mt-auto">
-                                Indisponível
-                            </span>
+                            <div class="mt-auto">
+                                <div class="alert alert-secondary py-2 px-3 mb-0 text-center" style="font-size: 0.85rem;">
+                                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" class="me-1">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                        <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                                    </svg>
+                                    Produto esgotado
+                                </div>
+                            </div>
                         {% endif %}
                     </div>
                 </div>
             </a>
         {% endfor %}
     </div>
+    
+    <!-- Indicador de scroll (opcional) -->
+    <div class="text-center mt-2">
+        <small class="text-muted d-flex align-items-center justify-content-center gap-1">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+            </svg>
+            Deslize para ver mais produtos
+        </small>
+    </div>
 </div>
+
+<script>
+// Melhora a experiência de scroll no carrossel
+document.addEventListener('DOMContentLoaded', function() {
+    const carousel = document.getElementById('productCarousel');
+    
+    if (carousel) {
+        // Adiciona scroll suave com mouse wheel horizontal
+        let isScrolling = false;
+        
+        carousel.addEventListener('wheel', function(e) {
+            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                e.preventDefault();
+                this.scrollLeft += e.deltaY;
+            }
+        }, { passive: false });
+        
+        // Adiciona indicador visual de que há mais produtos
+        function checkScroll() {
+            const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+            const currentScroll = carousel.scrollLeft;
+            
+            // Você pode adicionar lógica adicional aqui se quiser
+            // Por exemplo, mostrar/ocultar botões de navegação
+        }
+        
+        carousel.addEventListener('scroll', checkScroll);
+        checkScroll();
+    }
+    
+    // Adiciona efeito de hover nos cards mesmo em mobile (ao tocar)
+    const cards = document.querySelectorAll('.product-card-link');
+    cards.forEach(card => {
+        card.addEventListener('touchstart', function() {
+            const cardElement = this.querySelector('.card');
+            cardElement.style.transform = 'translateY(-8px)';
+            cardElement.style.boxShadow = '0 12px 24px rgba(0,0,0,0.15)';
+        });
+        
+        card.addEventListener('touchend', function() {
+            const cardElement = this.querySelector('.card');
+            cardElement.style.transform = 'translateY(0)';
+            cardElement.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+        });
+    });
+});
+</script>

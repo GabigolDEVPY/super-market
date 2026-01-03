@@ -1,197 +1,286 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+{% endblock %}
+
 {% block content %}
+<div class="container py-5">
+  <div class="row g-5 align-items-start">
 
-<div class="container my-5">
-  <div class="row g-5">
+    <!-- GALERIA DE IMAGENS - AGORA COM IMAGEM GRANDE E BONITA -->
+    <div class="col-lg-7">
+      <div class="position-sticky" style="top: 100px;">
+        <!-- Imagem Principal - MUITO MAIOR -->
+        <div class="bg-light rounded-3 shadow-sm p-3 h-100 d-flex align-items-center justify-content-center">
+          <img
+            id="mainImage"
+            src="{{ product.image.url }}"
+            class="rounded shadow w-100 h-100"
+            style="object-fit: contain;"
+            alt="{{ product.name }}"
+          >
+        </div>
 
-    <!-- GALERIA -->
-    <div class="col-lg-7 text-center">
-      <img
-        id="mainImage"
-        src="{{ product.image.url }}"
-        class="img-fluid rounded shadow mb-4"
-        style="width:600px;"
-        alt="{{ product.name }}"
-      >
-
-      {% if images|length > 1 %}
-      <div class="d-flex justify-content-center gap-3 flex-wrap">
-        {% for image in images %}
-        <img
-          src="{{ image.url|default:image }}"
-          class="img-thumbnail shadow"
-          width="90"
-          onclick="changeImage(this.src, this)"
-        >
-        {% endfor %}
+        <!-- Thumbnails -->
+        {% if images|length > 1 %}
+        <div class="d-flex justify-content-center gap-3 flex-wrap mt-3">
+          {% for image in images %}
+          <img
+            src="{{ image.url|default:image }}"
+            class="img-thumbnail rounded shadow-sm border border-2 thumbnail-img
+            {% if forloop.first %}border-primary active-thumbnail{% endif %}"
+            width="110"
+            height="110"
+            style="object-fit: cover; cursor: pointer; transition: all 0.3s;"
+            onclick="changeImage(this.src, this)"
+            alt="Miniatura {{ forloop.counter }}"
+          >
+          {% endfor %}
+        </div>
+        {% endif %}
       </div>
-      {% endif %}
     </div>
 
-    <!-- INFO PRODUTO -->
+    <!-- INFORMAÇÕES DO PRODUTO -->
     <div class="col-lg-5">
-      <div class="bg-white shadow rounded p-4 h-100 d-flex flex-column">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4 p-xl-5 d-flex flex-column">
 
-        <span class="badge bg-success mb-3">
-          Disponíveis <strong id="stockQuantity">{{ quantity }}</strong>
-        </span>
-
-        <h1 class="h4 fw-bold">{{ product.name }}</h1>
-
-        <div class="mb-4">
-          {% if product.discount %}
-            <span
-              id="product-discount"
-              class="text-decoration-line-through text-muted me-2"
-            >
-              R$ {{ product.price }}
+          <!-- Estoque -->
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <span class="badge bg-success fs-6 px-3 py-2">
+              <i class="bi bi-check-circle-fill me-1"></i>
+              <strong id="stockQuantity">{{ quantity }}</strong> em estoque
             </span>
-          {% endif %}
+          </div>
 
-          <span id="price" class="fs-2 fw-bold text-success">
-            R$ {{ product.apply_discount }}
-          </span>{{ product.discount.discount }}% OFF<br>
+          <!-- Nome do produto -->
+          <h1 class="display-6 fw-bold mb-4">{{ product.name }}</h1>
 
-          <span class="fs-6">
-            em até <strong>12x de {{ product.twelvetimes }} sem juros</strong>
-          </span>
-        </div>
-
-        <form action="{% url 'cart:addcart' %}" method="post">
-          {% csrf_token %}
-          <input type="hidden" name="id" value="{{ product.id }}">
-
-          <!-- VARIAÇÃO -->
+          <!-- Preço -->
           <div class="mb-4">
-            <label class="form-label fw-semibold">Cor</label>
-            <select
-              name="variantid"
-              id="variantSelect"
-              class="form-select form-select-lg"
-              required
-            >
-              <option value="">Selecione uma variação</option>
-              {% for v in variants %}
-              <option
-                value="{{ v.id }}"
-                data-price="{{ v.apply_discount }}"
-                data-discount="{{ v.price }}"
-                data-quantity="{{ v.stock }}"
-              >
-                {{ v.name }}
-              </option>
-              {% endfor %}
-            </select>
-          </div>
+            <div id="priceContainer">
+              {% if product.discount %}
+              <span id="originalPrice" class="text-muted text-decoration-line-through me-3 fs-4">
+                R$ {{ product.price|floatformat:2 }}
+              </span>
+              {% endif %}
 
-          <!-- QUANTIDADE -->
-          <div class="w-25">
-            <label class="form-label fw-semibold">Quantidade</label>
-            <input
-              type="number"
-              name="quantity"
-              id="quantityInput"
-              class="form-control text-center mb-4"
-              min="1"
-              max="{{ quantity }}"
-              value="1"
-            >
-          </div>
-
-          {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-danger alert-dismissible fade show">
-              {{ message }}
-              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              <span id="currentPrice" class="fs-2 fw-bold text-success">
+                R$ {{ product.apply_discount|floatformat:2 }}
+              </span>
             </div>
-            {% endfor %}
-          {% endif %}
 
-          <div class="mt-auto d-grid gap-3">
-            <button type="submit" class="btn btn-success btn-lg">
-              Adicionar ao carrinho
-            </button>
-            <a id="buyNowBtn" class="btn btn-outline-primary btn-lg disabled">
-              Comprar agora
-            </a>
-          </div>
-        </form>
+            <div class="mt-2 text-muted">
+              ou até <strong class="text-dark">12x de {{ product.twelvetimes|floatformat:2 }}</strong> sem juros
+            </div>
 
-        <div class="border-top pt-3 small text-muted mt-4">
-          <div class="d-flex align-items-center gap-2">
-            <i class="bi bi-shield-lock"></i> Compra 100% segura
+            {% if product.discount %}
+            <span class="badge bg-danger fs-6 mt-2 px-3 py-2">
+              {{ product.discount.discount }}% OFF
+            </span>
+            {% endif %}
           </div>
-          <div class="d-flex align-items-center gap-2">
-            <i class="bi bi-arrow-repeat"></i> Garantia de 30 dias
-          </div>
-          <div class="d-flex align-items-center gap-2">
-            <i class="bi bi-truck"></i> Frete grátis acima de R$ 299
+
+          <!-- Formulário -->
+          <form action="{% url 'cart:addcart' %}" method="post" class="flex-grow-1 d-flex flex-column">
+            {% csrf_token %}
+            <input type="hidden" name="id" value="{{ product.id }}">
+
+            <!-- Seleção de Variação -->
+            {% if variants %}
+            <div class="mb-4">
+              <label class="form-label fw-semibold">Variação</label>
+              <select
+                name="variantid"
+                id="variantSelect"
+                class="form-select form-select-lg"
+                required
+              >
+                <option value="">Escolha uma opção</option>
+                {% for v in variants %}
+                <option
+                  value="{{ v.id }}"
+                  data-price="{{ v.apply_discount|floatformat:2 }}"
+                  data-original="{{ v.price|floatformat:2 }}"
+                  data-stock="{{ v.stock }}"
+                  data-has-discount="{{ v.discount|yesno:'true,false' }}"
+                  data-discount-percent="{{ v.discount.discount|default:'0' }}"
+                >
+                  {{ v.name }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+            {% endif %}
+
+            <!-- Quantidade com Spinner -->
+            <div class="mb-4">
+              <label class="form-label fw-semibold">Quantidade</label>
+              <div class="input-group input-group-lg">
+                <button type="button" class="btn btn-outline-secondary quantity-decrement" tabindex="-1">
+                  <i class="bi bi-dash-lg"></i>
+                </button>
+                <input
+                  type="number"
+                  name="quantity"
+                  id="quantityInput"
+                  class="form-control text-center"
+                  min="1"
+                  max="{{ quantity }}"
+                  value="1"
+                  readonly
+                >
+                <button type="button" class="btn btn-outline-secondary quantity-increment" tabindex="-1">
+                  <i class="bi bi-plus-lg"></i>
+                </button>
+              </div>
+              <div class="form-text text-muted mt-2">
+                Máximo por pedido: <span id="maxQuantity">{{ quantity }}</span>
+              </div>
+            </div>
+
+            <!-- Mensagens -->
+            {% if messages %}
+              {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              </div>
+              {% endfor %}
+            {% endif %}
+
+            <!-- Botões de Ação -->
+            <div class="mt-auto d-grid gap-3">
+              <button type="submit" class="btn btn-success btn-lg fw-bold py-3">
+                <i class="bi bi-cart-plus-fill me-2"></i>
+                Adicionar ao Carrinho
+              </button>
+
+              <a
+                id="buyNowBtn"
+                href="#"
+                class="btn btn-outline-primary btn-lg fw-bold py-3 disabled"
+              >
+                <i class="bi bi-lightning-charge-fill me-2"></i>
+                Comprar Agora
+              </a>
+            </div>
+          </form>
+
+          <!-- Benefícios -->
+          <div class="border-top pt-4 mt-4 small text-muted">
+            <div class="d-flex align-items-center gap-3 mb-2">
+              <i class="bi bi-shield-lock-fill fs-5 text-success"></i>
+              <span>Compra 100% segura</span>
+            </div>
+            <div class="d-flex align-items-center gap-3 mb-2">
+              <i class="bi bi-arrow-repeat fs-5 text-primary"></i>
+              <span>Garantia de 30 dias</span>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+              <i class="bi bi-truck fs-5 text-info"></i>
+              <span>Frete grátis acima de R$ 299</span>
+            </div>
           </div>
         </div>
-
       </div>
     </div>
   </div>
 
-  <!-- DESCRIÇÃO -->
+  <!-- DESCRIÇÃO DO PRODUTO -->
   <div class="row mt-5">
     <div class="col-12">
-      <div class="bg-white shadow rounded p-4">
-        <h4 class="fw-bold mb-3">Descrição do produto</h4>
-        <div class="text-muted" style="line-height:1.8;">
-          {{ product.description|linebreaks }}
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4 p-xl-5">
+          <h4 class="fw-bold mb-4">
+            <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+            Descrição do produto
+          </h4>
+          <div class="text-muted lead" style="line-height: 1.8;">
+            {{ product.description|linebreaks }}
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
+<!-- JavaScript (igual ao anterior, só mantido) -->
 <script>
-  const variantSelect = document.getElementById("variantSelect");
-  const priceElement = document.getElementById("price");
-  const discountElement = document.getElementById("product-discount");
-  const stockQuantity = document.getElementById("stockQuantity");
-  const quantityInput = document.getElementById("quantityInput");
-  const buyNowBtn = document.getElementById("buyNowBtn");
+document.addEventListener('DOMContentLoaded', function () {
+  const variantSelect = document.getElementById('variantSelect');
+  const currentPriceEl = document.getElementById('currentPrice');
+  const originalPriceEl = document.getElementById('originalPrice');
+  const priceContainer = document.getElementById('priceContainer');
+  const stockQuantity = document.getElementById('stockQuantity');
+  const maxQuantity = document.getElementById('maxQuantity');
+  const quantityInput = document.getElementById('quantityInput');
+  const buyNowBtn = document.getElementById('buyNowBtn');
+  const decrementBtn = document.querySelector('.quantity-decrement');
+  const incrementBtn = document.querySelector('.quantity-increment');
 
-  variantSelect.addEventListener("change", function () {
-    const option = this.options[this.selectedIndex];
-
-    const price = option.dataset.price;
-    const discount = option.dataset.discount;
-    const stock = option.dataset.quantity;
-    const variantId = option.value;
-
-    if (price) {
-      priceElement.innerText = "R$ " + price.replace(".", ",");
+  function updateVariantInfo() {
+    const selected = variantSelect?.options[variantSelect.selectedIndex];
+    if (!selected || !selected.value) {
+      buyNowBtn.classList.add('disabled');
+      buyNowBtn.removeAttribute('href');
+      return;
     }
 
-    if (discountElement && discount) {
-      discountElement.innerText = "R$ " + discount.replace(".", ",");
+    const price = selected.dataset.price;
+    const original = selected.dataset.original;
+    const stock = selected.dataset.stock;
+    const hasDiscount = selected.dataset.hasDiscount === 'true';
+    const discountPercent = selected.dataset.discountPercent;
+
+    currentPriceEl.textContent = `R$ ${price.replace('.', ',')}`;
+
+    if (hasDiscount && originalPriceEl) {
+      originalPriceEl.textContent = `R$ ${original.replace('.', ',')}`;
+      originalPriceEl.style.display = 'inline';
+      const badge = priceContainer.querySelector('.badge');
+      if (badge) badge.textContent = `${discountPercent}% OFF`;
+    } else if (originalPriceEl) {
+      originalPriceEl.style.display = 'none';
     }
 
-    if (stock) {
-      stockQuantity.innerText = stock;
-      quantityInput.max = stock;
-      quantityInput.value = 1;
-    }
+    stockQuantity.textContent = stock;
+    maxQuantity.textContent = stock;
+    quantityInput.max = stock;
+    quantityInput.value = 1;
 
-    if (variantId) {
-      buyNowBtn.href = `/product/buy/{{ product.id }}/variant/${variantId}/`;
-      buyNowBtn.classList.remove("disabled");
-    } else {
-      buyNowBtn.classList.add("disabled");
-      buyNowBtn.removeAttribute("href");
+    buyNowBtn.href = `/product/buy/{{ product.id }}/variant/${selected.value}/`;
+    buyNowBtn.classList.remove('disabled');
+  }
+
+  if (variantSelect) {
+    variantSelect.addEventListener('change', updateVariantInfo);
+  }
+
+  decrementBtn?.addEventListener('click', () => {
+    if (parseInt(quantityInput.value) > 1) {
+      quantityInput.value = parseInt(quantityInput.value) - 1;
     }
   });
 
-  function changeImage(src, el) {
-    document.getElementById("mainImage").src = src;
-    document
-      .querySelectorAll(".img-thumbnail")
-      .forEach(img => img.classList.remove("border-primary"));
-    el.classList.add("border-primary");
-  }
-</script>
+  incrementBtn?.addEventListener('click', () => {
+    if (parseInt(quantityInput.value) < parseInt(quantityInput.max)) {
+      quantityInput.value = parseInt(quantityInput.value) + 1;
+    }
+  });
 
+  quantityInput?.addEventListener('keydown', e => e.preventDefault());
+});
+
+function changeImage(src, thumbnail) {
+  document.getElementById('mainImage').src = src;
+  document.querySelectorAll('.thumbnail-img').forEach(img => {
+    img.classList.remove('border-primary', 'active-thumbnail');
+  });
+  thumbnail.classList.add('border-primary', 'active-thumbnail');
+}
+</script>
 {% endblock %}

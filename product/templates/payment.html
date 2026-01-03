@@ -1,80 +1,93 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<!-- Bootstrap Icons (adicione no base.html se preferir) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+{% endblock %}
+
 {% block content %}
-
-<div class="container my-5">
-  <div class="row g-4 justify-content-center">
-
-    <!-- COLUNA ESQUERDA — PRODUTO -->
+<div class="container py-5">
+  <div class="row justify-content-center g-5">
+    
+    <!-- Coluna Esquerda: Detalhes do Produto -->
     <div class="col-lg-6">
-      <div class="card shadow-sm border-0 h-100">
-        <div class="card-body">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4 p-md-5">
+          <h1 class="fw-bold mb-3">{{ product.name }}</h1>
+          {% if variant.name %}
+            <h4 class="text-muted mb-4">{{ variant.name }}</h4>
+          {% endif %}
 
-          <h3 class="fw-semibold mb-3">{{ product.name }}</h3>
-          <h3 class="fw-semibold mb-3">{{ variant.name }}</h4>
-
-          <div class="text-center mb-4">
-            <img 
-              src="{{ product.image.url }}" 
-              class="img-fluid rounded"
-              style="max-height: 350px; object-fit: contain;"
-              alt="{{ product.name }}">
+          <!-- Imagem do produto -->
+          <div class="text-center mb-5">
+            <img src="{{ product.image.url }}"
+                 class="img-fluid rounded shadow-sm"
+                 style="max-height: 400px; object-fit: contain;"
+                 alt="{{ product.name }}">
           </div>
 
-          <div class="d-flex align-items-center gap-3">
+          <!-- Preço e badges -->
+          <div class="d-flex align-items-end gap-3 mb-4">
             <h2 class="fw-bold text-primary mb-0">
-              R$ {{ discount_price|default:product.apply_discount|floatformat:2 }}
+              R$ {{ request.session.discount_price|default:product.apply_discount|floatformat:2 }}
             </h2>
-            <span class="badge bg-success">À vista</span>
+            <span class="badge bg-success fs-6 px-3 py-2">À vista</span>
           </div>
 
-          <p class="text-muted mt-2 mb-0">
-            Produto enviado com segurança • Garantia inclusa
-          </p>
+          {% if request.session.discount_name %}
+            <div class="alert alert-success py-2 px-3 d-inline-block">
+              <i class="bi bi-tag-fill me-2"></i>
+              Cupom <strong>{{ request.session.discount_name }}</strong> aplicado!
+            </div>
+          {% endif %}
 
+          <div class="d-flex align-items-center gap-4 text-muted mt-4">
+            <span><i class="bi bi-truck fs-4"></i> Envio seguro</span>
+            <span><i class="bi bi-shield-check fs-4"></i> Garantia inclusa</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- COLUNA DIREITA — CHECKOUT -->
+    <!-- Coluna Direita: Checkout / Finalização -->
     <div class="col-lg-5">
-      <div class="card shadow-sm border-0">
-        <div class="card-body">
+      <div class="card border-0 shadow-sm sticky-top" style="top: 100px;">
+        <div class="card-body p-4 p-md-5">
+          <h4 class="fw-bold mb-4"><i class="bi bi-cart4 me-2"></i>Finalizar compra</h4>
 
-          <h5 class="fw-semibold mb-4">Finalizar compra</h5>
-
-          <!-- CUPOM -->
+          <!-- Aplicar Cupom -->
           <form method="post" class="mb-4">
             {% csrf_token %}
-            <label class="form-label">Cupom de desconto</label>
+            <label class="form-label fw-semibold">Cupom de desconto</label>
             <div class="input-group">
-              <input 
-                type="text" 
-                name="discount" 
-                class="form-control"
-                placeholder="Digite seu cupom">
+              <input type="text" name="discount" class="form-control" placeholder="Digite seu cupom">
               <button class="btn btn-outline-primary" type="submit">
-                Aplicar
+                <i class="bi bi-check-lg"></i> Aplicar
               </button>
             </div>
           </form>
 
+          <!-- Mensagens (erros/sucesso do cupom) -->
           {% if messages %}
             {% for message in messages %}
-              <div class="alert alert-{{  message.tags }} py-2">
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show py-2" role="alert">
                 {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
               </div>
             {% endfor %}
           {% endif %}
 
-          <!-- FORM FINAL -->
+          <!-- Formulário de Compra -->
           <form method="post" action="{% url 'product:productbuynow' %}">
             {% csrf_token %}
             <input type="hidden" name="id" value="{{ product.id }}">
             <input type="hidden" name="variant_id" value="{{ variant.id }}">
 
-            <div class="mb-3">
-              <label class="form-label">Endereço de entrega</label>
-              <select name="address" class="form-select" required>
+            <!-- Endereço -->
+            <div class="mb-4">
+              <label class="form-label fw-semibold">Endereço de entrega</label>
+              <select name="address" class="form-select form-select-lg" required>
                 <option value="">Selecione um endereço</option>
                 {% for add in address %}
                   <option value="{{ add.id }}">{{ add.name }}</option>
@@ -82,35 +95,72 @@
               </select>
             </div>
 
+            <!-- Quantidade com spinner + / - -->
             <div class="mb-4">
-              <label class="form-label">Quantidade</label>
-              <input 
-                type="number" 
-                name="quantity"
-                class="form-control"
-                min="1"
-                max="{{ stock }}"
-                value="1">
-              <small class="text-muted">
-                Estoque disponível: {{ stock }}
-              </small>
+              <label class="form-label fw-semibold">Quantidade</label>
+              <div class="input-group input-group-lg">
+                <button type="button" class="btn btn-outline-secondary quantity-decrement">
+                  <i class="bi bi-dash-lg"></i>
+                </button>
+                <input type="number"
+                       name="quantity"
+                       class="form-control text-center quantity-input"
+                       min="1"
+                       max="{{ stock }}"
+                       value="1"
+                       readonly>
+                <button type="button" class="btn btn-outline-secondary quantity-increment">
+                  <i class="bi bi-plus-lg"></i>
+                </button>
+              </div>
+              <div class="form-text mt-2">
+                <i class="bi bi-info-circle"></i> Estoque disponível: <strong>{{ stock }}</strong>
+              </div>
             </div>
 
-            <button class="btn btn-primary w-100 btn-lg fw-semibold">
+            <!-- Botão Finalizar -->
+            <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold py-3">
+              <i class="bi bi-lock-fill me-2"></i>
               Finalizar compra
             </button>
 
-            <p class="text-muted text-center mt-3 mb-0" style="font-size: 0.85rem;">
-              Pagamento 100% seguro • Seus dados protegidos
+            <p class="text-center text-muted mt-4 small">
+              <i class="bi bi-shield-lock-fill me-1"></i>
+              Pagamento 100% seguro • Seus dados estão protegidos
             </p>
-
           </form>
-
         </div>
       </div>
     </div>
-
   </div>
 </div>
 
+<!-- JavaScript para o spinner de quantidade (puro, sem dependências) -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const quantityInput = document.querySelector('.quantity-input');
+  const decrementBtn = document.querySelector('.quantity-decrement');
+  const incrementBtn = document.querySelector('.quantity-increment');
+
+  const min = parseInt(quantityInput.min);
+  const max = parseInt(quantityInput.max);
+
+  decrementBtn.addEventListener('click', () => {
+    let current = parseInt(quantityInput.value);
+    if (current > min) {
+      quantityInput.value = current - 1;
+    }
+  });
+
+  incrementBtn.addEventListener('click', () => {
+    let current = parseInt(quantityInput.value);
+    if (current < max) {
+      quantityInput.value = current + 1;
+    }
+  });
+
+  // Previne digitação direta (opcional, mantém readonly mas permite foco)
+  quantityInput.addEventListener('keydown', (e) => e.preventDefault());
+});
+</script>
 {% endblock content %}

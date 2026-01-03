@@ -6,67 +6,176 @@
 {% block content %}
 {% if products %}
     <div class="container my-5">
+        <!-- Header da página -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                    <div>
+                        <h2 class="fw-bold mb-1">Todos os Produtos</h2>
+                        <p class="text-muted mb-0">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" class="me-1">
+                                <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z"/>
+                            </svg>
+                            {{ products|length }} produto{{ products|length|pluralize }} encontrado{{ products|length|pluralize }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid de produtos -->
         <div class="row g-4">
             {% for product in products %}
                 <div class="col-6 col-md-4 col-lg-3">
-
                     <a 
                         href="{% url 'product:product' product.id %}" 
-                        class="text-decoration-none text-dark"
+                        class="text-decoration-none text-dark product-link"
+                        data-product-id="{{ product.id }}"
                     >
-                        <div class="card h-100 border-0 shadow-sm rounded-3">
+                        <div 
+                            class="card h-100 border-0 shadow-sm position-relative overflow-hidden"
+                            style="transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);"
+                            onmouseover="this.style.transform='translateY(-12px)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.15)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.1)'"
+                        >
+                            <!-- Badge de desconto -->
+                            {% if product.discount and product.has_stock %}
+                                <div 
+                                    class="position-absolute top-0 end-0 m-2"
+                                    style="z-index: 10;"
+                                >
+                                    <div 
+                                        class="badge bg-danger d-flex align-items-center justify-content-center"
+                                        style="width: 55px; height: 55px; border-radius: 50%; box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);"
+                                    >
+                                        <div class="text-center lh-1">
+                                            <div class="fw-bold" style="font-size: 1rem;">{{ product.discount.discount }}%</div>
+                                            <small style="font-size: 0.65rem;">OFF</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <!-- Badge novo (se aplicável) -->
+                            {% if product.is_new %}
+                                <div 
+                                    class="position-absolute top-0 start-0 m-2"
+                                    style="z-index: 10;"
+                                >
+                                    <span class="badge bg-primary px-3 py-2" style="font-size: 0.75rem; box-shadow: 0 2px 8px rgba(13, 110, 253, 0.3);">
+                                        ✨ Novo
+                                    </span>
+                                </div>
+                            {% endif %}
+
+                            <!-- Overlay para produtos indisponíveis -->
+                            {% if not product.has_stock %}
+                                <div 
+                                    class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+                                    style="background: rgba(0,0,0,0.75); z-index: 5; backdrop-filter: blur(2px);"
+                                >
+                                    <div class="text-center text-white">
+                                        <svg width="48" height="48" fill="currentColor" viewBox="0 0 16 16" class="mb-2">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                            <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                                        </svg>
+                                        <div class="fw-bold fs-5">Esgotado</div>
+                                        <small>Produto indisponível</small>
+                                    </div>
+                                </div>
+                            {% endif %}
 
                             <!-- Imagem -->
-                            <div class="d-flex align-items-center justify-content-center p-3">
+                            <div 
+                                class="d-flex align-items-center justify-content-center p-3 bg-light"
+                                style="height: 200px; transition: background-color 0.3s ease;"
+                                onmouseover="this.style.backgroundColor='#e9ecef'"
+                                onmouseout="this.style.backgroundColor='#f8f9fa'"
+                            >
                                 <img 
                                     src="{{ product.image.url }}" 
                                     class="img-fluid"
                                     alt="{{ product.name }}"
-                                    style="height: 180px; object-fit: contain;"
+                                    style="max-height: 180px; object-fit: contain; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);"
+                                    onmouseover="this.style.transform='scale(1.08) rotate(2deg)'"
+                                    onmouseout="this.style.transform='scale(1) rotate(0deg)'"
+                                    loading="lazy"
                                 >
                             </div>
 
                             <!-- Corpo -->
-                            <div class="card-body d-flex flex-column">
-
-                                <h6 class="card-title mb-2">
+                            <div class="card-body d-flex flex-column p-3">
+                                <!-- Nome do produto -->
+                                <h6 
+                                    class="card-title mb-3 fw-semibold lh-sm"
+                                    style="
+                                        height: 44px;
+                                        overflow: hidden;
+                                        display: -webkit-box;
+                                        -webkit-line-clamp: 2;
+                                        -webkit-box-orient: vertical;
+                                        font-size: 0.95rem;
+                                        color: #2c3e50;
+                                    "
+                                    title="{{ product.name }}"
+                                >
                                     {{ product.name }}
                                 </h6>
 
                                 {% if product.has_stock %}
                                     <div class="mt-auto">
-
+                                        <!-- Preço original -->
                                         {% if product.discount %}
-                                            <small class="text-muted text-decoration-line-through">
-                                                R$ {{ product.price }}
+                                            <div class="mb-2">
+                                                <small class="text-muted text-decoration-line-through d-block" style="font-size: 0.85rem;">
+                                                    De R$ {{ product.price }}
+                                                </small>
+                                            </div>
+                                        {% endif %}
+
+                                        <!-- Preço com desconto -->
+                                        <div class="mb-2">
+                                            <h5 class="fw-bold mb-0 text-success" style="font-size: 1.5rem; letter-spacing: -0.5px;">
+                                                R$ {{ product.apply_discount }}
+                                            </h5>
+                                        </div>
+
+                                        <!-- Info de parcelamento -->
+                                        <div class="d-flex align-items-center gap-1 mb-3">
+                                            <svg width="14" height="14" fill="currentColor" class="text-success flex-shrink-0" viewBox="0 0 16 16">
+                                                <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z"/>
+                                                <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z"/>
+                                            </svg>
+                                            <small class="text-success fw-medium" style="font-size: 0.8rem;">
+                                                12x sem juros
                                             </small>
-                                        {% endif %}
+                                        </div>
 
-                                        <h5 class="mb-1 fw-bold">
-                                            R$ {{ product.apply_discount }}
-                                        </h5>
-
-                                        {% if product.discount %}
-                                            <span class="badge bg-success mb-2">
-                                                {{ product.discount.discount }}% OFF
-                                            </span>
-                                        {% endif %}
-
-                                        <p class="text-success small mb-0">
-                                            em até 12x sem juros
-                                        </p>
-
+                                        <!-- Botão de ação -->
+                                        <div class="d-grid">
+                                            <button 
+                                                class="btn btn-outline-primary btn-sm fw-semibold py-2"
+                                                style="transition: all 0.3s ease; border-width: 2px;"
+                                                onmouseover="this.style.backgroundColor='#0d6efd'; this.style.color='white'; this.style.borderColor='#0d6efd'; this.innerHTML='<svg width=\'16\' height=\'16\' fill=\'currentColor\' viewBox=\'0 0 16 16\' class=\'me-1\'><path d=\'M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z\'/></svg>Adicionar ao carrinho'"
+                                                onmouseout="this.style.backgroundColor='transparent'; this.style.color='#0d6efd'; this.style.borderColor='#0d6efd'; this.innerHTML='Ver detalhes'"
+                                                onclick="event.preventDefault(); window.location.href='{% url 'product:product' product.id %}'"
+                                            >
+                                                Ver detalhes
+                                            </button>
+                                        </div>
                                     </div>
                                 {% else %}
-                                    <span class="badge bg-danger mt-auto">
-                                        Produto indisponível
-                                    </span>
+                                    <div class="mt-auto">
+                                        <div class="alert alert-secondary mb-0 py-2 text-center border-0" style="background-color: #f8f9fa;">
+                                            <small class="text-muted fw-medium">
+                                                Avise-me quando chegar
+                                            </small>
+                                        </div>
+                                    </div>
                                 {% endif %}
-
                             </div>
                         </div>
                     </a>
-
                 </div>
             {% endfor %}
         </div>
@@ -74,15 +183,99 @@
         <!-- Paginação -->
         {% if products|length > 2 %}
             <div class="row mt-5">
-                <div class="col d-flex justify-content-center">
-                    {% include "pagination.html" %}
+                <div class="col-12">
+                    <div class="d-flex justify-content-center">
+                        <nav aria-label="Navegação de produtos">
+                            {% include "pagination.html" %}
+                        </nav>
+                    </div>
                 </div>
             </div>
         {% endif %}
     </div>
 {% else %}
-    <div style="height: 60vh;" class="w-100 align-items-center d-flex justify-content-center">
-        <strong class="fs-4">Nenhum produto encontrado!</strong>
+    <!-- Estado vazio -->
+    <div class="d-flex align-items-center justify-content-center" style="min-height: 60vh;">
+        <div class="text-center">
+            <div class="mb-4">
+                <svg width="120" height="120" fill="currentColor" class="text-muted" viewBox="0 0 16 16">
+                    <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z"/>
+                </svg>
+            </div>
+            <h3 class="fw-bold mb-2">Nenhum produto encontrado</h3>
+            <p class="text-muted mb-4">
+                Não encontramos produtos que correspondam à sua busca.<br>
+                Tente ajustar os filtros ou volte mais tarde.
+            </p>
+            <a href="{% url 'market:home' %}" class="btn btn-primary px-4 py-2">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" class="me-2">
+                    <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                </svg>
+                Voltar para a página inicial
+            </a>
+        </div>
     </div>
 {% endif %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Adiciona animação de entrada nos cards
+    const cards = document.querySelectorAll('.product-link');
+    
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }, index * 50);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    
+    cards.forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        observer.observe(card);
+    });
+    
+    // Touch support para mobile
+    cards.forEach(card => {
+        card.addEventListener('touchstart', function() {
+            const cardElement = this.querySelector('.card');
+            cardElement.style.transform = 'translateY(-12px)';
+            cardElement.style.boxShadow = '0 20px 40px rgba(0,0,0,0.15)';
+        });
+        
+        card.addEventListener('touchend', function() {
+            const cardElement = this.querySelector('.card');
+            setTimeout(() => {
+                cardElement.style.transform = 'translateY(0)';
+                cardElement.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+            }, 100);
+        });
+    });
+    
+    // Scroll to top suave ao clicar na paginação
+    const paginationLinks = document.querySelectorAll('.pagination a');
+    paginationLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            // Permite que a navegação aconteça, mas adiciona scroll suave
+            setTimeout(() => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }, 100);
+        });
+    });
+});
+</script>
 {% endblock %}

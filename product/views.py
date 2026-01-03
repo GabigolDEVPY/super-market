@@ -2,6 +2,7 @@ from django.http import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views import View
+from requests import session
 from product.models import Product
 from django.views.generic.detail import DetailView
 from product.models import DiscountCode
@@ -48,23 +49,22 @@ class BuyNowView(LoginRequiredMixin, View):
         variant = product.variations.get(id=variant_id)
         address = self.request.user.address.all()
         stock = variant.stock
-        previous_discount = request.session.get("discount_name")
-        previous_price = request.session.get("discount_price", 0)
         
         if discount:
             discount_search = DiscountCode.objects.filter(name=discount).first()
             if not discount_search:
-                messages.warning(request, "Cupom Inválido!", extra_tags="cupom")
-                return render(request, 'payment.html', {"product": product, "stock": stock, "variant": variant, "address": address})
+                if "discount_price" in request.session:
+                    messages.warning(request, "Cupom Inválido!", extra_tags="cupom")
+                    return redirect("product:buynow", product_id=product_id, variant_id=variant_id)
             discount_price = int(product.apply_discount() - (product.price / 100 * discount_search.discount))
-            request.session["discount_name"] = discount_search.name
             request.session["discount_price"] = discount_price      
+            request.session["discount_name"] = discount_search.name  
             messages.success(request, "Cupom de desconto aplicado com sucesso!!", extra_tags="cupom")
             # success cupom
-            return render(request, 'payment.html', {"product": product, "stock": stock, "discount_price": discount_price, "variant": variant, "address": address})
+            return render(request, 'payment.html', {"product": product, "stock": stock, "variant": variant, "address": address})
         # error cupom
         messages.warning(request, "Insira um cupom de desconto!", extra_tags="cupom")
-        return render(request, 'payment.html', {"product": product, "stock": stock, "variant": variant, "address": address})
+        return redirect("product:buynow", product_id=product_id, variant_id=variant_id)
 
 
 
@@ -75,11 +75,16 @@ def productbuynow(request):
     id = request.POST.get("id")
     variant_id = request.POST.get("variant_id")
     product = Product.objects.get(id=id)
-    if product.variations.get(id=variant_id).stock < quantity:
+    variant = product.variations.get(id=variant_id)
+    if variant.stock < quantity:
         raise Http404("product without stock avaliable")
     
     discount_price = request.session.get("discount_price")
-    price = int(discount_price if discount_price else product.apply_discount) * 100
+
+    if discount_price:
+        price = int(float(discount_price) * 100)
+    else:
+        price = int(float(variant.apply_discount()) * 100)
     #aprovar compra no checkout
     urls = {"success_url": "accounts/home/", "cancel_url": f"product/{id}"} 
 
