@@ -10,6 +10,7 @@ from django.contrib import messages
 from utils.decorators import clear_session_data
 from django.utils.decorators import method_decorator
 from payment.utils import create_checkout_session_product
+from django.http import Http404
 
 
 @method_decorator(clear_session_data(["discount_name", "discount_price"]), name="dispatch")
@@ -43,8 +44,9 @@ class BuyNowView(LoginRequiredMixin, View):
     #apply discount cupom
     def post(self, request, product_id, variant_id):
         discount = request.POST.get("discount") or None
-        product = Product.objects.get(id=id)
+        product = Product.objects.get(id=product_id)
         variant = product.variations.get(id=variant_id)
+        address = self.request.user.address.all()
         stock = variant.stock
         previous_discount = request.session.get("discount_name")
         previous_price = request.session.get("discount_price", 0)
@@ -52,19 +54,17 @@ class BuyNowView(LoginRequiredMixin, View):
         if discount:
             discount_search = DiscountCode.objects.filter(name=discount).first()
             if not discount_search:
-                previous_discount = request.session.get("discount_name")
-                previous_price = request.session.get("discount_price")
-                messages.error(request, "Cupom Inválido!")
-                return render(request, 'payment.html', {"product": product, "discount_price": previous_price, "discount": previous_discount})
-                return render(request, 'payment.html', {"product": product, "stock": stock, "discount_price": previous_price, "discount": previous_discount})
-            discount_price = float(product.apply_discount() - (product.price / 100 * discount_search.discount))
+                messages.warning(request, "Cupom Inválido!", extra_tags="cupom")
+                return render(request, 'payment.html', {"product": product, "stock": stock, "variant": variant, "address": address})
+            discount_price = int(product.apply_discount() - (product.price / 100 * discount_search.discount))
             request.session["discount_name"] = discount_search.name
             request.session["discount_price"] = discount_price      
-            messages.success(request, "Cupom de desconto aplicado com sucesso!!")
-            return render(request, 'payment.html', {"product": product, "discount_price": discount_price})
-            # return render(request, 'payment.html', {"product": product, "stock": stock, "discount_price": discount_price})
-        messages.success(request, "Insira um cupom de desconto!!")
-        return render(request, 'payment.html', {"product": product, "discount_price": previous_price})
+            messages.success(request, "Cupom de desconto aplicado com sucesso!!", extra_tags="cupom")
+            # success cupom
+            return render(request, 'payment.html', {"product": product, "stock": stock, "discount_price": discount_price, "variant": variant, "address": address})
+        # error cupom
+        messages.warning(request, "Insira um cupom de desconto!", extra_tags="cupom")
+        return render(request, 'payment.html', {"product": product, "stock": stock, "variant": variant, "address": address})
 
 
 
@@ -75,23 +75,18 @@ def productbuynow(request):
     id = request.POST.get("id")
     variant_id = request.POST.get("variant_id")
     product = Product.objects.get(id=id)
-    # stock = product.stocks.first()
-    # if not stock or stock.quantity < quantity:
-    #     return redirect("market:home")
+    if product.variations.get(id=variant_id).stock < quantity:
+        raise Http404("product without stock avaliable")
     
     discount_price = request.session.get("discount_price")
-    if discount_price is not None:
-        price = int(discount_price * 100)
-    else:
-        price = int(product.price * 100)
-        
+    price = int(discount_price if discount_price else product.apply_discount) * 100
     #aprovar compra no checkout
     urls = {"success_url": "accounts/home/", "cancel_url": f"product/{id}"} 
 
     items = {
                 "price_data": {
                     "currency": "brl",
-                    "unit_amount": int((product.apply_discount()) * 100),
+                    "unit_amount": price,
                     "product": product.id_stripe,
                 },
                 "quantity": quantity

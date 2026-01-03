@@ -22,7 +22,7 @@
 
           <div class="d-flex align-items-center gap-3">
             <h2 class="fw-bold text-primary mb-0">
-              R$ {{ discount_price|default:product.apply_discount }}
+              R$ {{ discount_price|default:product.apply_discount|floatformat:2 }}
             </h2>
             <span class="badge bg-success">À vista</span>
           </div>
@@ -43,7 +43,7 @@
           <h5 class="fw-semibold mb-4">Finalizar compra</h5>
 
           <!-- CUPOM -->
-          <form method="post" action="{% url 'product:buynow' product.id variant.id %}" class="mb-4">
+          <form method="post" class="mb-4">
             {% csrf_token %}
             <label class="form-label">Cupom de desconto</label>
             <div class="input-group">
@@ -60,7 +60,9 @@
 
           {% if messages %}
             {% for message in messages %}
-              <div class="alert alert-warning py-2">{{ message }}</div>
+              <div class="alert alert-{{  message.tags }} py-2">
+                {{ message }}
+              </div>
             {% endfor %}
           {% endif %}
 
@@ -87,10 +89,10 @@
                 name="quantity"
                 class="form-control"
                 min="1"
-                max="{{ stock.quantity }}"
+                max="{{ stock }}"
                 value="1">
               <small class="text-muted">
-                Estoque disponível: {{ stock.quantity }}
+                Estoque disponível: {{ stock }}
               </small>
             </div>
 

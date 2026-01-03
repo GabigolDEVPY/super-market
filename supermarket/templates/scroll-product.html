@@ -1,82 +1,74 @@
 <div class="mb-4">
-
-    <!-- Linha de produtos com scroll -->
     <div 
         class="d-flex gap-3 overflow-auto pb-3 scroll-row"
         style="scrollbar-width: thin;"
     >
-
         {% for product in items %}
             <a 
                 href="{% url 'product:product' product.id %}" 
-                class="text-decoration-none text-dark"
+                class="text-decoration-none text-dark flex-shrink-0"
             >
-                <div class="card border-0 shadow-sm rounded-3 h-100" style="min-width: 220px;">
-
+                <div 
+                    class="card border-0 shadow-sm rounded-3 h-100"
+                    style="width: 220px; height: 380px;"
+                >
                     <!-- Imagem -->
-                    <div class="d-flex align-items-center justify-content-center p-3">
+                    <div class="d-flex align-items-center justify-content-center p-3" style="height: 180px;">
                         <img 
                             src="{{ product.image.url }}" 
                             class="img-fluid"
                             alt="{{ product.name }}"
-                            style="height: 160px; object-fit: contain;"
+                            style="max-height: 160px; max-width: 100%; object-fit: contain;"
                         >
                     </div>
 
                     <!-- Corpo -->
-                    <div class="card-body d-flex flex-column">
-
-                        <h6 class="card-title mb-2">
+                    <div class="card-body d-flex flex-column p-3" style="height: 200px;">
+                        <!-- Nome do produto (altura fixa com ellipsis) -->
+                        <h6 
+                            class="card-title mb-2 lh-sm" 
+                            style="
+                                height: 40px;
+                                overflow: hidden;
+                                display: -webkit-box;
+                                -webkit-line-clamp: 2;
+                                -webkit-box-orient: vertical;
+                                font-size: 0.95rem;
+                            "
+                        >
                             {{ product.name }}
                         </h6>
 
                         {% if product.has_stock %}
                             <div class="mt-auto">
-
                                 {% if product.discount %}
-                                    <small class="text-muted text-decoration-line-through">
+                                    <small class="text-muted text-decoration-line-through d-block mb-1">
                                         R$ {{ product.price }}
                                     </small>
                                 {% endif %}
 
-                                <h6 class="fw-bold mb-1">
+                                <h6 class="fw-bold mb-2" style="font-size: 1.1rem;">
                                     R$ {{ product.apply_discount }}
                                 </h6>
 
                                 {% if product.discount %}
-                                    <span class="badge bg-success mb-1">
+                                    <span class="badge bg-success mb-2" style="font-size: 0.75rem;">
                                         {{ product.discount.discount }}% OFF
                                     </span>
                                 {% endif %}
 
-                                <p class="text-success small mb-0">
+                                <p class="text-success small mb-0" style="font-size: 0.8rem;">
                                     em até 12x sem juros
                                 </p>
-
                             </div>
                         {% else %}
                             <span class="badge bg-danger mt-auto">
                                 Indisponível
                             </span>
                         {% endif %}
-
                     </div>
                 </div>
             </a>
         {% endfor %}
-
     </div>
 </div>
-
-<!-- Scroll horizontal com mouse -->
-<script>
-document.querySelectorAll('.scroll-row').forEach(row => {
-    row.addEventListener('wheel', (event) => {
-        event.preventDefault();
-        row.scrollBy({
-            left: event.deltaY < 0 ? -120 : 120,
-            behavior: 'smooth'
-        });
-    });
-});
-</script>
