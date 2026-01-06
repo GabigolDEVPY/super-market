@@ -1,10 +1,7 @@
-from urllib import response
 from django.shortcuts import redirect
 from product.models import Product
 from cart.models import CartItem
 from django.http import HttpResponse
-import requests
-from product.models import Variation
 from payment.utils import create_checkout_session_product
 import random
 

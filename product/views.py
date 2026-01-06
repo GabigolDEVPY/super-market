@@ -1,8 +1,6 @@
-from django.http import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views import View
-from requests import session
 from product.models import Product
 from django.views.generic.detail import DetailView
 from product.models import DiscountCode
@@ -29,12 +27,10 @@ class ProductDetailView(DetailView):
         images = [img.image.url for img in  self.object.images.all()]
         images.insert(0, self.object.image.url)
         context["images"] = images
-
         return context
     
 class BuyNowView(LoginRequiredMixin, View):
     def get(self, request, product_id, variant_id):
-        print("rota get")
         product = Product.objects.get(id=product_id)
         variant = product.variations.get(id=variant_id)
         address = self.request.user.address.all()
@@ -73,22 +69,19 @@ class BuyNowView(LoginRequiredMixin, View):
 def productbuynow(request):
     user = request.user
     quantity = int(request.POST.get("quantity"))
-    id = request.POST.get("id")
+    product_id = request.POST.get("id")
     variant_id = request.POST.get("variant_id")
-    product = Product.objects.get(id=id)
+    product = Product.objects.get(id=product_id)
     variant = product.variations.get(id=variant_id)
     if variant.stock < quantity:
         raise Http404("product without stock avaliable")
     
     discount_price = request.session.get("discount_price")
     price = int(float(variant.apply_discount()) * 100)
-    print("price 1", price)
     if discount_price:
         price = int(float(discount_price) * 100)
-    print(request.session.get("discount_price"))
-    print("price 2", price)
-    #aprovar compra no checkout
-    urls = {"success_url": "accounts/home/", "cancel_url": f"product/{id}"} 
+        
+    urls = {"success_url": "accounts/home/", "cancel_url": f"product/{product_id}"} 
 
     items = {
                 "price_data": {
@@ -100,7 +93,7 @@ def productbuynow(request):
             },
         
     metadata={
-            "product_id": str(id),
+            "product_id": str(product_id),
             "variant_id": str(variant_id),
             "user_id": str(user.id),
             "quantity": str(quantity),
