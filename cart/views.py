@@ -10,7 +10,6 @@ from payment.utils import create_checkout_session_product
 
 
 #retornar a tela do carrinho do cliente!
-@method_decorator(clear_session_data(["discount_price", "discount_name"]), name="dispatch")
 class CartView(LoginRequiredMixin, TemplateView):
     template_name = "cart/cart.html"
     

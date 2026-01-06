@@ -63,13 +63,14 @@
           <div class="mb-4">
             <div id="priceContainer">
               {% if product.discount %}
-              <span id="originalPrice" class="text-muted text-decoration-line-through me-3 fs-4">
-                R$ {{ product.price|floatformat:2 }}
-              </span>
+                <span id="originalPrice" class="d-block text-muted text-decoration-line-through me-3 fs-4">
+                  R$ {{ variants.0.price|floatformat:2 }}
+                </span>
               {% endif %}
 
+
               <span id="currentPrice" class="fs-2 fw-bold text-success">
-                R$ {{ product.apply_discount|floatformat:2 }}
+                R$ {{ variants.0.apply_discount|floatformat:2 }}
               </span>
             </div>
 
@@ -99,18 +100,17 @@
                 class="form-select form-select-lg"
                 required
               >
-                <option value="">Escolha uma opção</option>
                 {% for v in variants %}
-                <option
-                  value="{{ v.id }}"
-                  data-price="{{ v.apply_discount|floatformat:2 }}"
-                  data-original="{{ v.price|floatformat:2 }}"
-                  data-stock="{{ v.stock }}"
-                  data-has-discount="{{ v.discount|yesno:'true,false' }}"
-                  data-discount-percent="{{ v.discount.discount|default:'0' }}"
-                >
-                  {{ v.name }}
-                </option>
+                  <option
+                    value="{{ v.id }}"
+                    data-price="{{ v.apply_discount|floatformat:2 }}"
+                    data-original="{{ v.price|floatformat:2 }}"
+                    data-stock="{{ v.stock }}"
+                    data-has-discount="{{ product.discount|yesno:'true,false' }}"
+                    data-discount-percent="{{ v.discount.discount|default:'0' }}"
+                  >
+                    {{ v.name }}
+                  </option>
                 {% endfor %}
               </select>
             </div>
@@ -161,8 +161,8 @@
 
               <a
                 id="buyNowBtn"
-                href="#"
-                class="btn btn-outline-primary btn-lg fw-bold py-3 disabled"
+                href="/product/buy/{{ product.id }}/variant/{{variants.0.id}}/"
+                class="btn btn-outline-primary btn-lg fw-bold py-3"
               >
                 <i class="bi bi-lightning-charge-fill me-2"></i>
                 Comprar Agora
@@ -214,7 +214,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const variantSelect = document.getElementById('variantSelect');
   const currentPriceEl = document.getElementById('currentPrice');
   const originalPriceEl = document.getElementById('originalPrice');
-  const priceContainer = document.getElementById('priceContainer');
   const stockQuantity = document.getElementById('stockQuantity');
   const maxQuantity = document.getElementById('maxQuantity');
   const quantityInput = document.getElementById('quantityInput');
@@ -223,58 +222,61 @@ document.addEventListener('DOMContentLoaded', function () {
   const incrementBtn = document.querySelector('.quantity-increment');
 
   function updateVariantInfo() {
-    const selected = variantSelect?.options[variantSelect.selectedIndex];
-    if (!selected || !selected.value) {
-      buyNowBtn.classList.add('disabled');
-      buyNowBtn.removeAttribute('href');
-      return;
-    }
+    if (!variantSelect || variantSelect.selectedIndex < 0) return;
+
+    const selected = variantSelect.options[variantSelect.selectedIndex];
 
     const price = selected.dataset.price;
     const original = selected.dataset.original;
-    const stock = selected.dataset.stock;
+    const stock = parseInt(selected.dataset.stock);
     const hasDiscount = selected.dataset.hasDiscount === 'true';
-    const discountPercent = selected.dataset.discountPercent;
 
+    // Preço atual
     currentPriceEl.textContent = `R$ ${price.replace('.', ',')}`;
 
-    if (hasDiscount && originalPriceEl) {
+    // Preço original
+    if (hasDiscount && original) {
       originalPriceEl.textContent = `R$ ${original.replace('.', ',')}`;
-      originalPriceEl.style.display = 'inline';
-      const badge = priceContainer.querySelector('.badge');
-      if (badge) badge.textContent = `${discountPercent}% OFF`;
-    } else if (originalPriceEl) {
+      originalPriceEl.style.display = 'block';
+    } else {
+      originalPriceEl.textContent = '';
       originalPriceEl.style.display = 'none';
     }
 
+    // Estoque e quantidade
     stockQuantity.textContent = stock;
     maxQuantity.textContent = stock;
     quantityInput.max = stock;
     quantityInput.value = 1;
 
+    // Botão comprar agora
     buyNowBtn.href = `/product/buy/{{ product.id }}/variant/${selected.value}/`;
     buyNowBtn.classList.remove('disabled');
   }
 
+  // Evento ao trocar variant
   if (variantSelect) {
     variantSelect.addEventListener('change', updateVariantInfo);
+    updateVariantInfo(); // 👈 ativa tudo ao carregar a página
   }
 
+  // Controle de quantidade
   decrementBtn?.addEventListener('click', () => {
     if (parseInt(quantityInput.value) > 1) {
-      quantityInput.value = parseInt(quantityInput.value) - 1;
+      quantityInput.value--;
     }
   });
 
   incrementBtn?.addEventListener('click', () => {
     if (parseInt(quantityInput.value) < parseInt(quantityInput.max)) {
-      quantityInput.value = parseInt(quantityInput.value) + 1;
+      quantityInput.value++;
     }
   });
 
   quantityInput?.addEventListener('keydown', e => e.preventDefault());
 });
 
+// Troca de imagem
 function changeImage(src, thumbnail) {
   document.getElementById('mainImage').src = src;
   document.querySelectorAll('.thumbnail-img').forEach(img => {
@@ -283,4 +285,5 @@ function changeImage(src, thumbnail) {
   thumbnail.classList.add('border-primary', 'active-thumbnail');
 }
 </script>
+
 {% endblock %}

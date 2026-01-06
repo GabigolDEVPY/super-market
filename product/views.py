@@ -34,6 +34,7 @@ class ProductDetailView(DetailView):
     
 class BuyNowView(LoginRequiredMixin, View):
     def get(self, request, product_id, variant_id):
+        print("rota get")
         product = Product.objects.get(id=product_id)
         variant = product.variations.get(id=variant_id)
         address = self.request.user.address.all()
@@ -80,11 +81,12 @@ def productbuynow(request):
         raise Http404("product without stock avaliable")
     
     discount_price = request.session.get("discount_price")
-
+    price = int(float(variant.apply_discount()) * 100)
+    print("price 1", price)
     if discount_price:
         price = int(float(discount_price) * 100)
-    else:
-        price = int(float(variant.apply_discount()) * 100)
+    print(request.session.get("discount_price"))
+    print("price 2", price)
     #aprovar compra no checkout
     urls = {"success_url": "accounts/home/", "cancel_url": f"product/{id}"} 
 
