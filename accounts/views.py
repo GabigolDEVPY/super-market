@@ -96,7 +96,7 @@ class ChangePassword(LoginRequiredMixin, View):
         user.set_password(new_password)
         user.save()
         
-        messages.success(request, "Senha alterada com sucesso. Faça login novamente")
+        messages.success(request, "Senha alterada com sucesso. Faça login novamente", extra_tags="passwordModal")
         return redirect("accounts:login")
     
 class ChangeEmail(LoginRequiredMixin, View):
@@ -104,12 +104,13 @@ class ChangeEmail(LoginRequiredMixin, View):
         new_email = request.POST.get("email")
         
         if not new_email:
-            messages.error(request, "Informe um e-mail.")
+            messages.error(request, "Informe um e-mail.", extra_tags="emailModal")
             return redirect("accounts:home")
         
         request.user.email = new_email
         request.user.save()
         
+        print("chegou aqui")
         messages.success(request, "E-mail atualizado com sucesso", extra_tags="emailModal")
         return redirect("accounts:home")
         
