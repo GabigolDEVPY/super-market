@@ -40,3 +40,6 @@ def delete_address(request):
     name = request.POST.get("name")
     address = get_object_or_404(Address, user=user, name=name)
     address.delete()
+    
+# def change_password():
+    

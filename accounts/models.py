@@ -1,9 +1,7 @@
-from tabnanny import verbose
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from django.contrib.auth.models import User
 from product.models import Product, Variation
-from stripe import Balance
 
 # Create your models here.
 class Address(models.Model):

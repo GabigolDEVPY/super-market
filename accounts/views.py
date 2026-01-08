@@ -1,5 +1,5 @@
-from urllib import request
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
@@ -83,3 +83,34 @@ class DeleteAddress(LoginRequiredMixin, View):
     def post(self, request):
         delete_address(request)
         return redirect("accounts:home")
+
+class ChangePassword(LoginRequiredMixin, View):
+    def post(self, request):
+        user = request.user
+        old_password = request.POST.get("old_password")
+        new_password = request.POST.get("new_password")
+
+        if not user.check_password(old_password):
+            messages.error(request, "Senha atual incorreta", extra_tags="passwordModal")
+            return redirect("accounts:home")
+        user.set_password(new_password)
+        user.save()
+        
+        messages.success(request, "Senha alterada com sucesso. Faça login novamente")
+        return redirect("accounts:login")
+    
+class ChangeEmail(LoginRequiredMixin, View):
+    def post(self, request):
+        new_email = request.POST.get("email")
+        
+        if not new_email:
+            messages.error(request, "Informe um e-mail.")
+            return redirect("accounts:home")
+        
+        request.user.email = new_email
+        request.user.save()
+        
+        messages.success(request, "E-mail atualizado com sucesso", extra_tags="emailModal")
+        return redirect("accounts:home")
+        
+        

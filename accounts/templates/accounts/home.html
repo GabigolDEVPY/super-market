@@ -4,94 +4,190 @@
 
 {% block content %}
 <div class="container pt-5 mt-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
 
-    <div class="row justify-content-center">
-        <div class="col-12 col-lg-8">
+      <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body p-4">
 
-            <!-- Card da conta -->
-            <div class="card shadow-sm border-0 rounded-3">
-                <div class="card-body p-4">
+          <!-- Cabeçalho -->
+          <div class="d-flex align-items-center mb-4">
+            {% if user.image %}
+              <img src="{{ user.image.url }}" class="rounded-circle me-3" style="width:80px;height:80px;object-fit:cover;" alt="Foto do usuário">
+            {% else %}
+              <div class="bg-secondary rounded-circle me-3 d-flex justify-content-center align-items-center"
+                   style="width:80px;height:80px;color:white;font-size:2rem;">
+                {{ user.username|slice:":1"|upper }}
+              </div>
+            {% endif %}
+            <h4 class="fw-bold mb-0">Minha Conta</h4>
+          </div>
 
-                    <!-- Cabeçalho com imagem e título -->
-                    <div class="d-flex align-items-center mb-4">
-                        {% if user.image %}
-                        <img src="{{ user.image.url }}" alt="Foto do usuário" class="rounded-circle me-3" style="width: 80px; height: 80px; object-fit: cover;">
-                        {% else %}
-                        <div class="bg-secondary rounded-circle me-3 d-flex justify-content-center align-items-center" style="width: 80px; height: 80px; color: white;">
-                            {{ user.username|slice:":1"|upper }}
-                        </div>
-                        {% endif %}
-                        <h4 class="fw-bold mb-0">Minha Conta</h4>
-                    </div>
+          <!-- Usuário -->
+          <div class="mb-4">
+            <p class="mb-1 text-muted">Usuário:</p>
+            <strong>{{ user.username }}</strong>
+          </div>
 
-                    <!-- Informações do usuário -->
-                    <div class="mb-4">
-                        <p class="mb-1 text-muted">Usuário:</p>
-                        <strong>{{ user.username }}</strong>
-                    </div>
-
-                    <div class="mb-4">
-                        <p class="mb-1 text-muted">E-mail:</p>
-                        <strong>{{ user.email }}</strong>
-                        <div class="mt-2">
-                            <a href="{}" class="btn btn-outline-primary btn-sm">Alterar E-mail</a>
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <p class="mb-1 text-muted">Telefone:</p>
-                        {% if user.phone %}
-                        <strong>{{ user.phone }}</strong>
-                        {% else %}
-                        <span class="text-muted">Nenhum telefone cadastrado</span>
-                        {% endif %}
-                        <div class="mt-2">
-                            <a href="" class="btn btn-outline-primary btn-sm">
-                                {% if user.phone %}Alterar Telefone{% else %}Adicionar Telefone{% endif %}
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <a href="{% url '" class="btn btn-outline-danger btn-sm">Trocar Senha</a>
-                    </div>
-
-                    <hr>
-
-                    <!-- Endereços -->
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h6 class="fw-semibold mb-0">Endereços cadastrados</h6>
-                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addressModal">
-                            <i class="bi bi-plus-circle me-1"></i>Adicionar endereço
-                        </button>
-                    </div>
-
-                    {% if address %}
-                        <div class="list-group mb-3">
-                        {% for add in address %}
-                            <div class="list-group-item d-flex justify-content-between align-items-center">
-                                {{ add.name }}
-                                <form action="{% url 'accounts:deleteaddress' %}" method="post" class="mb-0">
-                                    {% csrf_token %}
-                                    <input name="name" type="hidden" value="{{ add.name }}">
-                                    <input name="user" type="hidden" value="{{ add.user.id }}">
-                                    <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
-                                </form>
-                            </div>
-                        {% endfor %}
-                        </div>
-                    {% else %}
-                        <p class="text-muted">Nenhum endereço cadastrado.</p>
-                    {% endif %}
-
-                </div>
+          <!-- Email -->
+          <div class="mb-4">
+            <p class="mb-1 text-muted">E-mail:</p>
+            <strong>{{ user.email }}</strong>
+            <div class="mt-2">
+              <button type="button" class="btn btn-outline-primary btn-sm"
+                      data-bs-toggle="modal"
+                      data-bs-target="#emailModal">
+                Alterar E-mail
+              </button>
             </div>
+          </div>
+
+          <!-- Senha -->
+          <div class="mb-4">
+            <button type="button" class="btn btn-outline-danger btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#passwordModal">
+              Trocar Senha
+            </button>
+          </div>
+
+          <hr>
+
+          <!-- Endereços -->
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-semibold mb-0">Endereços cadastrados</h6>
+            <button type="button" class="btn btn-primary btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#addressModal">
+              <i class="bi bi-plus-circle me-1"></i>Adicionar endereço
+            </button>
+          </div>
+
+          {% if address %}
+            <div class="list-group mb-3">
+              {% for add in address %}
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                  <span>{{ add.name }}</span>
+                    <form action="{% url 'accounts:deleteaddress' %}" method="post" class="mb-0">
+                        {% csrf_token %}
+                        <input name="name" type="hidden" value="{{ add.name }}">
+                        <input name="user" type="hidden" value="{{ add.user.id }}">
+                        <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+                    </form>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="text-muted">Nenhum endereço cadastrado.</p>
+          {% endif %}
 
         </div>
+      </div>
+
     </div>
+  </div>
 </div>
 
-<!-- Modal de endereço -->
-{% include "accounts/form.html" %}
+<!-- ================= MODAIS ================= -->
 
-{% endblock content %}
+<!-- EMAIL -->
+<div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form method="post" action="{% url 'accounts:updateemail' %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="emailModalLabel">Alterar E-mail</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          {% if messages %}
+            <div class="px-4 pt-3">
+              {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-3">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+          <div class="mb-3">
+            <label for="email" class="form-label">Novo e-mail</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Digite seu novo e-mail" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" name="email_form" class="btn btn-primary">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- SENHA -->
+<div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="passwordModalLabel">Alterar Senha</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      {% if messages %}
+        <div class="px-4 pt-3">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-3">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <form method="post" action="{% url 'accounts:updatepassword' %}">
+        {% csrf_token %}
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="old_password" class="form-label">Senha atual</label>
+            <input type="password" class="form-control" id="old_password" name="old_password" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="new_password" class="form-label">Nova senha</label>
+            <input type="password" class="form-control" id="new_password" name="new_password" required>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" name="password_form" class="btn btn-danger">Salvar</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+
+{% if messages %}
+  {% for message in messages %}
+    {% if message.extra_tags %}
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const modal = new bootstrap.Modal(
+            document.getElementById("{{ message.extra_tags }}")
+          );
+          modal.show();
+        });
+      </script>
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+<!-- ENDEREÇO -->
+{% include "accounts/address.html" %}
+
+{% endblock %}
