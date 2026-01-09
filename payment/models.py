@@ -25,7 +25,7 @@ class Order(models.Model):
         ('E', 'Enviado'),
         ('A', 'Finalizado')
     ))
-    address = models.ForeignKey(InfosForm, on_delete=models.CASCADE)
+    address = models.ForeignKey(InfosForm, on_delete=models.CASCADE, blank=True, null=True)
     
     def __str__(self):
         return f"Pedido N. {self.pk}"

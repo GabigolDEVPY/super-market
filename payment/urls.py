@@ -6,6 +6,6 @@ app_name = 'payment'
 
 urlpatterns = [
     path("stripe/webhook/", webhooks.stripe_webhook, name='payment_webhook'),
-    path("payment/validade", views.PaymentValidate.as_view() , name="validate"),
-    path("payment/buy", views.PaymentBuy.as_view() , name="payment")
+    # path("payment/validade", views.PaymentValidate.as_view() , name="validate"),
+    # path("payment/buy", views.PaymentBuy.as_view() , name="payment")
     ]
