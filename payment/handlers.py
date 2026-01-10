@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from accounts.models import InventoryItem
 from product.models import Product
+from .models import Order
 
 class TempItem:
     def __init__(self, product, variant, quantity):
@@ -12,6 +13,9 @@ def payment(metadata):
     user = User.objects.get(id=metadata["user_id"])
     cart = user.cart
     inventory = user.inventory
+    order = Order.objects.get(id=metadata["order_id"])
+    order.status = "A"
+    order.save()
     if metadata["event_mode"] == "cart":
         items = user.cart.items.all() 
     elif metadata["event_mode"] == "product":

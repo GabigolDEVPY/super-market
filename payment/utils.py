@@ -8,6 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from utils.decorators import clear_session_data
 from django.utils.decorators import method_decorator
 from accounts.models import InventoryItem, Address
+from product.models import Product, Variation
 from payment.models import Order, OrderItem, InfosForm
 import requests
 import stripe
@@ -30,18 +31,24 @@ def create_order(metadata, items):
         cep = address.cep,
         state = address.state
     )
-    Order.objects.create(user=user, price=price, address=infos_form)
+    product = Product.objects.get(id=metadata["product_id"])
+    variation = Variation.objects.get(id=metadata["product_id"])
+    order = Order.objects.create(user=user, price=price, address=infos_form)
+    quantity = metadata["quantity"]
+    OrderItem.objects.create(order=order, product=product, variant=variation, quantity=quantity)
+    return str(order.id)
 
 
 def create_checkout_session_product(metadata, items, urls):
-    create_order(metadata, items)
+    order_id = create_order(metadata, items)
+    metadata['order_id'] = order_id
     session = stripe.checkout.Session.create(
         payment_method_types=["card"],
         line_items=items,
         mode="payment",
-        success_url=f"http://localhost:8000/{urls["success_url"]}",
-        cancel_url=f"http://localhost:8000/{urls["cancel_url"]}",
-        metadata=metadata
+        success_url=f"http://localhost:8000/{urls['success_url']}",
+        cancel_url=f"http://localhost:8000/{urls['cancel_url']}",
+        metadata=metadata,
     )
 
     return session.url

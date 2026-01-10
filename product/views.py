@@ -98,7 +98,7 @@ def productbuynow(request):
             "variant_id": str(variant_id),
             "address": str(address_id),
             "user_id": str(user.id),
-            "quantity": str(quantity),
+            "quantity": int(quantity),
             "event_mode": str("product"),
         }
     url = create_checkout_session_product(metadata, items, urls);
