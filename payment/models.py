@@ -1,3 +1,4 @@
+from datetime import timezone
 from django.db import models
 from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
@@ -22,6 +23,8 @@ class InfosForm(models.Model):
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     price = models.DecimalField(decimal_places=2, max_digits=10)
+    order_create_time = models.DateTimeField(blank=True, auto_now=True, null=True)
+    order_update_time = models.DateTimeField(blank=True, auto_now_add=True, null=True)
     status = models.CharField(max_length=30 ,default="P", choices=(
         ('A', 'Aprovado'),
         ('P', 'Pendente'),
