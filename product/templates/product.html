@@ -36,29 +36,30 @@
             style="object-fit: cover; cursor: pointer; transition: all 0.3s;"
             onclick="changeImage(this.src, this)"
             alt="Miniatura {{ forloop.counter }}"
-          >
-          {% endfor %}
-        </div>
-        {% endif %}
-      </div>
-    </div>
-
-    <!-- INFORMAÇÕES DO PRODUTO -->
-    <div class="col-lg-5">
-      <div class="card border-0 shadow-sm h-100">
-        <div class="card-body p-4 p-xl-5 d-flex flex-column">
-
-          <!-- Estoque -->
-          <div class="d-flex align-items-center gap-2 mb-3">
-            <span class="badge bg-success fs-6 px-3 py-2">
-              <i class="bi bi-check-circle-fill me-1"></i>
-              <strong id="stockQuantity">{{ quantity }}</strong> em estoque
-            </span>
+            >
+            {% endfor %}
           </div>
-
-          <!-- Nome do produto -->
-          <h1 class="display-6 fw-bold mb-4">{{ product.name }}</h1>
-
+          {% endif %}
+        </div>
+      </div>
+      
+      <!-- INFORMAÇÕES DO PRODUTO -->
+      <div class="col-lg-5">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body p-4 p-xl-5 d-flex flex-column">
+            
+            <!-- Estoque -->
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <span class="badge bg-success fs-6 px-3 py-2">
+                <i class="bi bi-check-circle-fill me-1"></i>
+                <strong id="stockQuantity">{% if quantity %}{{ quantity }} em estoque{% else %} Indisponível {% endif %}</strong>
+              </span>
+            </div>
+            
+            <!-- Nome do produto -->
+            <h1 class="display-6 fw-bold mb-4">{{ product.name }}</h1>
+            
+          {% if quantity %}
           <!-- Preço -->
           <div class="mb-4">
             <div id="priceContainer">
@@ -99,7 +100,7 @@
                 id="variantSelect"
                 class="form-select form-select-lg"
                 required
-              >
+                >
                 {% for v in variants %}
                   <option
                     value="{{ v.id }}"
@@ -138,7 +139,9 @@
                 </button>
               </div>
               <div class="form-text text-muted mt-2">
-                Máximo por pedido: <span id="maxQuantity">{{ quantity }}</span>
+                {% if quantity %}
+                  Máximo por pedido: <span id="maxQuantity">{{ quantity }}</span>
+                {% endif %}
               </div>
             </div>
 
@@ -153,21 +156,22 @@
             {% endif %}
 
             <!-- Botões de Ação -->
-            <div class="mt-auto d-grid gap-3">
-              <button type="submit" class="btn btn-success btn-lg fw-bold py-3">
-                <i class="bi bi-cart-plus-fill me-2"></i>
-                Adicionar ao Carrinho
-              </button>
+              <div class="mt-auto d-grid gap-3">
+                <button type="submit" class="btn btn-success btn-lg fw-bold py-3">
+                  <i class="bi bi-cart-plus-fill me-2"></i>
+                  Adicionar ao Carrinho
+                </button>
 
-              <a
-                id="buyNowBtn"
-                href="/product/buy/{{ product.id }}/variant/{{variants.0.id}}/"
-                class="btn btn-outline-primary btn-lg fw-bold py-3"
-              >
-                <i class="bi bi-lightning-charge-fill me-2"></i>
-                Comprar Agora
-              </a>
-            </div>
+                <a
+                  id="buyNowBtn"
+                  href="/product/buy/{{ product.id }}/variant/{{variants.0.id}}/"
+                  class="btn btn-outline-primary btn-lg fw-bold py-3"
+                >
+                  <i class="bi bi-lightning-charge-fill me-2"></i>
+                  Comprar Agora
+                </a>
+              </div>
+            {% endif %}
           </form>
 
           <!-- Benefícios -->

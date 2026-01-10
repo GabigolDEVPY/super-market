@@ -71,6 +71,7 @@ def productbuynow(request):
     quantity = int(request.POST.get("quantity"))
     product_id = request.POST.get("id")
     variant_id = request.POST.get("variant_id")
+    address_id = request.POST.get("address")
     product = Product.objects.get(id=product_id)
     variant = product.variations.get(id=variant_id)
     if variant.stock < quantity:
@@ -95,6 +96,7 @@ def productbuynow(request):
     metadata={
             "product_id": str(product_id),
             "variant_id": str(variant_id),
+            "address": str(address_id),
             "user_id": str(user.id),
             "quantity": str(quantity),
             "event_mode": str("product"),

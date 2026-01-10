@@ -16,4 +16,4 @@ class Order(admin.ModelAdmin):
     inlines = [
         OrderItem
     ]
-    list_display = ("pk",) 
+    list_display = ("pk", "price", "status", "user") 
