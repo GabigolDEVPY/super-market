@@ -6,15 +6,16 @@ from payment.utils import paymentbuy
 from product.models import Product
 from django.contrib.auth.models import User
 from accounts.models import Inventory, InventoryItem
-from django.views import View
+from .models import Order
+from django.views.generic import View, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
         
-class PaymentValidate(LoginRequiredMixin, View):
-    def get(self, request):
-        return render(request, "index.html")
+class PaymentsHome(LoginRequiredMixin, ListView):
+    model = Order
+    template_name = "Payments.html"
+    context_object_name = "orders"
     
-class PaymentBuy(LoginRequiredMixin, View):
-    def post(self, request):
-        paymentbuy(request)
+    
+    
