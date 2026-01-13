@@ -34,6 +34,7 @@ def cartremove(request):
     
 def cartbuy(request):
     user = request.user
+    address = request.POST.get("address")
     urls = {"success_url": "inventory/", "cancel_url": "cart/"} 
     line_items = [
             {
@@ -49,6 +50,7 @@ def cartbuy(request):
     metadata={
         "cart_id": str(user.cart.id),
         "user_id": str(user.id),
+        "address": address
     }
     return redirect(create_checkout_session_product(metadata, line_items, urls))
 

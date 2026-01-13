@@ -114,7 +114,7 @@
 
                 <form action="{% url 'cart:cartbuynow' %}" method="post">
                     {% csrf_token %}
-                    <select class="form-select mb-3" required>
+                    <select name="address" class="form-select mb-3" required>
                         <option value="" selected disabled>Selecionar endereço...</option>
                         {% for address in address %}
                             <option value="{{ address.name }}">

@@ -41,7 +41,7 @@ class BuyNowView(LoginRequiredMixin, View):
     
     #apply discount cupom
     def post(self, request, product_id, variant_id):
-        discount = request.POST.get("discount") or None
+        discount = request.POST.get("discount")
         product = Product.objects.get(id=product_id)
         variant = product.variations.get(id=variant_id)
         address = self.request.user.address.all()
@@ -49,10 +49,10 @@ class BuyNowView(LoginRequiredMixin, View):
         
         if discount:
             discount_search = DiscountCode.objects.filter(name=discount).first()
+            print(discount_search)
             if not discount_search:
-                if "discount_price" in request.session:
-                    messages.warning(request, "Cupom Inválido!", extra_tags="cupom")
-                    return redirect("product:buynow", product_id=product_id, variant_id=variant_id)
+                messages.warning(request, "Cupom Inválido!", extra_tags="cupom")
+                return redirect("product:buynow", product_id=product_id, variant_id=variant_id)
             discount_price = int(product.apply_discount() - (product.price / 100 * discount_search.discount))
             request.session["discount_price"] = discount_price      
             request.session["discount_name"] = discount_search.name  
