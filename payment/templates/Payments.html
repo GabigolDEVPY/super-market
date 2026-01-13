@@ -130,18 +130,17 @@
                 {% endif %}
               </div>
 
-              <!-- Endereço -->
+              <!-- Cliente -->
               <div class="col-lg-2 col-md-6 mb-3 mb-lg-0">
+                <div class="small text-muted mb-1">
+                  <i class="bi bi-person-fill"></i> Cliente
+                </div>
+                <div class="small fw-semibold">
+                  {{ order.user.get_full_name|default:order.user.username }}
+                </div>
                 {% if order.address %}
-                  <div class="small text-muted mb-1">
-                    <i class="bi bi-geo-alt-fill"></i> Endereço
-                  </div>
-                  <div class="small fw-semibold">
-                    {{ order.address.city|default:"Não informado" }}
-                  </div>
-                {% else %}
                   <div class="small text-muted">
-                    <i class="bi bi-geo-alt"></i> Sem endereço
+                    <i class="bi bi-geo-alt-fill"></i> {{ order.address.city }}, {{ order.address.state }}
                   </div>
                 {% endif %}
               </div>
@@ -149,13 +148,22 @@
               <!-- Ações -->
               <div class="col-lg-2 col-12 text-lg-end">
                 <div class="d-grid gap-2">
-                  <a href="#" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#orderModal{{ order.pk }}">
+                  <button 
+                    class="btn btn-outline-primary btn-sm" 
+                    type="button" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#items{{ order.pk }}"
+                  >
+                    <i class="bi bi-box-seam me-1"></i>
+                    Ver Itens
+                  </button>
+                  <a href="#" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#orderModal{{ order.pk }}">
                     <i class="bi bi-eye-fill me-1"></i>
                     Detalhes
                   </a>
                   {% if order.status == 'E' %}
                     <a href="#" class="btn btn-outline-info btn-sm">
-                      <i class="bi bi-box-seam me-1"></i>
+                      <i class="bi bi-geo-alt me-1"></i>
                       Rastrear
                     </a>
                   {% endif %}
@@ -164,22 +172,85 @@
 
             </div>
 
-            <!-- Linha do tempo (aparece ao expandir) -->
-            <div class="collapse mt-4 pt-4 border-top" id="timeline{{ order.pk }}">
-              <h6 class="fw-bold mb-3">Histórico do Pedido</h6>
-              <div class="ps-4">
-                <div class="mb-3">
-                  <div class="small text-muted">{{ order.order_create_time|date:"d/m/Y H:i" }}</div>
-                  <div class="fw-semibold">Pedido criado</div>
+            <!-- Itens do Pedido (aparece ao expandir) -->
+            <div class="collapse mt-4 pt-4 border-top" id="items{{ order.pk }}">
+              <h6 class="fw-bold mb-3">
+                <i class="bi bi-box-seam me-2"></i>
+                Itens do Pedido ({{ order.items.count }})
+              </h6>
+              
+              {% if order.items.all %}
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Produto</th>
+                        <th>Variação</th>
+                        <th class="text-center">Quantidade</th>
+                        <th class="text-end">Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for item in order.items.all %}
+                      <tr>
+                        <td>
+                          <div class="d-flex align-items-center gap-3">
+                            {% if item.product.image %}
+                            <img 
+                              src="{{ item.product.image.url }}" 
+                              alt="{{ item.product.name }}"
+                              class="rounded"
+                              width="50"
+                              height="50"
+                              style="object-fit: cover;"
+                            >
+                            {% else %}
+                            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                              <i class="bi bi-image text-muted"></i>
+                            </div>
+                            {% endif %}
+                            <div>
+                              <div class="fw-semibold">{{ item.product.name }}</div>
+                              <div class="small text-muted">{{ item.product.description|truncatewords:8 }}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="align-middle">
+                          <span class="badge bg-secondary">
+                            {{ item.variant.name }}
+                          </span>
+                        </td>
+                        <td class="text-center align-middle">
+                          <span class="badge bg-light text-dark border">
+                            {{ item.quantity }}x
+                          </span>
+                        </td>
+                        <td class="text-end align-middle">
+                          <span class="fw-bold text-success">
+                            R$ {{ item.variant.apply_discount|floatformat:2 }}
+                          </span>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                    <tfoot class="table-light">
+                      <tr>
+                        <td colspan="3" class="text-end fw-bold">Total:</td>
+                        <td class="text-end">
+                          <span class="fs-5 fw-bold text-success">
+                            R$ {{ order.price|floatformat:2 }}
+                          </span>
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
                 </div>
-                
-                {% if order.status != 'P' %}
-                <div class="mb-3">
-                  <div class="small text-muted">{{ order.order_update_time|date:"d/m/Y H:i" }}</div>
-                  <div class="fw-semibold">Status atualizado</div>
+              {% else %}
+                <div class="alert alert-info mb-0">
+                  <i class="bi bi-info-circle me-2"></i>
+                  Nenhum item encontrado neste pedido.
                 </div>
-                {% endif %}
-              </div>
+              {% endif %}
             </div>
 
           </div>
@@ -199,8 +270,36 @@
             </div>
             <div class="modal-body">
               <div class="row g-4">
+                <!-- Informações do Cliente -->
                 <div class="col-md-6">
-                  <h6 class="fw-bold mb-3">Informações do Pedido</h6>
+                  <h6 class="fw-bold mb-3">
+                    <i class="bi bi-person-fill me-2"></i>
+                    Informações do Cliente
+                  </h6>
+                  <table class="table table-sm">
+                    <tr>
+                      <td class="text-muted">Nome:</td>
+                      <td class="fw-semibold">{{ order.user.get_full_name|default:order.user.username }}</td>
+                    </tr>
+                    <tr>
+                      <td class="text-muted">Email:</td>
+                      <td>{{ order.user.email }}</td>
+                    </tr>
+                    {% if order.address.tel %}
+                    <tr>
+                      <td class="text-muted">Telefone:</td>
+                      <td>{{ order.address.tel }}</td>
+                    </tr>
+                    {% endif %}
+                  </table>
+                </div>
+
+                <!-- Informações do Pedido -->
+                <div class="col-md-6">
+                  <h6 class="fw-bold mb-3">
+                    <i class="bi bi-receipt me-2"></i>
+                    Informações do Pedido
+                  </h6>
                   <table class="table table-sm">
                     <tr>
                       <td class="text-muted">Número:</td>
@@ -209,6 +308,10 @@
                     <tr>
                       <td class="text-muted">Data:</td>
                       <td>{{ order.order_create_time|date:"d/m/Y às H:i" }}</td>
+                    </tr>
+                    <tr>
+                      <td class="text-muted">Itens:</td>
+                      <td class="fw-semibold">{{ order.items.count }} produto(s)</td>
                     </tr>
                     <tr>
                       <td class="text-muted">Valor:</td>
@@ -221,16 +324,87 @@
                   </table>
                 </div>
                 
+                <!-- Endereço Completo -->
                 {% if order.address %}
-                <div class="col-md-6">
-                  <h6 class="fw-bold mb-3">Endereço de Entrega</h6>
+                <div class="col-12">
+                  <h6 class="fw-bold mb-3">
+                    <i class="bi bi-geo-alt-fill me-2"></i>
+                    Endereço de Entrega
+                  </h6>
                   <div class="card bg-light border-0">
                     <div class="card-body">
-                      <p class="mb-1"><i class="bi bi-geo-alt-fill text-danger me-2"></i>{{ order.address }}</p>
+                      <div class="row g-3">
+                        <div class="col-md-8">
+                          <strong>{{ order.address.address }}, {{ order.address.number }}</strong>
+                          {% if order.address.complement %}
+                            <span class="text-muted">- {{ order.address.complement }}</span>
+                          {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                          <div class="text-muted small">CEP</div>
+                          <strong>{{ order.address.cep }}</strong>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="text-muted small">Bairro</div>
+                          {{ order.address.neighborhood }}
+                        </div>
+                        <div class="col-md-5">
+                          <div class="text-muted small">Cidade</div>
+                          {{ order.address.city }}
+                        </div>
+                        <div class="col-md-3">
+                          <div class="text-muted small">Estado</div>
+                          {{ order.address.state }}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
+                {% else %}
+                <div class="col-12">
+                  <div class="alert alert-warning mb-0">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    Nenhum endereço de entrega cadastrado para este pedido.
+                  </div>
+                </div>
                 {% endif %}
+
+                <!-- Lista de itens no modal -->
+                <div class="col-12">
+                  <h6 class="fw-bold mb-3">Produtos do Pedido</h6>
+                  <div class="list-group">
+                    {% for item in order.items.all %}
+                    <div class="list-group-item">
+                      <div class="d-flex gap-3 align-items-center">
+                        {% if item.product.image %}
+                        <img 
+                          src="{{ item.product.image.url }}" 
+                          alt="{{ item.product.name }}"
+                          class="rounded"
+                          width="60"
+                          height="60"
+                          style="object-fit: cover;"
+                        >
+                        {% else %}
+                        <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                          <i class="bi bi-image text-muted fs-4"></i>
+                        </div>
+                        {% endif %}
+                        <div class="flex-grow-1">
+                          <h6 class="mb-1">{{ item.product.name }}</h6>
+                          <div class="small text-muted">
+                            Variação: <span class="badge bg-secondary">{{ item.variant.name }}</span>
+                          </div>
+                        </div>
+                        <div class="text-end">
+                          <div class="small text-muted">{{ item.quantity }}x</div>
+                          <div class="fw-bold text-success">R$ {{ item.variant.apply_discount|floatformat:2 }}</div>
+                        </div>
+                      </div>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
               </div>
             </div>
             <div class="modal-footer">

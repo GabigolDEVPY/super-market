@@ -8,14 +8,17 @@ from django.contrib.auth.models import User
 from accounts.models import Inventory, InventoryItem
 from .models import Order
 from django.views.generic import View, ListView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 
         
-class PaymentsHome(LoginRequiredMixin, ListView):
+class PaymentsHome(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Order
     template_name = "Payments.html"
     context_object_name = "orders"
+    
+    def test_func(self):
+        return self.request.user.is_staff or self.request.user.is_superuser
     
     
     

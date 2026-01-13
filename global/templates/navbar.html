@@ -47,14 +47,16 @@
           </a>
         </li>
 
-        <li class="nav-item">
-          <a class="nav-link nav-link-custom"
-            href="{% url 'payment:home' %}">
-            <i class="bi bi-receipt me-1"></i>
+        {% if request.user.is_superuser %}
+          <li class="nav-item">
+            <a class="nav-link nav-link-custom"
+              href="{% url 'payment:home' %}">
+              <i class="bi bi-receipt me-1"></i>
 
-            Pedidos
-          </a>
-        </li>
+              Pedidos
+            </a>
+          </li>
+        {% endif %}
 
       </ul>
 
