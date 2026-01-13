@@ -112,7 +112,7 @@
                     </a>
                 </div>
 
-                <form action="{% url 'cart:cartbuynow' %}" method="post">
+                <form action="{% url 'cart:cartbuy' %}" method="post">
                     {% csrf_token %}
                     <select name="address" class="form-select mb-3" required>
                         <option value="" selected disabled>Selecionar endereço...</option>

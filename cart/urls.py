@@ -9,5 +9,4 @@ urlpatterns = [
     path("add/", views.AddCart.as_view(), name='addcart'),
     path("buy/", views.CartBuyNow.as_view(), name='cartbuy'),
     path("remove/", views.CartRemove.as_view(), name="cartremove"),
-    path("buy/buynow", views.CartBuyNow.as_view(), name="cartbuynow"),
 ]

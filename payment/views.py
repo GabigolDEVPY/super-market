@@ -2,7 +2,6 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-from payment.utils import paymentbuy
 from product.models import Product
 from django.contrib.auth.models import User
 from accounts.models import Inventory, InventoryItem

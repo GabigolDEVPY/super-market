@@ -33,7 +33,6 @@ def cartremove(request):
     
     
 def cartbuy(request):
-    
     user = request.user
     address = int(request.POST.get("address"))
     print("endereçooooooooooo",address)
@@ -50,6 +49,7 @@ def cartbuy(request):
         for item in user.cart.items.all()]
     
     metadata={
+        "type": "cart",
         "cart_id": str(user.cart.id),
         "user_id": str(user.id),
         "address": address

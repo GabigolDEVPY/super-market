@@ -10,7 +10,7 @@ from django.utils.decorators import method_decorator
 from accounts.models import InventoryItem, Address
 from product.models import Product, Variation
 from payment.models import Order, OrderItem, InfosForm
-import requests
+from cart.models import Cart
 import stripe
 from django.conf import settings
 
@@ -31,9 +31,15 @@ def create_order(metadata, items):
         cep = address.cep,
         state = address.state
     )
+    order = Order.objects.create(user=user, price=price, address=infos_form)
+    if metadata["type"] == "cart":
+        cart = Cart.objects.get(id=metadata["cart_id"])
+        items = cart.items.all()
+        for item in items:
+            OrderItem.objects.create(order=order, product=product, variant=variation, quantity=quantity)
+            
     product = int(Product.objects.get(id=metadata["product_id"]))
     variation = Variation.objects.get(id=metadata["product_id"])
-    order = Order.objects.create(user=user, price=price, address=infos_form)
     quantity = metadata["quantity"]
     OrderItem.objects.create(order=order, product=product, variant=variation, quantity=quantity)
     return str(order.id)
@@ -54,10 +60,7 @@ def create_checkout_session_product(metadata, items, urls):
     return session.url
 
 
-def paymentbuy(request):
-    form = request.POST.dict()
-    user = request.user
-    return redirect(create_checkout_session_product(metadata, line_items, urls))
+
 
 
 
