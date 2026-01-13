@@ -31,7 +31,7 @@ def create_order(metadata, items):
         cep = address.cep,
         state = address.state
     )
-    product = Product.objects.get(id=metadata["product_id"])
+    product = int(Product.objects.get(id=metadata["product_id"]))
     variation = Variation.objects.get(id=metadata["product_id"])
     order = Order.objects.create(user=user, price=price, address=infos_form)
     quantity = metadata["quantity"]

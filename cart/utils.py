@@ -34,7 +34,8 @@ def cartremove(request):
     
 def cartbuy(request):
     user = request.user
-    address = request.POST.get("address")
+    address = int(request.POST.get("address"))
+    print("endereçooooooooooo",address)
     urls = {"success_url": "inventory/", "cancel_url": "cart/"} 
     line_items = [
             {

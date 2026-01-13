@@ -51,6 +51,7 @@ class CartBuyNow(View):
     def post(self, request, *args, **kwargs):
         user = request.user 
         cart = user.cart      
+        address = int(request.POST.get("address"))
         #aprovar compra no checkout
         urls = {"success_url": "accounts/home/", "cancel_url": f"cart/"} 
         items = []
@@ -65,9 +66,10 @@ class CartBuyNow(View):
                 })
             
         metadata={
-                "product_id": str(id),
-                "user_id": str(user.id),
+                "product_id": int(id),
+                "user_id": int(user.id),
                 "event_mode": str("cart"),
+                "address": address
             }
         url = create_checkout_session_product(metadata, items, urls);
         return redirect(url)
