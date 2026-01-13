@@ -33,6 +33,7 @@ def cartremove(request):
     
     
 def cartbuy(request):
+    
     user = request.user
     address = int(request.POST.get("address"))
     print("endereçooooooooooo",address)

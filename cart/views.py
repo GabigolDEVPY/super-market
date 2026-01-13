@@ -40,38 +40,12 @@ class CartRemove(LoginRequiredMixin,View):
         cartremove(request)
         return redirect("cart:cart")
 
-#Rota pra comprar itens do carrinho 
-class CartBuy(LoginRequiredMixin, View):
-    def get(self, request):
-        dados = cartbuy(request)
-        redirect("payment:cart")
-    
+
 
 class CartBuyNow(View):
     def post(self, request, *args, **kwargs):
-        user = request.user 
-        cart = user.cart      
-        address = int(request.POST.get("address"))
-        #aprovar compra no checkout
-        urls = {"success_url": "accounts/home/", "cancel_url": f"cart/"} 
-        items = []
-        for item in cart.items.all():
-            items.append({
-                    "price_data": {
-                        "currency": "brl",
-                        "unit_amount": int((item.product.apply_discount()) * 100),
-                        "product": item.product.id_stripe,
-                    },
-                    "quantity": item.quantity
-                })
-            
-        metadata={
-                "product_id": int(id),
-                "user_id": int(user.id),
-                "event_mode": str("cart"),
-                "address": address
-            }
-        url = create_checkout_session_product(metadata, items, urls);
-        return redirect(url)
+        dados = cartbuy(request)
+        redirect("payment:cart")
+
 
 
