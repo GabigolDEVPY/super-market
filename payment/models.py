@@ -21,10 +21,11 @@ class InfosForm(models.Model):
         return str(self.address)
 
 class Order(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
     price = models.DecimalField(decimal_places=2, max_digits=10)
     order_create_time = models.DateTimeField(blank=True, auto_now=True, null=True)
     order_update_time = models.DateTimeField(blank=True, auto_now_add=True, null=True)
+    url = models.CharField(max_length=1000)
     status = models.CharField(max_length=30 ,default="P", choices=(
         ('A', 'Aprovado'),
         ('P', 'Pendente'),

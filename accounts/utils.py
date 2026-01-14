@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, render, get_object_or_404
 import requests
+from payment.models import Order
 from .models import Address, Inventory
 from cart.models import Cart
 from .forms import AdressForm
@@ -42,4 +43,8 @@ def delete_address(request):
     address.delete()
     
 # def change_password():
-    
+
+def get_orders(request):
+    user = request.user
+    orders = user.orders.all()
+    return orders

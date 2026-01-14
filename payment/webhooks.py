@@ -16,6 +16,7 @@ def stripe_webhook(request):
     if event["type"] == "checkout.session.completed":
         session = event["data"]["object"]
         metadata = session["metadata"]
+        print("chamar payment")
         payment(metadata)
         return HttpResponse(status=200)
     return HttpResponse(status=200)

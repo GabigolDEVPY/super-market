@@ -36,7 +36,7 @@ def cartbuy(request):
     user = request.user
     address = int(request.POST.get("address"))
     print("endereçooooooooooo",address)
-    urls = {"success_url": "inventory/", "cancel_url": "cart/"} 
+    urls = {"success_url": "accounts/home/", "cancel_url": "cart/"} 
     line_items = [
             {
                 "price_data": {
@@ -49,6 +49,7 @@ def cartbuy(request):
         for item in user.cart.items.all()]
     
     metadata={
+        "event_mode": "cart",
         "type": "cart",
         "cart_id": str(user.cart.id),
         "user_id": str(user.id),

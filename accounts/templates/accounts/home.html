@@ -78,8 +78,16 @@
               {% endfor %}
             </div>
           {% else %}
-            <p class="text-muted">Nenhum endereço cadastrado.</p>
+          <p class="text-muted">Nenhum endereço cadastrado.</p>
           {% endif %}
+          <div>
+            <h3>Meus pedidos</h3>
+              {% for order in orders %}
+                <div>
+                  <p>{{ order.status }}</p>
+                </div>
+              {% endfor %}
+          </div>
 
         </div>
       </div>
