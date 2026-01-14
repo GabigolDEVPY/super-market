@@ -44,8 +44,8 @@ class CartRemove(LoginRequiredMixin,View):
 
 class CartBuyNow(View):
     def post(self, request, *args, **kwargs):
-        dados = cartbuy(request)
-        redirect("payment:cart")
+        url = cartbuy(request)
+        return redirect(url)
 
 
 

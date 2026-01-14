@@ -94,7 +94,8 @@ def productbuynow(request):
             },
         
     metadata={
-            "product_id": str(product_id),
+            "type": "product",
+            "product_id": int(product_id),
             "variant_id": str(variant_id),
             "address": str(address_id),
             "user_id": str(user.id),
@@ -102,6 +103,7 @@ def productbuynow(request):
             "event_mode": str("product"),
         }
     url = create_checkout_session_product(metadata, items, urls);
+    print(url)
     return redirect(url)
 
     

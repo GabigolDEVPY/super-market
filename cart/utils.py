@@ -54,7 +54,8 @@ def cartbuy(request):
         "user_id": str(user.id),
         "address": address
     }
-    return redirect(create_checkout_session_product(metadata, line_items, urls))
+    url = create_checkout_session_product(metadata, line_items, urls)
+    return url
 
 
 def items_random():

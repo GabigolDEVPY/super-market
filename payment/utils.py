@@ -36,9 +36,10 @@ def create_order(metadata, items):
         cart = Cart.objects.get(id=metadata["cart_id"])
         items = cart.items.all()
         for item in items:
-            OrderItem.objects.create(order=order, product=product, variant=variation, quantity=quantity)
-            
-    product = int(Product.objects.get(id=metadata["product_id"]))
+            OrderItem.objects.create(order=order, product=item.product, variant=item.variant, quantity=item.quantity)
+        return str(order.id)
+        
+    product = Product.objects.get(id=metadata["product_id"])
     variation = Variation.objects.get(id=metadata["product_id"])
     quantity = metadata["quantity"]
     OrderItem.objects.create(order=order, product=product, variant=variation, quantity=quantity)
