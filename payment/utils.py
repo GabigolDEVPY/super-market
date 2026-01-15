@@ -57,7 +57,9 @@ def create_checkout_session_product(metadata, items, urls):
         cancel_url=f"http://localhost:8000/{urls['cancel_url']}",
         metadata=metadata,
     )
-
+    order = Order.objects.get(id=order_id)
+    order.url = session.url
+    order.save()
     return session.url
 
 

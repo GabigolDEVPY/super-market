@@ -25,7 +25,7 @@ class Order(models.Model):
     price = models.DecimalField(decimal_places=2, max_digits=10)
     order_create_time = models.DateTimeField(blank=True, auto_now=True, null=True)
     order_update_time = models.DateTimeField(blank=True, auto_now_add=True, null=True)
-    url = models.CharField(max_length=1000)
+    url = models.CharField(max_length=1000, blank=True, null=True)
     status = models.CharField(max_length=30 ,default="P", choices=(
         ('A', 'Aprovado'),
         ('P', 'Pendente'),

@@ -5,9 +5,9 @@
 {% block content %}
 <div class="container pt-5 mt-4">
   <div class="row justify-content-center">
-    <div class="col-12 col-lg-8">
+    <div class="col-12 col-lg-10">
 
-      <div class="card shadow-sm border-0 rounded-3">
+      <div class="card shadow-sm border-0 rounded-3 mb-4">
         <div class="card-body p-4">
 
           <!-- Cabeçalho -->
@@ -20,74 +20,203 @@
                 {{ user.username|slice:":1"|upper }}
               </div>
             {% endif %}
-            <h4 class="fw-bold mb-0">Minha Conta</h4>
-          </div>
-
-          <!-- Usuário -->
-          <div class="mb-4">
-            <p class="mb-1 text-muted">Usuário:</p>
-            <strong>{{ user.username }}</strong>
-          </div>
-
-          <!-- Email -->
-          <div class="mb-4">
-            <p class="mb-1 text-muted">E-mail:</p>
-            <strong>{{ user.email }}</strong>
-            <div class="mt-2">
-              <button type="button" class="btn btn-outline-primary btn-sm"
-                      data-bs-toggle="modal"
-                      data-bs-target="#emailModal">
-                Alterar E-mail
-              </button>
+            <div>
+              <h4 class="fw-bold mb-0">Minha Conta</h4>
+              <p class="text-muted mb-0">Gerencie suas informações e pedidos</p>
             </div>
           </div>
 
-          <!-- Senha -->
-          <div class="mb-4">
-            <button type="button" class="btn btn-outline-danger btn-sm"
-                    data-bs-toggle="modal"
-                    data-bs-target="#passwordModal">
-              Trocar Senha
-            </button>
-          </div>
+          <div class="row">
+            <!-- Coluna Esquerda - Informações do Usuário -->
+            <div class="col-md-6">
+              <!-- Usuário -->
+              <div class="mb-4">
+                <p class="mb-1 text-muted small">Usuário:</p>
+                <strong>{{ user.username }}</strong>
+              </div>
 
-          <hr>
+              <!-- Email -->
+              <div class="mb-4">
+                <p class="mb-1 text-muted small">E-mail:</p>
+                <strong>{{ user.email }}</strong>
+                <div class="mt-2">
+                  <button type="button" class="btn btn-outline-primary btn-sm"
+                          data-bs-toggle="modal"
+                          data-bs-target="#emailModal">
+                    <i class="bi bi-pencil me-1"></i>Alterar E-mail
+                  </button>
+                </div>
+              </div>
 
-          <!-- Endereços -->
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h6 class="fw-semibold mb-0">Endereços cadastrados</h6>
-            <button type="button" class="btn btn-primary btn-sm"
-                    data-bs-toggle="modal"
-                    data-bs-target="#addressModal">
-              <i class="bi bi-plus-circle me-1"></i>Adicionar endereço
-            </button>
-          </div>
+              <!-- Senha -->
+              <div class="mb-4">
+                <p class="mb-1 text-muted small">Senha:</p>
+                <button type="button" class="btn btn-outline-danger btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#passwordModal">
+                  <i class="bi bi-key me-1"></i>Trocar Senha
+                </button>
+              </div>
+            </div>
 
-          {% if address %}
-            <div class="list-group mb-3">
-              {% for add in address %}
-                <div class="list-group-item d-flex justify-content-between align-items-center">
-                  <span>{{ add.name }}</span>
-                    <form action="{% url 'accounts:deleteaddress' %}" method="post" class="mb-0">
+            <!-- Coluna Direita - Endereços -->
+            <div class="col-md-6">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-semibold mb-0">Endereços cadastrados</h6>
+                <button type="button" class="btn btn-primary btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#addressModal">
+                  <i class="bi bi-plus-circle me-1"></i>Adicionar
+                </button>
+              </div>
+
+              {% if address %}
+                <div class="list-group mb-3">
+                  {% for add in address %}
+                    <div class="list-group-item d-flex justify-content-between align-items-start">
+                      <div>
+                        <strong>{{ add.name }}</strong>
+                        <p class="mb-0 small text-muted">{{ add.address }}, {{ add.number }}</p>
+                      </div>
+                      <form action="{% url 'accounts:deleteaddress' %}" method="post" class="mb-0">
                         {% csrf_token %}
                         <input name="name" type="hidden" value="{{ add.name }}">
                         <input name="user" type="hidden" value="{{ add.user.id }}">
-                        <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
-                    </form>
+                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </form>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <div class="alert alert-info">
+                  <i class="bi bi-info-circle me-2"></i>Nenhum endereço cadastrado.
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Seção de Pedidos -->
+      <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body p-4">
+          <h5 class="fw-bold mb-4">
+            <i class="bi bi-bag-check me-2"></i>Meus Pedidos
+          </h5>
+
+          {% if orders %}
+            <div class="row g-3">
+              {% for order in orders %}
+                <div class="col-12">
+                  <div class="card border">
+                    <div class="card-body">
+                      <div class="row align-items-center">
+                        <div class="col-md-2">
+                          <h6 class="mb-1 fw-bold">Pedido #{{ order.pk }}</h6>
+                          <small class="text-muted">{{ order.order_create_time|date:"d/m/Y" }}</small>
+                        </div>
+
+                        <div class="col-md-3">
+                          <p class="mb-0 small text-muted">Status:</p>
+                          {% if order.status == 'A' %}
+                            <span class="badge bg-success">
+                              <i class="bi bi-check-circle me-1"></i>Aprovado
+                            </span>
+                          {% elif order.status == 'P' %}
+                            <span class="badge bg-warning text-dark">
+                              <i class="bi bi-clock me-1"></i>Pendente
+                            </span>
+                          {% elif order.status == 'R' %}
+                            <span class="badge bg-danger">
+                              <i class="bi bi-x-circle me-1"></i>Reprovado
+                            </span>
+                          {% elif order.status == 'E' %}
+                            <span class="badge bg-info">
+                              <i class="bi bi-truck me-1"></i>Enviado
+                            </span>
+                          {% elif order.status == 'F' %}
+                            <span class="badge bg-secondary">
+                              <i class="bi bi-check-all me-1"></i>Finalizado
+                            </span>
+                          {% endif %}
+                        </div>
+
+                        <div class="col-md-2">
+                          <p class="mb-0 small text-muted">Total:</p>
+                          <strong class="text-success">R$ {{ order.price }}</strong>
+                        </div>
+
+                        <div class="col-md-2">
+                          <p class="mb-0 small text-muted">Items:</p>
+                          <strong>{{ order.items.count }}</strong>
+                        </div>
+
+                        <div class="col-md-3 text-end">
+                          {% if order.status == 'P' and order.url %}
+                            <a href="{{ order.url }}" class="btn btn-primary btn-sm">
+                              <i class="bi bi-credit-card me-1"></i>Pagar Agora
+                            </a>
+                          {% endif %}
+                          <button type="button" class="btn btn-outline-secondary btn-sm" 
+                                  data-bs-toggle="collapse" 
+                                  data-bs-target="#order-{{ order.pk }}">
+                            <i class="bi bi-eye me-1"></i>Detalhes
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- Detalhes do Pedido (Colapsável) -->
+                      <div class="collapse mt-3" id="order-{{ order.pk }}">
+                        <hr>
+                        <h6 class="fw-semibold mb-3">Items do Pedido:</h6>
+                        <div class="table-responsive">
+                          <table class="table table-sm">
+                            <thead>
+                              <tr>
+                                <th>Produto</th>
+                                <th>Variação</th>
+                                <th>Quantidade</th>
+                                <th>Preço Unit.</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {% for item in order.items.all %}
+                                <tr>
+                                  <td>{{ item.product.name }}</td>
+                                  <td>{{ item.variant.name }}</td>
+                                  <td>{{ item.quantity }}</td>
+                                  <td>R$ {{ item.variant.price }}</td>
+                                </tr>
+                              {% endfor %}
+                            </tbody>
+                          </table>
+                        </div>
+
+                        {% if order.address %}
+                          <h6 class="fw-semibold mb-2 mt-3">Endereço de Entrega:</h6>
+                          <p class="mb-0 small">
+                            {{ order.address.address }}, {{ order.address.number }}
+                            {% if order.address.complement %}- {{ order.address.complement }}{% endif %}<br>
+                            {{ order.address.neighborhood }}, {{ order.address.city }} - {{ order.address.state }}<br>
+                            CEP: {{ order.address.cep }} | Tel: {{ order.address.tel }}
+                          </p>
+                        {% endif %}
+                      </div>
+
+                    </div>
+                  </div>
                 </div>
               {% endfor %}
             </div>
           {% else %}
-          <p class="text-muted">Nenhum endereço cadastrado.</p>
+            <div class="text-center py-5">
+              <i class="bi bi-bag-x" style="font-size: 4rem; color: #ccc;"></i>
+              <p class="text-muted mt-3">Você ainda não fez nenhum pedido.</p>
+            </div>
           {% endif %}
-          <div>
-            <h3>Meus pedidos</h3>
-              {% for order in orders %}
-                <div>
-                  <p>{{ order.status }}</p>
-                </div>
-              {% endfor %}
-          </div>
 
         </div>
       </div>
