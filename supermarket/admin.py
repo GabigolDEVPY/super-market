@@ -1,10 +1,10 @@
 from django.contrib import admin
-from .models import Banners, Photos
+from .models import Banners, Pricipal
 
 @admin.register(Banners)
 class BannersAdmin(admin.ModelAdmin):
     list_display = ("name",)
     
-@admin.register(Photos)
-class PhotosAdmin(admin.ModelAdmin):
+@admin.register(Pricipal)
+class PrincipalAdmin(admin.ModelAdmin):
     list_display = ("id",)
