@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from product.models import Product, Category
+from .models import Banners
 from django.db.models import Q
 from django.views.generic import ListView
 
@@ -11,6 +12,7 @@ class HomeView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["categories"] = Category.objects.prefetch_related("products").all()
+        context["banners"] = Banners.objects.all()
         return context
     
 class AllProducts(ListView):

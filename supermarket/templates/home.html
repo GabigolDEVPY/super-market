@@ -6,6 +6,55 @@
 {% block content %}
 <div class="container my-5">
 
+    <!-- Carousel de Banners -->
+    {% if banners %}
+    <style>
+        .carousel-item {
+            transition: transform 0.8s ease-in-out;
+        }
+        
+        .carousel-item-next,
+        .carousel-item-prev {
+            display: block;
+        }
+    </style>
+    <div id="bannersCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            {% for banner in banners %}
+            <button 
+                type="button" 
+                data-bs-target="#bannersCarousel" 
+                data-bs-slide-to="{{ forloop.counter0 }}" 
+                {% if forloop.first %}class="active" aria-current="true"{% endif %}
+                aria-label="Slide {{ forloop.counter }}">
+            </button>
+            {% endfor %}
+        </div>
+
+        <div class="carousel-inner rounded-3 overflow-hidden">
+            {% for banner in banners %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <img 
+                    src="{{ banner.banner.url }}" 
+                    class="d-block w-100" 
+                    alt="{{ banner.name }}"
+                    style="height: 400px; object-fit: cover;"
+                >
+            </div>
+            {% endfor %}
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#bannersCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#bannersCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Próximo</span>
+        </button>
+    </div>
+    {% endif %}
+
     {% if categories %}
 
         <!-- Header da home -->
@@ -46,8 +95,9 @@
         </div>
 
     {% endif %}
+
 <script>
-        document.querySelectorAll('.scroll-row').forEach(row => {
+    document.querySelectorAll('.scroll-row').forEach(row => {
         row.addEventListener('wheel', (event) => {
             event.preventDefault();
             row.scrollBy({
@@ -55,6 +105,12 @@
                 behavior: 'smooth'
             });
         });
+    });
+
+    // Auto-play do carousel (opcional - troca a cada 5 segundos)
+    var carousel = new bootstrap.Carousel(document.getElementById('bannersCarousel'), {
+        interval: 5000,
+        wrap: true
     });
 </script>
 </div>
