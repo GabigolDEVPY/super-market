@@ -7,7 +7,7 @@ class BannersAdmin(admin.ModelAdmin):
     
 @admin.register(Principal)
 class PrincipalAdmin(admin.ModelAdmin):
-    list_display = ("id",)
+    list_display = ("name_shop",)
     
 @admin.register(Footer)
 class FooterAdmin(admin.ModelAdmin):

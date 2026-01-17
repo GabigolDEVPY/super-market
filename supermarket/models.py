@@ -1,7 +1,6 @@
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
-
 class Footer(models.Model):
     email = models.EmailField(blank=False, null=False)
     whatsapp = PhoneNumberField(blank=False, null=False)
@@ -13,7 +12,7 @@ class Principal(models.Model):
     icon = models.ImageField(upload_to='photos/')
     
     def __str__(self):
-        return self.name
+        return self.name_shop
 
 class Banners(models.Model):
     name = models.CharField(max_length=40)

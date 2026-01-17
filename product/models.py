@@ -25,7 +25,7 @@ class Promotion(models.Model):
     
 
 class Product(models.Model):
-    name = models.CharField(max_length=35)
+    name = models.CharField(max_length=60)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True, related_name="products")
     description = models.TextField()
     id_stripe = models.CharField(max_length=50, blank=True)

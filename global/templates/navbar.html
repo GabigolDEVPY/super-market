@@ -4,8 +4,8 @@
     <!-- Logo -->
     <a class="navbar-brand fw-bold d-flex align-items-center gap-1"
        href="{% url 'market:home' %}">
-      <i class="bi bi-bag-check-fill text-primary"></i>
-      MyStore
+       <img src="{{ principal.logo.url }}" alt="" width="64">
+      {{ principal.name_shop }}
     </a>
 
     <!-- Botão mobile -->
