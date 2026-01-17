@@ -3,6 +3,8 @@ from product.models import Product, Category
 from .models import Banners
 from django.db.models import Q
 from django.views.generic import ListView
+from django.views.generic import View, TemplateView
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 
 class HomeView(ListView):
     model = Product
@@ -38,5 +40,3 @@ class SearchProduct(AllProducts):
             )
         return query_set
 
-
-    

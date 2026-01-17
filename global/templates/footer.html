@@ -6,23 +6,22 @@
       <div class="col-md-4">
         <h6 class="fw-bold">Minha Loja</h6>
         <p class="text-secondary small">
-          Tecnologia, segurança e confiança em cada compra.
+          {{ footer.short_description }}
         </p>
       </div>
 
       <div class="col-md-4">
         <h6 class="fw-bold">Links úteis</h6>
         <ul class="list-unstyled">
-          <li><a href="#" class="text-secondary text-decoration-none">Minha conta</a></li>
-          <li><a href="#" class="text-secondary text-decoration-none">Pedidos</a></li>
-          <li><a href="#" class="text-secondary text-decoration-none">Suporte</a></li>
+          <li><a href="{% url 'accounts:home' %}" class="text-secondary text-decoration-none">Minha conta</a></li>
+          <li><a href="{% url 'cart:cart' %}" class="text-secondary text-decoration-none">Carrinho</a></li>
         </ul>
       </div>
 
       <div class="col-md-4">
         <h6 class="fw-bold">Contato</h6>
-        <p class="text-secondary small mb-1">contato@minhaloja.com</p>
-        <p class="text-secondary small">WhatsApp: (11) 99999-9999</p>
+        <p class="text-secondary small mb-1">{{ footer.email }}</p>
+        <p class="text-secondary small">WhatsApp: {{ footer.whatsapp }}</p>
       </div>
 
     </div>
