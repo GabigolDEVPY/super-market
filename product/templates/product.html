@@ -9,10 +9,10 @@
 <div class="container py-5">
   <div class="row g-5 align-items-start">
 
-    <!-- GALERIA DE IMAGENS - AGORA COM IMAGEM GRANDE E BONITA -->
+    <!-- GALERIA DE IMAGENS -->
     <div class="col-lg-7">
       <div class="position-sticky" style="top: 100px;">
-        <!-- Imagem Principal - MUITO MAIOR -->
+        <!-- Imagem Principal -->
         <div class="bg-light rounded-3 shadow-sm p-3 h-100 d-flex align-items-center justify-content-center">
           <img
             id="mainImage"
@@ -36,42 +36,41 @@
             style="object-fit: cover; cursor: pointer; transition: all 0.3s;"
             onclick="changeImage(this.src, this)"
             alt="Miniatura {{ forloop.counter }}"
-            >
-            {% endfor %}
-          </div>
-          {% endif %}
+          >
+          {% endfor %}
         </div>
+        {% endif %}
       </div>
+    </div>
       
-      <!-- INFORMAÇÕES DO PRODUTO -->
-      <div class="col-lg-5">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="card-body p-4 p-xl-5 d-flex flex-column">
-            
-            <!-- Estoque -->
-            <div class="d-flex align-items-center gap-2 mb-3">
-              <span class="badge bg-success fs-6 px-3 py-2">
-                <i class="bi bi-check-circle-fill me-1"></i>
-                <strong id="stockQuantity">{% if quantity %}{{ quantity }} em estoque{% else %} Indisponível {% endif %}</strong>
-              </span>
-            </div>
-            
-            <!-- Nome do produto -->
-            <h1 class="display-6 fw-bold mb-4">{{ product.name }}</h1>
-            
-          {% if quantity %}
+    <!-- INFORMAÇÕES DO PRODUTO -->
+    <div class="col-lg-5">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4 p-xl-5 d-flex flex-column">
+          
+          <!-- Estoque -->
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <span class="badge bg-success fs-6 px-3 py-2" id="stockBadge">
+              <i class="bi bi-check-circle-fill me-1"></i>
+              <strong id="stockQuantity">{% if variants.0.stock %}{{ variants.0.stock }} em estoque{% else %}Indisponível{% endif %}</strong>
+            </span>
+          </div>
+          
+          <!-- Nome do produto -->
+          <h1 class="display-6 fw-bold mb-4">{{ product.name }}</h1>
+          
+          {% if variants %}
           <!-- Preço -->
           <div class="mb-4">
             <div id="priceContainer">
               {% if product.discount %}
                 <span id="originalPrice" class="d-block text-muted text-decoration-line-through me-3 fs-4">
-                  R$ {{ variants.0.price|floatformat:2 }}
+                  R$ <span id="originalPriceValue">{{ variants.0.price }}</span>
                 </span>
               {% endif %}
 
-
               <span id="currentPrice" class="fs-2 fw-bold text-success">
-                R$ {{ variants.0.apply_discount|floatformat:2 }}
+                R$ <span id="currentPriceValue">{{ variants.0.apply_discount }}</span>
               </span>
             </div>
 
@@ -92,7 +91,6 @@
             <input type="hidden" name="id" value="{{ product.id }}">
 
             <!-- Seleção de Variação -->
-            {% if variants %}
             <div class="mb-4">
               <label class="form-label fw-semibold">Variação</label>
               <select
@@ -100,22 +98,21 @@
                 id="variantSelect"
                 class="form-select form-select-lg"
                 required
-                >
+              >
                 {% for v in variants %}
                   <option
                     value="{{ v.id }}"
-                    data-price="{{ v.apply_discount|floatformat:2 }}"
-                    data-original="{{ v.price|floatformat:2 }}"
+                    data-price="{{ v.apply_discount }}"
+                    data-original="{{ v.price }}"
                     data-stock="{{ v.stock }}"
                     data-has-discount="{{ product.discount|yesno:'true,false' }}"
-                    data-discount-percent="{{ v.discount.discount|default:'0' }}"
+                    data-discount-percent="{{ product.discount.discount|default:'0' }}"
                   >
                     {{ v.name }}
                   </option>
                 {% endfor %}
               </select>
             </div>
-            {% endif %}
 
             <!-- Quantidade com Spinner -->
             <div class="mb-4">
@@ -130,7 +127,7 @@
                   id="quantityInput"
                   class="form-control text-center"
                   min="1"
-                  max="{{ quantity }}"
+                  max="{{ variants.0.stock }}"
                   value="1"
                   readonly
                 >
@@ -139,9 +136,7 @@
                 </button>
               </div>
               <div class="form-text text-muted mt-2">
-                {% if quantity %}
-                  Máximo por pedido: <span id="maxQuantity">{{ quantity }}</span>
-                {% endif %}
+                Máximo por pedido: <span id="maxQuantity">{{ variants.0.stock }}</span>
               </div>
             </div>
 
@@ -156,23 +151,28 @@
             {% endif %}
 
             <!-- Botões de Ação -->
-              <div class="mt-auto d-grid gap-3">
-                <button type="submit" class="btn btn-success btn-lg fw-bold py-3">
-                  <i class="bi bi-cart-plus-fill me-2"></i>
-                  Adicionar ao Carrinho
-                </button>
+            <div class="mt-auto d-grid gap-3">
+              <button type="submit" class="btn btn-success btn-lg fw-bold py-3" id="addToCartBtn">
+                <i class="bi bi-cart-plus-fill me-2"></i>
+                Adicionar ao Carrinho
+              </button>
 
-                <a
-                  id="buyNowBtn"
-                  href="/product/buy/{{ product.id }}/variant/{{variants.0.id}}/"
-                  class="btn btn-outline-primary btn-lg fw-bold py-3"
-                >
-                  <i class="bi bi-lightning-charge-fill me-2"></i>
-                  Comprar Agora
-                </a>
-              </div>
-            {% endif %}
+              <a
+                id="buyNowBtn"
+                href="/product/buy/{{ product.id }}/variant/{{ variants.0.id }}/"
+                class="btn btn-outline-primary btn-lg fw-bold py-3"
+              >
+                <i class="bi bi-lightning-charge-fill me-2"></i>
+                Comprar Agora
+              </a>
+            </div>
           </form>
+          {% else %}
+          <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            Produto indisponível no momento
+          </div>
+          {% endif %}
 
           <!-- Benefícios -->
           <div class="border-top pt-4 mt-4 small text-muted">
@@ -212,16 +212,17 @@
   </div>
 </div>
 
-<!-- JavaScript (igual ao anterior, só mantido) -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   const variantSelect = document.getElementById('variantSelect');
   const currentPriceEl = document.getElementById('currentPrice');
   const originalPriceEl = document.getElementById('originalPrice');
   const stockQuantity = document.getElementById('stockQuantity');
+  const stockBadge = document.getElementById('stockBadge');
   const maxQuantity = document.getElementById('maxQuantity');
   const quantityInput = document.getElementById('quantityInput');
   const buyNowBtn = document.getElementById('buyNowBtn');
+  const addToCartBtn = document.getElementById('addToCartBtn');
   const decrementBtn = document.querySelector('.quantity-decrement');
   const incrementBtn = document.querySelector('.quantity-increment');
 
@@ -229,55 +230,121 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!variantSelect || variantSelect.selectedIndex < 0) return;
 
     const selected = variantSelect.options[variantSelect.selectedIndex];
-
-    const price = selected.dataset.price;
-    const original = selected.dataset.original;
+    const price = parseFloat(selected.dataset.price);
+    const original = parseFloat(selected.dataset.original);
     const stock = parseInt(selected.dataset.stock);
     const hasDiscount = selected.dataset.hasDiscount === 'true';
 
-    // Preço atual
-    currentPriceEl.textContent = `R$ ${price.replace('.', ',')}`;
+    console.log('📦 Variação selecionada:', {
+      variant: selected.text,
+      price: price,
+      stock: stock,
+      hasDiscount: hasDiscount
+    });
 
-    // Preço original
-    if (hasDiscount && original) {
-      originalPriceEl.textContent = `R$ ${original.replace('.', ',')}`;
-      originalPriceEl.style.display = 'block';
+    // Formatar preço brasileiro
+    const formatPrice = (value) => {
+      return value.toFixed(2).replace('.', ',');
+    };
+
+    // Atualizar preço atual
+    const currentPriceValue = document.getElementById('currentPriceValue');
+    if (currentPriceValue) {
+      currentPriceValue.textContent = formatPrice(price);
     } else {
-      originalPriceEl.textContent = '';
-      originalPriceEl.style.display = 'none';
+      currentPriceEl.textContent = `R$ ${formatPrice(price)}`;
     }
 
-    // Estoque e quantidade
-    stockQuantity.textContent = stock;
+    // Atualizar preço original
+    const originalPriceValue = document.getElementById('originalPriceValue');
+    if (hasDiscount && !isNaN(original)) {
+      if (originalPriceValue) {
+        originalPriceValue.textContent = formatPrice(original);
+        originalPriceEl.style.display = 'block';
+      } else if (originalPriceEl) {
+        originalPriceEl.textContent = `R$ ${formatPrice(original)}`;
+        originalPriceEl.style.display = 'block';
+      }
+    } else {
+      if (originalPriceEl) {
+        originalPriceEl.textContent = '';
+        originalPriceEl.style.display = 'none';
+      }
+    }
+
+    // Atualizar badge de estoque
+    if (stock > 0) {
+      stockQuantity.textContent = `${stock} em estoque`;
+      stockBadge.className = 'badge bg-success fs-6 px-3 py-2';
+    } else {
+      stockQuantity.textContent = 'Indisponível';
+      stockBadge.className = 'badge bg-danger fs-6 px-3 py-2';
+    }
+
+    // Atualizar quantidade máxima
     maxQuantity.textContent = stock;
     quantityInput.max = stock;
-    quantityInput.value = 1;
+    quantityInput.value = Math.min(parseInt(quantityInput.value) || 1, stock);
 
-    // Botão comprar agora
-    buyNowBtn.href = `/product/buy/{{ product.id }}/variant/${selected.value}/`;
-    buyNowBtn.classList.remove('disabled');
+    // Habilitar/desabilitar botões
+    if (stock > 0) {
+      buyNowBtn.href = `/product/buy/{{ product.id }}/variant/${selected.value}/`;
+      buyNowBtn.classList.remove('disabled');
+      addToCartBtn.disabled = false;
+      quantityInput.disabled = false;
+      decrementBtn.disabled = false;
+      incrementBtn.disabled = false;
+    } else {
+      buyNowBtn.classList.add('disabled');
+      addToCartBtn.disabled = true;
+      quantityInput.disabled = true;
+      decrementBtn.disabled = true;
+      incrementBtn.disabled = true;
+    }
   }
 
   // Evento ao trocar variant
   if (variantSelect) {
     variantSelect.addEventListener('change', updateVariantInfo);
-    updateVariantInfo(); // 👈 ativa tudo ao carregar a página
+    // Inicializar ao carregar a página
+    updateVariantInfo();
   }
 
-  // Controle de quantidade
-  decrementBtn?.addEventListener('click', () => {
-    if (parseInt(quantityInput.value) > 1) {
-      quantityInput.value--;
+  // Controle de quantidade - DECREMENTAR
+  decrementBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    const currentValue = parseInt(quantityInput.value);
+    if (currentValue > 1) {
+      quantityInput.value = currentValue - 1;
+      console.log('➖ Quantidade:', quantityInput.value);
     }
   });
 
-  incrementBtn?.addEventListener('click', () => {
-    if (parseInt(quantityInput.value) < parseInt(quantityInput.max)) {
-      quantityInput.value++;
+  // Controle de quantidade - INCREMENTAR
+  incrementBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    const currentValue = parseInt(quantityInput.value);
+    const maxValue = parseInt(quantityInput.max);
+    if (currentValue < maxValue) {
+      quantityInput.value = currentValue + 1;
+      console.log('➕ Quantidade:', quantityInput.value);
     }
   });
 
-  quantityInput?.addEventListener('keydown', e => e.preventDefault());
+  // Prevenir digitação manual
+  quantityInput?.addEventListener('keydown', (e) => {
+    e.preventDefault();
+  });
+
+  // Debug: verificar envio do formulário
+  const form = document.querySelector('form');
+  form?.addEventListener('submit', (e) => {
+    console.log('📤 Enviando formulário:', {
+      variantId: variantSelect.value,
+      quantity: quantityInput.value,
+      productId: '{{ product.id }}'
+    });
+  });
 });
 
 // Troca de imagem

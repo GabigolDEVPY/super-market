@@ -75,7 +75,7 @@
             {% if category.products.all %}
                 <section class="mb-5">
                     <h5 class="mb-3 fw-semibold">
-                        {{ category.name }}
+                        {{ category.category }}
                     </h5>
 
                     {% include "scroll-product.html" with items=category.products.all %}
