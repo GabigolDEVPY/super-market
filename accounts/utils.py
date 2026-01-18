@@ -13,16 +13,20 @@ def validade_cep(cep):
         response.raise_for_status()
         return (content := response.json())
     except requests.exceptions.Timeout: 
-        return "Timeout"
+        return (error := "Timeout")
     except requests.exceptions.HTTPError as e:
-        return "Error"
-    
-def add_cep(request):
-    if request.method == "POST":
+        return (error := "Error")
+
+class user:
+    @staticmethod
+    def add_address(request):
+        content, error = validade_cep(request.POST.get["cep"])
+        if error:
+            return error
         form_copy = request.POST.copy()
         form_copy['tel'] = f"+55{request.POST.get("tel")}"
         form = AdressForm(form_copy)
-        
+            
         if form.is_valid():
             address = form.save(commit=False)
             address.user = request.user
@@ -30,21 +34,23 @@ def add_cep(request):
             return form, None
         for campo, errors in form.errors.items():
             return form, errors[0]
+            
+    @staticmethod
+    def create_inventory_and_cart(user):
+        Inventory.objects.create(user=user)
+        Cart.objects.create(user=user)
+        return
 
-def create_inventory_and_cart(user):
-    Inventory.objects.create(user=user)
-    Cart.objects.create(user=user)
-    return
-
-def delete_address(request):
-    user = request.POST.get("user")
-    name = request.POST.get("name")
-    address = get_object_or_404(Address, user=user, name=name)
-    address.delete()
+    @staticmethod
+    def delete_address(request):
+        user = request.POST.get("user")
+        name = request.POST.get("name")
+        address = get_object_or_404(Address, user=user, name=name)
+        address.delete()
     
-# def change_password():
 
-def get_orders(request):
-    user = request.user
-    orders = user.orders.all()
-    return orders
+    staticmethod
+    def get_orders(request):
+        user = request.user
+        orders = user.orders.all()
+        return orders

@@ -1,13 +1,10 @@
 from django.contrib import messages
-from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404, render
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 from django.views.generic import FormView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from accounts.models import Address
 from .utils import add_cep, validade_cep, create_inventory_and_cart, delete_address, get_orders
 from .forms import RegisterForm, AdressForm
 from accounts.states import states
@@ -53,20 +50,19 @@ class AddAdress(LoginRequiredMixin, View):
         return redirect("accounts:home")
     
     def post(self, request):
-        cep = request.POST.get("cep")
-        if cep:
-            response = validade_cep(cep)
-            if response == "Error":
-                messages.error(request, "Cep Inválido", extra_tags="open_modal")
-            elif response == "Timeout":
-                messages.error(request, "O servidor demorou muito!", extra_tags="open_modal")
-                # adicionando o o cep abaixo
-            form, error = add_cep(request) 
-            if error:
-                messages.error(request, error, extra_tags="open_modal")
-            return redirect("accounts:home")
-        messages.error(request, "Insira o CEP", extra_tags="open_modal")
-        return redirect("home")
+
+        response = validade_cep(cep)
+        if response == "Error":
+            messages.error(request, "Cep Inválido", extra_tags="open_modal")
+        elif response == "Timeout":
+            messages.error(request, "O servidor demorou muito!", extra_tags="open_modal")
+            # adicionando o o cep abaixo
+        form, error = add_cep(request) 
+        if error:
+            messages.error(request, error, extra_tags="open_modal")
+        return redirect("accounts:home")
+    messages.error(request, "Insira o CEP", extra_tags="open_modal")
+    return redirect("home")
         
 
 class Home(LoginRequiredMixin, TemplateView):
