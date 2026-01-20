@@ -11,46 +11,11 @@ def validade_cep(cep):
     try:
         response = requests.get(url, timeout=5)
         response.raise_for_status()
-        return (content := response.json())
+        result = response.json()
+        print(result)
+        return None, result
     except requests.exceptions.Timeout: 
-        return (error := "Timeout")
+        return "O servidor domorou pra responder", None
     except requests.exceptions.HTTPError as e:
-        return (error := "Error")
+        return "Cep inválido", None
 
-class user:
-    @staticmethod
-    def add_address(request):
-        content, error = validade_cep(request.POST.get["cep"])
-        if error:
-            return error
-        form_copy = request.POST.copy()
-        form_copy['tel'] = f"+55{request.POST.get("tel")}"
-        form = AdressForm(form_copy)
-            
-        if form.is_valid():
-            address = form.save(commit=False)
-            address.user = request.user
-            address.save()
-            return form, None
-        for campo, errors in form.errors.items():
-            return form, errors[0]
-            
-    @staticmethod
-    def create_inventory_and_cart(user):
-        Inventory.objects.create(user=user)
-        Cart.objects.create(user=user)
-        return
-
-    @staticmethod
-    def delete_address(request):
-        user = request.POST.get("user")
-        name = request.POST.get("name")
-        address = get_object_or_404(Address, user=user, name=name)
-        address.delete()
-    
-
-    staticmethod
-    def get_orders(request):
-        user = request.user
-        orders = user.orders.all()
-        return orders

@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load widget_tweaks %}
+
 {% block title %}Minha conta{% endblock %}
 
 {% block content %}
@@ -239,13 +241,11 @@
         </div>
         <div class="modal-body">
           {% if messages %}
-          <div class="px-4 pt-3">
             {% for message in messages %}
               {% if message.extra_tags == "emailModal" %} 
-                  <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-3">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                  </div>
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-3">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
               {% endif %}
             {% endfor %}
@@ -274,31 +274,29 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
-      {% if messages %}
-        {% for message in messages %}
-          {% if message.extra_tags == "passwordModal" %}
-            <div class="px-4 pt-3">
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-3">
-                  {{ message }}
-                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            </div>
-          {% endif %}
-        {% endfor %}
-      {% endif %}
-
       <form method="post" action="{% url 'accounts:updatepassword' %}">
         {% csrf_token %}
 
         <div class="modal-body">
+          {% if messages %}
+            {% for message in messages %}
+              {% if message.extra_tags == "passwordModal" %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-3">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+
           <div class="mb-3">
             <label for="old_password" class="form-label">Senha atual</label>
-            <input type="password" class="form-control" id="old_password" name="old_password" required>
+            <input type="password" class="form-control" id="old_password" name="old_password" autocomplete="current-password" required>
           </div>
 
           <div class="mb-3">
             <label for="new_password" class="form-label">Nova senha</label>
-            <input type="password" class="form-control" id="new_password" name="new_password" required>
+            <input type="password" class="form-control" id="new_password" name="new_password"  autocomplete="new-password" required>
           </div>
         </div>
 
@@ -312,23 +310,172 @@
   </div>
 </div>
 
-
-{% if messages %}
-  {% for message in messages %}
-    {% if message.extra_tags %}
-      <script>
-        document.addEventListener("DOMContentLoaded", () => {
-          const modal = new bootstrap.Modal(
-            document.getElementById("{{ message.extra_tags }}")
-          );
-          modal.show();
-        });
-      </script>
-    {% endif %}
-  {% endfor %}
-{% endif %}
-
 <!-- ENDEREÇO -->
-{% include "accounts/address.html" %}
+<div class="modal fade" id="addressModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow">
+
+      <!-- Header -->
+      <div class="modal-header bg-light border-bottom">
+        <h5 class="modal-title fw-semibold">
+          <i class="bi bi-geo-alt-fill me-2"></i>Novo endereço
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body px-4 py-4">
+        <form action="{% url 'accounts:addaddress' %}" method="post" novalidate>
+          {% csrf_token %}
+
+          {% if messages %}
+            {% for message in messages %}
+              {% if message.extra_tags == "addressModal" %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+
+          <div class="row g-3">
+
+            <!-- Nome -->
+            <div class="col-12">
+              <label class="form-label fw-medium">{{ form.name.label }}</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                {% render_field form.name class="form-control" placeholder="Ex: Casa, Trabalho" %}
+              </div>
+            </div>
+
+            <!-- Telefone -->
+            <div class="col-md-6">
+              <label class="form-label fw-medium">{{ form.tel.label }}</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                {% render_field form.tel class="form-control" placeholder="(00) 00000-0000" %}
+              </div>
+            </div>
+
+            <!-- CEP -->
+            <div class="col-md-6">
+              <label class="form-label fw-medium">{{ form.cep.label }}</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-mailbox"></i></span>
+                {% render_field form.cep class="form-control" placeholder="00000-000" %}
+              </div>
+            </div>
+
+            <!-- Endereço -->
+            <div class="col-md-8">
+              <label class="form-label fw-medium">{{ form.address.label }}</label>
+              {% render_field form.address class="form-control" placeholder="Rua, Avenida..." %}
+            </div>
+
+            <!-- Número -->
+            <div class="col-md-4">
+              <label class="form-label fw-medium">{{ form.number.label }}</label>
+              {% render_field form.number class="form-control" placeholder="Nº" %}
+            </div>
+
+            <!-- Complemento -->
+            <div class="col-12">
+              <label class="form-label fw-medium">{{ form.complement.label }}</label>
+              {% render_field form.complement class="form-control" placeholder="Apartamento, bloco, referência..." %}
+            </div>
+
+            <!-- Bairro -->
+            <div class="col-md-6">
+              <label class="form-label fw-medium">{{ form.neighborhood.label }}</label>
+              {% render_field form.neighborhood class="form-control" placeholder="Bairro" %}
+            </div>
+
+            <!-- Cidade -->
+            <div class="col-md-6">
+              <label class="form-label fw-medium">{{ form.city.label }}</label>
+              {% render_field form.city class="form-control" placeholder="Cidade" %}
+            </div>
+
+            <!-- Estado -->
+            <div class="col-md-6">
+              <label class="form-label fw-medium">Estado</label>
+              <select name="state" class="form-select" required>
+                <option value="" selected disabled>Selecione o estado</option>
+                {% for state in states %}
+                  <option value="{{ state }}">{{ state }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+          </div>
+
+          <!-- Footer -->
+          <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary px-4">
+              <i class="bi bi-check-circle me-1"></i>Salvar endereço
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+  
+  // Função para abrir modal automaticamente se houver mensagem com extra_tags
+  function openModalWithMessage() {
+    {% if messages %}
+      {% for message in messages %}
+        {% if message.extra_tags %}
+          var modalId = "{{ message.extra_tags }}";
+          var modalElement = document.getElementById(modalId);
+          
+          if (modalElement) {
+            // Criar e mostrar o modal
+            var modal = new bootstrap.Modal(modalElement);
+            modal.show();
+            
+            // Garantir que o backdrop seja removido ao fechar
+            modalElement.addEventListener('hidden.bs.modal', function () {
+              // Remove qualquer backdrop residual
+              var backdrops = document.querySelectorAll('.modal-backdrop');
+              backdrops.forEach(function(backdrop) {
+                backdrop.remove();
+              });
+              // Remove classe do body
+              document.body.classList.remove('modal-open');
+              document.body.style.removeProperty('overflow');
+              document.body.style.removeProperty('padding-right');
+            });
+          }
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  }
+  
+  // Executar quando o DOM estiver completamente carregado
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', openModalWithMessage);
+  } else {
+    // DOM já está carregado
+    openModalWithMessage();
+  }
+  
+  // Backup: executar também no load completo da página
+  window.addEventListener('load', function() {
+    setTimeout(openModalWithMessage, 50);
+  });
+})();
+</script>
 
 {% endblock %}

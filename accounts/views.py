@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 from django.views.generic import FormView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .utils import add_cep, validade_cep, create_inventory_and_cart, delete_address, get_orders
+from .services import user
 from .forms import RegisterForm, AdressForm
 from accounts.states import states
 
@@ -50,20 +50,14 @@ class AddAdress(LoginRequiredMixin, View):
         return redirect("accounts:home")
     
     def post(self, request):
-
-        response = validade_cep(cep)
-        if response == "Error":
-            messages.error(request, "Cep Inválido", extra_tags="open_modal")
-        elif response == "Timeout":
-            messages.error(request, "O servidor demorou muito!", extra_tags="open_modal")
-            # adicionando o o cep abaixo
-        form, error = add_cep(request) 
+        error = user.add_address(request) 
         if error:
-            messages.error(request, error, extra_tags="open_modal")
-        return redirect("accounts:home")
-    messages.error(request, "Insira o CEP", extra_tags="open_modal")
-    return redirect("home")
+            messages.error(request, error, extra_tags="addressModal")
+            return redirect('accounts:home')
         
+        messages.success(request, "Endereço adicionado com sucesso!")
+        return redirect("accounts:home")
+
 
 class Home(LoginRequiredMixin, TemplateView):
     template_name = "accounts/home.html"
@@ -73,12 +67,12 @@ class Home(LoginRequiredMixin, TemplateView):
         context["form"] = AdressForm()
         context["states"] = states
         context["address"] = self.request.user.address.all()
-        context["orders"] = get_orders(self.request)
+        context["orders"] = user.get_orders(self.request)
         return context
 
 class DeleteAddress(LoginRequiredMixin, View):
     def post(self, request):
-        delete_address(request)
+        user.delete_address(request)
         return redirect("accounts:home")
 
 class ChangePassword(LoginRequiredMixin, View):
