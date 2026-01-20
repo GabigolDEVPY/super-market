@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from .utils import validade_cep
 from .models import Address, Inventory
+from django.contrib.auth import authenticate, login, logout
 from cart.models import Cart
 from .forms import AdressForm
 
@@ -33,13 +34,24 @@ class user:
 
     @staticmethod
     def delete_address(request):
-        name = request.POST.get("name")
-        address = get_object_or_404(Address, user=request.user, name=name)
+        address = get_object_or_404(Address, user=request.user, name=request.POST.get("name"))
         address.delete()
-    
 
-    staticmethod
+    @staticmethod
     def get_orders(request):
-        user = request.user
-        orders = user.orders.all()
-        return orders
+        return request.user.orders.all()
+    
+    @staticmethod
+    def user_login(request):
+        user = authenticate(request, username=request.POST.get("username"), password=request.POST.get("password"))
+        if user is not None:
+            login(request, user)
+            return
+        return "error"
+    
+    @staticmethod
+    def user_register(form):
+        user_temp = form.save(commit=False)
+        user_temp.save()
+        user.create_inventory_and_cart(user_temp)
+        return

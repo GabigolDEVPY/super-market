@@ -22,14 +22,11 @@ class LoginView(View):
         return render(request, "accounts/login.html", {"hide_navbar": True})
 
     def post(self, request):
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect("market:home")
-        messages.error(request, "Username or password expired", extra_tags="login_message")
-        return redirect("accounts:login")
+        error = user.user_login(request)
+        if error:
+            messages.error(request, "Username or password expired", extra_tags="login_message")
+            return redirect("accounts:login")
+        return redirect("market:home")
         
         
 class RegisterView(FormView):
@@ -39,9 +36,7 @@ class RegisterView(FormView):
     extra_context = {"hide_navbar": True}
     
     def form_valid(self, form):
-        user = form.save(commit=False)
-        user.save()
-        create_inventory_and_cart(user)
+        user.user_register(form)
         return super().form_valid(form)
     
 
