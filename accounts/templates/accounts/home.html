@@ -18,7 +18,7 @@
               <img src="{{ user.image.url }}" class="rounded-circle me-3" style="width:80px;height:80px;object-fit:cover;" alt="Foto do usuário">
             {% else %}
               <div class="bg-secondary rounded-circle me-3 d-flex justify-content-center align-items-center"
-                   style="width:80px;height:80px;color:white;font-size:2rem;">
+                  style="width:80px;height:80px;color:white;font-size:2rem;">
                 {{ user.username|slice:":1"|upper }}
               </div>
             {% endif %}
@@ -355,7 +355,7 @@
               <label class="form-label fw-medium">{{ form.tel.label }}</label>
               <div class="input-group">
                 <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-                {% render_field form.tel class="form-control" placeholder="(00) 00000-0000" %}
+                {% render_field form.tel class="form-control" placeholder="(00) 00000-0000" id="id_tel" %}
               </div>
             </div>
 
@@ -364,7 +364,7 @@
               <label class="form-label fw-medium">{{ form.cep.label }}</label>
               <div class="input-group">
                 <span class="input-group-text"><i class="bi bi-mailbox"></i></span>
-                {% render_field form.cep class="form-control" placeholder="00000-000" %}
+                {% render_field form.cep class="form-control" placeholder="00000-000" id="id_cep" %}
               </div>
             </div>
 
@@ -429,6 +429,19 @@
 </div>
 
 <script>
+  document.addEventListener("DOMContentLoaded", function () {
+  const cepInput = document.getElementById("id_cep");
+
+  cepInput.addEventListener("input", function () {
+    let value = cepInput.value.replace(/\D/g, ""); // remove tudo que não for número
+
+    if (value.length > 5) {
+      value = value.slice(0, 5) + "-" + value.slice(5, 8);
+    }
+
+    cepInput.value = value;
+  });
+});
 (function() {
   'use strict';
   
@@ -476,6 +489,30 @@
     setTimeout(openModalWithMessage, 50);
   });
 })();
+
+document.addEventListener("DOMContentLoaded", function () {
+  const telInput = document.getElementById("id_tel");
+
+  telInput.addEventListener("input", function () {
+    let value = telInput.value.replace(/\D/g, ""); // só números
+
+    if (value.length > 11) value = value.slice(0, 11);
+
+    if (value.length > 10) {
+      // Celular: (00) 00000-0000
+      value = value.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
+    } else if (value.length > 6) {
+      // Fixo incompleto
+      value = value.replace(/^(\d{2})(\d{4})(\d+)/, "($1) $2-$3");
+    } else if (value.length > 2) {
+      value = value.replace(/^(\d{2})(\d+)/, "($1) $2");
+    } else if (value.length > 0) {
+      value = value.replace(/^(\d+)/, "($1");
+    }
+
+    telInput.value = value;
+  });
+});
 </script>
 
 {% endblock %}

@@ -5,8 +5,8 @@ from product.models import Product, Variation
 
 # Create your models here.
 class Address(models.Model):
-    user = models.ForeignKey(User, related_name="address", on_delete=models.SET_NULL, null=True, blank=True)
-    name = models.CharField(max_length=120, blank=False, unique=True, verbose_name="Nome")
+    user = models.ForeignKey(User, related_name="address", on_delete=models.CASCADE)
+    name = models.CharField(max_length=120, blank=False, verbose_name="Nome")
     address = models.CharField(max_length=120, blank=False, verbose_name="Endereço")
     complement = models.CharField(max_length=100, blank=True)
     neighborhood = models.CharField(max_length=50, blank=False)
@@ -18,9 +18,13 @@ class Address(models.Model):
     
     class Meta:
         verbose_name = "Endereço"
+        verbose_name_plural = "Endereços"
+        constraints = [ models.UniqueConstraint(fields=["user", "name"], name="unique_address_name_per_user")]
+        indexes = [ models.Index(fields=["user"]), models.Index(fields=["cep"])]
+    
     
     def __str__(self):
-        return str(self.user)
+        return f"{self.user} - {self.user.username}"
     
 class Inventory(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="inventory")

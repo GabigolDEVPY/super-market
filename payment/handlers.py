@@ -10,7 +10,6 @@ class TempItem:
         self.quantity = quantity
 
 def payment(metadata):
-    print("chamou payment")
     user = User.objects.get(id=metadata["user_id"])
     cart = user.cart
     inventory = user.inventory

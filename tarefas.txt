@@ -1,7 +1,28 @@
-arrumar integração stripe
-arrumar tela de usuário
-fazer tela de pedidos do admin
-arrumar pedidos do usuário
-% desconto tela produto __OK__
-refatorar product
-refatorar payment
+7️⃣ Segurança e Produção (OBRIGATÓRIO)
+🔒 O que você precisa adicionar antes de subir
+✔️ CSRF em todos os forms
+✔️ SECURE_SSL_REDIRECT = True
+✔️ SESSION_COOKIE_SECURE = True
+✔️ CSRF_COOKIE_SECURE = True
+✔️ DEBUG = False
+✔️ .env com:
+SECRET_KEY=
+DATABASE_URL=
+ALLOWED_HOSTS=
+
+8️⃣ Nomes e Padrões
+Atual	Correto
+class user	UserService
+AdressForm	AddressForm
+validade_cep	validate_cep
+address related_name	addresses
+9️⃣ Checklist Final de Produção ✅
+
+✔ Models com constraints
+✔ Forms sem __all__
+✔ Services sem request
+✔ Views magras
+✔ Transações
+✔ Integrações isoladas
+✔ Exceptions claras
+✔ Segurança ativada

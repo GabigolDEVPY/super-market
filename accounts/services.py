@@ -1,30 +1,30 @@
 from django.shortcuts import get_object_or_404
-from .utils import validade_cep
+from .integrations.viacep import validade_cep
+from django.core.exceptions import ValidationError
 from .models import Address, Inventory
 from django.contrib.auth import authenticate, login, logout
 from cart.models import Cart
+from django.db import transaction
 from .forms import AdressForm
 
 
-class user:
+class User:
+    
     @staticmethod
-    def add_address(request):
-        error, result = validade_cep(request.POST.get("cep"))
-        if error:
-            return error
-        if result:
-            form_copy = request.POST.copy()
-            form_copy['tel'] = f"+55{request.POST.get("tel")}"
-            form = AdressForm(form_copy)
-                
-            if form.is_valid():
-                address = form.save(commit=False)
-                address.user = request.user
-                address.save()
-                return
-            for campo, errors in form.errors.items():
-                return errors[0]
-        return "Cep Inválido"
+    @transaction.atomic
+    def create_address(user, data):
+        is_valid, error = validade_cep(data.get("cep"))
+        if not is_valid:
+            raise ValidationError(error)
+        form_copy = data.copy()
+        form_copy['tel'] = f"+55{data.get("tel")}"
+            
+        form = AdressForm(form_copy)
+        if not form.is_valid():
+            raise ValidationError(form.errors)
+        address = form.save(commit=False)
+        address.user = user
+        address.save()
             
     @staticmethod
     def create_inventory_and_cart(user):
@@ -53,5 +53,23 @@ class user:
     def user_register(form):
         user_temp = form.save(commit=False)
         user_temp.save()
-        user.create_inventory_and_cart(user_temp)
+        User.create_inventory_and_cart(user_temp)
         return
+
+    @staticmethod
+    def change_password(request):
+        user = request.user
+        old_password = request.POST.get("old_password")
+        new_password = request.POST.get("new_password")
+        if not user.check_password(old_password):
+            return "error"
+        user.set_password(new_password)
+        user.save()
+        
+    @staticmethod
+    def change_email(request):
+        new_email = request.POST.get("email")
+        if not new_email:
+            return "error"
+        request.user.email = new_email
+        request.user.save()
