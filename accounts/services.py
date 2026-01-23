@@ -1,15 +1,13 @@
 from django.shortcuts import get_object_or_404
 from .integrations.viacep import validade_cep
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from .models import Address, Inventory
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login
 from cart.models import Cart
 from django.db import transaction
 from .forms import AdressForm
 
-
-class User:
-    
+class AddressService:
     @staticmethod
     @transaction.atomic
     def create_address(user, data):
@@ -25,46 +23,23 @@ class User:
         address = form.save(commit=False)
         address.user = user
         address.save()
-            
-    @staticmethod
-    def create_inventory_and_cart(user):
-        Inventory.objects.create(user=user)
-        Cart.objects.create(user=user)
-        return
 
     @staticmethod
-    def delete_address(request):
-        address = get_object_or_404(Address, user=request.user, name=request.POST.get("name"))
-        address.delete()
+    def delete_address(user, name):
+        try:
+            address = Address.objects.get(user=user, name=name)
+            address.delete()
+        except Address.DoesNotExist:
+            raise ObjectDoesNotExist("Endereço não existe")
+
+class UserService:
+    
 
     @staticmethod
     def get_orders(request):
         return request.user.orders.all()
     
-    @staticmethod
-    def user_login(request):
-        user = authenticate(request, username=request.POST.get("username"), password=request.POST.get("password"))
-        if user is not None:
-            login(request, user)
-            return
-        return "error"
-    
-    @staticmethod
-    def user_register(form):
-        user_temp = form.save(commit=False)
-        user_temp.save()
-        User.create_inventory_and_cart(user_temp)
-        return
 
-    @staticmethod
-    def change_password(request):
-        user = request.user
-        old_password = request.POST.get("old_password")
-        new_password = request.POST.get("new_password")
-        if not user.check_password(old_password):
-            return "error"
-        user.set_password(new_password)
-        user.save()
         
     @staticmethod
     def change_email(request):
@@ -73,3 +48,32 @@ class User:
             return "error"
         request.user.email = new_email
         request.user.save()
+        
+        
+        
+class AuthService:
+    
+    
+    @staticmethod
+    def user_login(request, username, password):
+        user = authenticate(request, username=username, password=password)
+        if not user:
+            raise ValidationError("Usuário ou senha Inválidos")
+        login(request, user)
+    
+    
+    @staticmethod
+    @transaction.atomic
+    def user_register(form):
+        user_temp = form.save()
+        Inventory.objects.create(user=user_temp)
+        Cart.objects.create(user=user_temp)
+
+    
+    
+    @staticmethod
+    def change_password(user, old_password, new_password):
+        if not user.check_password(old_password):
+            raise ValidationError("Senha não coincide")
+        user.set_password(new_password)
+        user.save()

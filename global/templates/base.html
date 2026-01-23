@@ -28,21 +28,44 @@
 
 <body class="bg-light text-dark d-flex flex-column min-vh-100">
 
+    
     {% if not hide_navbar %}
-        {% include "navbar.html" %}
+    {% include "navbar.html" %}
     {% endif %}
-
+    
     
     <!-- Conteúdo principal -->
     <main class="flex-fill" style="padding-top: 72px;">
+
+        {% if messages %}
+            <div class="modal fade show" style="display:block;" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                <div class="modal-body text-center">
+                    {% for message in messages %}
+                    <p class="mb-0">{{ message }}</p>
+                    {% endfor %}
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <a href="" class="btn btn-primary">OK</a>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="modal-backdrop fade show"></div>
+        {% endif %}
+
         {% block content %}{% endblock %}
     </main>
     
     {% if not hide_navbar %}
         {% include 'footer.html' %}
     {% endif %}
+    
+
     <!-- Bootstrap JS -->
-    <script 
+<script 
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
 </script>
 
