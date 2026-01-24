@@ -39,14 +39,14 @@
 
         {% if messages %}
             {% for message in messages %}
-                {% if message.tags == "generic" %}
+                {% if "generic" in message.tags %}
                     <div class="modal-backdrop fade show">
                         <div class="modal fade show" style="display:block;" tabindex="-1">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                             <div class="modal-body text-center">
                                 {% for message in messages %}
-                                <p class="mb-0">{{ message }}</p>
+                                    <p class="mb-0">{{ message }}</p>
                                 {% endfor %}
                             </div>
                             <div class="modal-footer justify-content-center">
