@@ -26,33 +26,23 @@ class AddressService:
 
     @staticmethod
     def delete_address(user, name):
-        try:
-            address = Address.objects.get(user=user, name=name)
-            address.delete()
-        except Address.DoesNotExist:
-            raise ObjectDoesNotExist("Endereço não existe")
+        Address.objects.get(user=user, name=name).delete()
+
 
 class UserService:
     
-
     @staticmethod
     def get_orders(request):
         return request.user.orders.all()
     
 
-        
     @staticmethod
-    def change_email(request):
-        new_email = request.POST.get("email")
-        if not new_email:
-            return "error"
-        request.user.email = new_email
-        request.user.save()
-        
-        
+    def change_email(email, user):
+        user.email = email
+        user.save()
+
         
 class AuthService:
-    
     
     @staticmethod
     def user_login(request, username, password):
@@ -69,7 +59,6 @@ class AuthService:
         Inventory.objects.create(user=user_temp)
         Cart.objects.create(user=user_temp)
 
-    
     
     @staticmethod
     def change_password(user, old_password, new_password):

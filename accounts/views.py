@@ -73,9 +73,8 @@ class DeleteAddress(LoginRequiredMixin, View):
     def post(self, request):
         try:
             AddressService.delete_address(request.user, request.POST.get("name"))
-        except ObjectDoesNotExist as e:  
-            print("objeto não existe")
-            messages.error(request, str("objeto não existe"))
+        except ObjectDoesNotExist:  
+            messages.error(request, "objeto não existe", extra_tags="generic")
         return redirect("accounts:home")
 
 
@@ -92,10 +91,10 @@ class ChangePassword(LoginRequiredMixin, View):
     
 class ChangeEmail(LoginRequiredMixin, View):
     def post(self, request):
-        response = UserService.change_email(request)
-        if response:
+        if not request.POST.get("email"):
             messages.error(request, "Informe um e-mail.", extra_tags="emailModal")
             return redirect("accounts:home")
+        UserService.change_email(email=request.POST.get("email"), user=request.user)
         messages.success(request, "E-mail atualizado com sucesso", extra_tags="emailModal")
         return redirect("accounts:home")
         

@@ -12,7 +12,7 @@ def validade_cep(cep):
         response = requests.get(url, timeout=5)
         response.raise_for_status()
         result = response.json()
-        return None, result
+        return True, result
     except requests.exceptions.Timeout: 
         return "O servidor domorou pra responder", None
     except requests.exceptions.HTTPError as e:
