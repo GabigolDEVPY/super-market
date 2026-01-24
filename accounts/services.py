@@ -32,8 +32,8 @@ class AddressService:
 class UserService:
     
     @staticmethod
-    def get_orders(request):
-        return request.user.orders.all()
+    def get_orders(user):
+        return user.orders.all()
     
 
     @staticmethod

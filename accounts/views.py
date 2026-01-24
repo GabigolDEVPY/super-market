@@ -65,7 +65,7 @@ class Home(LoginRequiredMixin, TemplateView):
         context["form"] = AdressForm()
         context["states"] = states
         context["address"] = self.request.user.address.all()
-        context["orders"] = UserService.get_orders(self.request)
+        context["orders"] = UserService.get_orders(user=self.request.user)
         return context
 
 
