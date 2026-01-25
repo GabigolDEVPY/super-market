@@ -1,9 +1,4 @@
-from django.shortcuts import redirect, render, get_object_or_404
 import requests
-from payment.models import Order
-from .models import Address, Inventory
-from cart.models import Cart
-from .forms import AdressForm
 
 def validade_cep(cep):
     cep = cep

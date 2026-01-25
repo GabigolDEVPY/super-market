@@ -1,6 +1,5 @@
-from django.shortcuts import get_object_or_404
 from .integrations.viacep import validade_cep
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.exceptions import ValidationError
 from .models import Address, Inventory
 from django.contrib.auth import authenticate, login
 from cart.models import Cart
