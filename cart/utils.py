@@ -5,14 +5,6 @@ from django.http import HttpResponse
 from payment.utils import create_checkout_session_product
 import random
 
-
-def cartremove(request):
-    try:
-        cart = request.user.cart
-        item_cart = cart.items.get(id=request.POST.get("id"), variant=request.POST.get("variant_id")).delete()
-        cart.save()
-    except Exception as e:
-        return HttpResponse(status=200)
     
     
 def cartbuy(request):

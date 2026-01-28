@@ -52,7 +52,7 @@ class AddAdress(LoginRequiredMixin, View):
             AddressService.create_address(request.user, request.POST)
             return redirect('accounts:home') 
         except ValidationError as e:
-            messages.error(request, e.messages[0], extra_tags="addressModal")
+            messages.error(request, e.messages[0], extra_tags="addressModal text-bg-danger")
             return redirect('accounts:home')
         
 
@@ -80,22 +80,24 @@ class DeleteAddress(LoginRequiredMixin, View):
 
 class ChangePassword(LoginRequiredMixin, View):
     def post(self, request):
+        #---------------------------------Adicionar form nessa view------------------------------------------------------------#
         try:
             AuthService.change_password(request.user, request.POST.get("old_password"), request.POST.get("new_password"))
-            messages.success(request, "Senha alterada com sucesso. Faça login novamente", extra_tags="passwordModal")
+            messages.success(request, "Senha alterada com sucesso. Faça login novamente", extra_tags="passwordModal text-bg-success")
             return redirect("accounts:login")
         except ValidationError as e:
-            messages.error(request, e.messages[0], extra_tags="passwordModal")
+            messages.error(request, e.messages[0], extra_tags="passwordModal text-bg-danger")
             return redirect("accounts:home")
             
     
 class ChangeEmail(LoginRequiredMixin, View):
     def post(self, request):
+        #---------------------------------Adicionar form nessa view------------------------------------------------------------#
         if not request.POST.get("email"):
             messages.error(request, "Informe um e-mail.", extra_tags="emailModal")
             return redirect("accounts:home")
         UserService.change_email(email=request.POST.get("email"), user=request.user)
-        messages.success(request, "E-mail atualizado com sucesso", extra_tags="emailModal")
+        messages.success(request, "E-mail atualizado com sucesso", extra_tags="emailModal text-bg-success")
         return redirect("accounts:home")
         
         

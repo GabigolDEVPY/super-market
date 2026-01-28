@@ -6,3 +6,6 @@ class OutOfStockError(Exception):
 
 class MaxCartQuantity(Exception):
     pass
+
+class CartItemNotExists(Exception):
+    pass

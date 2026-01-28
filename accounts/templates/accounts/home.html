@@ -229,7 +229,7 @@
 
 <!-- ================= MODAIS ================= -->
 
-<!-- EMAIL -->
+<!-- MODAL EMAIL -->
 <div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -240,16 +240,6 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
         </div>
         <div class="modal-body">
-          {% if messages %}
-            {% for message in messages %}
-              {% if message.extra_tags == "emailModal" %} 
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-3">
-                  {{ message }}
-                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-              {% endif %}
-            {% endfor %}
-          {% endif %}
           <div class="mb-3">
             <label for="email" class="form-label">Novo e-mail</label>
             <input type="email" class="form-control" id="email" name="email" placeholder="Digite seu novo e-mail" required>
@@ -264,53 +254,36 @@
   </div>
 </div>
 
-<!-- SENHA -->
+<!-- MODAL SENHA -->
 <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-
-      <div class="modal-header">
-        <h5 class="modal-title" id="passwordModalLabel">Alterar Senha</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
       <form method="post" action="{% url 'accounts:updatepassword' %}">
         {% csrf_token %}
-
+        <div class="modal-header">
+          <h5 class="modal-title" id="passwordModalLabel">Alterar Senha</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
         <div class="modal-body">
-          {% if messages %}
-            {% for message in messages %}
-              {% if message.extra_tags == "passwordModal" %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-3">
-                  {{ message }}
-                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-              {% endif %}
-            {% endfor %}
-          {% endif %}
-
           <div class="mb-3">
             <label for="old_password" class="form-label">Senha atual</label>
             <input type="password" class="form-control" id="old_password" name="old_password" autocomplete="current-password" required>
           </div>
-
           <div class="mb-3">
             <label for="new_password" class="form-label">Nova senha</label>
-            <input type="password" class="form-control" id="new_password" name="new_password"  autocomplete="new-password" required>
+            <input type="password" class="form-control" id="new_password" name="new_password" autocomplete="new-password" required>
           </div>
         </div>
-
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
           <button type="submit" name="password_form" class="btn btn-danger">Salvar</button>
         </div>
       </form>
-
     </div>
   </div>
 </div>
 
-<!-- ENDEREÇO -->
+<!-- MODAL ENDEREÇO -->
 <div class="modal fade" id="addressModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content border-0 shadow">
@@ -327,17 +300,6 @@
       <div class="modal-body px-4 py-4">
         <form action="{% url 'accounts:addaddress' %}" method="post" novalidate>
           {% csrf_token %}
-
-          {% if messages %}
-            {% for message in messages %}
-              {% if message.extra_tags == "addressModal" %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
-                  {{ message }}
-                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-              {% endif %}
-            {% endfor %}
-          {% endif %}
 
           <div class="row g-3">
 
@@ -430,89 +392,90 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-  const cepInput = document.getElementById("id_cep");
+    const cepInput = document.getElementById("id_cep");
 
-  cepInput.addEventListener("input", function () {
-    let value = cepInput.value.replace(/\D/g, ""); // remove tudo que não for número
+    cepInput.addEventListener("input", function () {
+      let value = cepInput.value.replace(/\D/g, ""); // remove tudo que não for número
 
-    if (value.length > 5) {
-      value = value.slice(0, 5) + "-" + value.slice(5, 8);
-    }
+      if (value.length > 5) {
+        value = value.slice(0, 5) + "-" + value.slice(5, 8);
+      }
 
-    cepInput.value = value;
+      cepInput.value = value;
+    });
   });
-});
-(function() {
-  'use strict';
-  
-  // Função para abrir modal automaticamente se houver mensagem com extra_tags
-  function openModalWithMessage() {
-    {% if messages %}
-      {% for message in messages %}
-        {% if message.extra_tags %}
-          var modalId = "{{ message.extra_tags }}";
-          var modalElement = document.getElementById(modalId);
-          
-          if (modalElement) {
-            // Criar e mostrar o modal
-            var modal = new bootstrap.Modal(modalElement);
-            modal.show();
+
+  (function() {
+    'use strict';
+    
+    // Função para abrir modal automaticamente se houver mensagem com extra_tags
+    function openModalWithMessage() {
+      {% if messages %}
+        {% for message in messages %}
+          {% if message.extra_tags %}
+            var modalId = "{{ message.extra_tags }}".split(" ")[0];
+            var modalElement = document.getElementById(modalId);
             
-            // Garantir que o backdrop seja removido ao fechar
-            modalElement.addEventListener('hidden.bs.modal', function () {
-              // Remove qualquer backdrop residual
-              var backdrops = document.querySelectorAll('.modal-backdrop');
-              backdrops.forEach(function(backdrop) {
-                backdrop.remove();
+            if (modalElement) {
+              // Criar e mostrar o modal
+              var modal = new bootstrap.Modal(modalElement);
+              modal.show();
+              
+              // Garantir que o backdrop seja removido ao fechar
+              modalElement.addEventListener('hidden.bs.modal', function () {
+                // Remove qualquer backdrop residual
+                var backdrops = document.querySelectorAll('.modal-backdrop');
+                backdrops.forEach(function(backdrop) {
+                  backdrop.remove();
+                });
+                // Remove classe do body
+                document.body.classList.remove('modal-open');
+                document.body.style.removeProperty('overflow');
+                document.body.style.removeProperty('padding-right');
               });
-              // Remove classe do body
-              document.body.classList.remove('modal-open');
-              document.body.style.removeProperty('overflow');
-              document.body.style.removeProperty('padding-right');
-            });
-          }
-        {% endif %}
-      {% endfor %}
-    {% endif %}
-  }
-  
-  // Executar quando o DOM estiver completamente carregado
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', openModalWithMessage);
-  } else {
-    // DOM já está carregado
-    openModalWithMessage();
-  }
-  
-  // Backup: executar também no load completo da página
-  window.addEventListener('load', function() {
-    setTimeout(openModalWithMessage, 50);
-  });
-})();
-
-document.addEventListener("DOMContentLoaded", function () {
-  const telInput = document.getElementById("id_tel");
-
-  telInput.addEventListener("input", function () {
-    let value = telInput.value.replace(/\D/g, ""); // só números
-
-    if (value.length > 11) value = value.slice(0, 11);
-
-    if (value.length > 10) {
-      // Celular: (00) 00000-0000
-      value = value.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
-    } else if (value.length > 6) {
-      // Fixo incompleto
-      value = value.replace(/^(\d{2})(\d{4})(\d+)/, "($1) $2-$3");
-    } else if (value.length > 2) {
-      value = value.replace(/^(\d{2})(\d+)/, "($1) $2");
-    } else if (value.length > 0) {
-      value = value.replace(/^(\d+)/, "($1");
+            }
+          {% endif %}
+        {% endfor %}
+      {% endif %}
     }
+    
+    // Executar quando o DOM estiver completamente carregado
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', openModalWithMessage);
+    } else {
+      // DOM já está carregado
+      openModalWithMessage();
+    }
+    
+    // Backup: executar também no load completo da página
+    window.addEventListener('load', function() {
+      setTimeout(openModalWithMessage, 50);
+    });
+  })();
 
-    telInput.value = value;
+  document.addEventListener("DOMContentLoaded", function () {
+    const telInput = document.getElementById("id_tel");
+
+    telInput.addEventListener("input", function () {
+      let value = telInput.value.replace(/\D/g, ""); // só números
+
+      if (value.length > 11) value = value.slice(0, 11);
+
+      if (value.length > 10) {
+        // Celular: (00) 00000-0000
+        value = value.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
+      } else if (value.length > 6) {
+        // Fixo incompleto
+        value = value.replace(/^(\d{2})(\d{4})(\d+)/, "($1) $2-$3");
+      } else if (value.length > 2) {
+        value = value.replace(/^(\d{2})(\d+)/, "($1) $2");
+      } else if (value.length > 0) {
+        value = value.replace(/^(\d+)/, "($1");
+      }
+
+      telInput.value = value;
+    });
   });
-});
 </script>
 
 {% endblock %}

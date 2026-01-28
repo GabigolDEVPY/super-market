@@ -25,6 +25,10 @@ class CartItem(models.Model):
     variant = models.ForeignKey(Variation, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     
+    class Meta:
+        verbose_name = 'Item Carrinho'
+        verbose_name_plural = 'Itens Carrinhos'
+    
     def __str__(self):
         return f"{self.quantity}x {self.product.name}"
     

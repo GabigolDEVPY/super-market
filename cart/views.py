@@ -7,9 +7,9 @@ from utils.decorators import clear_session_data
 from django.utils.decorators import method_decorator
 from django.http import HttpResponseBadRequest
 from django.core.exceptions import ValidationError
-from .utils import add_to_cart, cartremove, cartbuy, items_random, return_items
+from .utils import cartbuy, items_random, return_items
 from payment.utils import create_checkout_session_product
-from .cart_exceptions import OutOfStockError, MaxCartQuantity
+from .cart_exceptions import OutOfStockError, MaxCartQuantity, CartItemNotExists
 from .services import CartService
 
 
@@ -49,10 +49,11 @@ class AddCart(LoginRequiredMixin, View):
 # Logica pra remover item do carrinho 
 class CartRemove(LoginRequiredMixin,View):
     def post(self, request):
-        print("teste")
-        cartremove(request)
+        try:
+            CartService.CartRemove(request.user.cart, request.POST.get("id"), request.POST.get("variant_id"))
+        except CartItemNotExists as e:
+            messages.error(request, str(e), extra_tags="danger")
         return redirect("cart:cart")
-
 
 
 class CartBuyNow(View):

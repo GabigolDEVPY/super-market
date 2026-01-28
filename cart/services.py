@@ -2,7 +2,7 @@ from django.db import transaction
 from product.models import Product
 from cart.models import CartItem
 from django.core.exceptions import ValidationError
-from .cart_exceptions import OutOfStockError, MaxCartQuantity
+from .cart_exceptions import OutOfStockError, MaxCartQuantity, CartItemNotExists
 
 class CartService():
     @transaction.atomic
@@ -25,4 +25,8 @@ class CartService():
         raise OutOfStockError("Produto sem estoque")
 
     @staticmethod
-    def CartRemove
+    def CartRemove(cart, id, variant_id):
+        try:
+            item_cart = cart.items.get(id=id, variant=variant_id).delete()
+        except CartItem.DoesNotExist:
+            raise CartItemNotExists("O item não existe no carrinho")
