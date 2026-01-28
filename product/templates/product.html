@@ -172,6 +172,16 @@
             <i class="bi bi-exclamation-triangle-fill me-2"></i>
             Produto indisponível no momento
           </div>
+
+          {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+          {% endif %}   
+
           {% endif %}
 
           <!-- Benefícios -->

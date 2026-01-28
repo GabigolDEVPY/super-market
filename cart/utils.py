@@ -5,23 +5,6 @@ from django.http import HttpResponse
 from payment.utils import create_checkout_session_product
 import random
 
-def add_to_cart(request):
-    product = Product.objects.get(id=request.POST.get("id"))
-    variant = product.variations.get(id=request.POST.get("variantid"))
-    quantity = int(request.POST.get("quantity"))
-    if variant and variant.stock >= 1:
-        item, created = CartItem.objects.get_or_create(
-            cart= request.user.cart, 
-            product= product,
-            variant= variant, 
-            defaults={'quantity': quantity})
-        if not created:
-            if variant.stock > item.quantity:
-                item.quantity += quantity
-                item.save()
-            return product.id, True
-    return product.id, False
-    
 
 def cartremove(request):
     try:
@@ -35,7 +18,6 @@ def cartremove(request):
 def cartbuy(request):
     user = request.user
     address = int(request.POST.get("address"))
-    print("endereçooooooooooo",address)
     urls = {"success_url": "accounts/home/", "cancel_url": "cart/"} 
     line_items = [
             {

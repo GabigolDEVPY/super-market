@@ -1,3 +1,4 @@
+from tabnanny import verbose
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from django.contrib.auth.models import User
@@ -29,6 +30,8 @@ class Address(models.Model):
 class Inventory(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="inventory")
     
+    class Meta:
+        verbose_name = "Inventário"
     def __str__(self):
         return f"Inventory of {self.user.username}"
     

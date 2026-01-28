@@ -5,8 +5,12 @@ from django.views.generic import  TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from utils.decorators import clear_session_data
 from django.utils.decorators import method_decorator
+from django.http import HttpResponseBadRequest
+from django.core.exceptions import ValidationError
 from .utils import add_to_cart, cartremove, cartbuy, items_random, return_items
 from payment.utils import create_checkout_session_product
+from .cart_exceptions import OutOfStockError, MaxCartQuantity
+from .services import CartService
 
 
 #retornar a tela do carrinho do cliente!
@@ -22,15 +26,24 @@ class CartView(LoginRequiredMixin, TemplateView):
         return context
     
 
-
 #Logica pra adicionar produto ao carrinho 
 class AddCart(LoginRequiredMixin, View):
     def post(self, request):
-        id, error = add_to_cart(request)
-        if error:
-            messages.error(request, "A quantidade máxima já foi adicionada ao carrinho")
-            return redirect("product:product", id)
-        return redirect("product:product", id)
+        try:
+            CartService.AddCartProduct(
+                user=request.user, 
+                product_id=request.POST.get("id"), 
+                variant_id=request.POST.get("variantid"), 
+                quantity=int(request.POST.get("quantity"))
+                )
+            messages.success(request, "Produto Adicionado ao carrinho", extra_tags="success")
+            return redirect("product:product", request.POST.get("id"))
+        except OutOfStockError as e:
+            messages.error(request, str(e), extra_tags="danger")
+            return redirect("product:product", request.POST.get("id"))
+        except MaxCartQuantity as e:
+            messages.warning(request, str(e), extra_tags="warning")
+            return redirect("product:product", request.POST.get("id"))
 
 
 # Logica pra remover item do carrinho 
