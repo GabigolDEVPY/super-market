@@ -1,6 +1,6 @@
 from .integrations.viacep import validade_cep
 from django.core.exceptions import ValidationError
-from .models import Address, Inventory
+from .models import Address
 from django.contrib.auth import authenticate, login
 from cart.models import Cart
 from django.db import transaction

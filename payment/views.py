@@ -4,7 +4,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from product.models import Product
 from django.contrib.auth.models import User
-from accounts.models import Inventory, InventoryItem
 from .models import Order
 from django.views.generic import View, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin

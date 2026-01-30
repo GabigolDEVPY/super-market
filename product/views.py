@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from utils.decorators import clear_session_data
 from django.utils.decorators import method_decorator
-from payment.services import create_checkout_session_product
+from payment.services import OrderCheckoutService
 from django.http import Http404
 
 
@@ -103,7 +103,7 @@ def productbuynow(request):
             "quantity": int(quantity),
             "event_mode": str("product"),
         }
-    url = create_checkout_session_product(metadata, items, urls);
+    url = OrderCheckoutService.create_checkout_session_product(metadata, items, urls);
     print(url)
     return redirect(url)
 

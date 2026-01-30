@@ -4,7 +4,7 @@ from cart.models import CartItem
 from .exceptions import OutOfStockError, MaxCartQuantity, CartItemNotExists
 from product.models import Product
 from cart.models import CartItem
-from payment.services import create_checkout_session_product
+from payment.services import OrderCheckoutService
 import random
 
 class CartService():
@@ -39,6 +39,17 @@ class CartService():
         items = list(Product.objects.filter(variations__stock__gt=0).distinct())
         random.shuffle(items)
         return items[:7]
+    
+    @staticmethod
+    def return_itens(cart):
+        items = cart.items.all()
+        items_return = []
+        for item in items:
+            if item.variant.stock < item.quantity:
+                item.quantity = item.variant.stock
+                continue
+            items_return.append(item)
+        return items_return
 
 
     @staticmethod
@@ -62,5 +73,5 @@ class CartService():
             "user_id": str(user.id),
             "address": address
         }
-        url = create_checkout_session_product(metadata, line_items, urls)
+        url = OrderCheckoutService.create_checkout_session_product(metadata, line_items, urls)
         return url

@@ -3,7 +3,6 @@ from django.shortcuts import redirect
 from django.views import View
 from django.views.generic import  TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .utils import cartbuy, items_random, return_items
 from .exceptions import OutOfStockError, MaxCartQuantity, CartItemNotExists
 from .services import CartService
 
@@ -14,9 +13,9 @@ class CartView(LoginRequiredMixin, TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['items'] = items_random()
+        context['items'] = CartService.items_random()
         context['address'] = self.request.user.address.all()
-        context["items_cart"] = return_items(self.request)
+        context["items_cart"] = CartService.return_itens(self.request.user.cart)
         context["cart_price"] = self.request.user.cart.total_price
         return context
     
@@ -53,7 +52,9 @@ class CartRemove(LoginRequiredMixin,View):
 
 class CartBuyNow(View):
     def post(self, request, *args, **kwargs):
-        url = CartService.CreateCartCheckout()
+        url = CartService.CreateCartCheckout(
+            request.user,
+            int(request.POST.get("address")))
         return redirect(url)
 
 

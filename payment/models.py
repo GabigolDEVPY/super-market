@@ -1,8 +1,6 @@
-from datetime import timezone
 from django.db import models
 from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
-from stripe import Balance
 from product.models import Product, Variation
 
 # Create your models here.
