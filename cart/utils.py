@@ -2,7 +2,7 @@ from django.shortcuts import redirect
 from product.models import Product
 from cart.models import CartItem
 from django.http import HttpResponse
-from payment.utils import create_checkout_session_product
+from payment.services import create_checkout_session_product
 import random
 
     

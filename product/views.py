@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from utils.decorators import clear_session_data
 from django.utils.decorators import method_decorator
-from payment.utils import create_checkout_session_product
+from payment.services import create_checkout_session_product
 from django.http import Http404
 
 
@@ -56,7 +56,8 @@ class BuyNowView(LoginRequiredMixin, View):
             discount_price = int(product.apply_discount() - (product.price / 100 * discount_search.discount))
             request.session["discount_price"] = discount_price      
             request.session["discount_name"] = discount_search.name  
-            messages.success(request, "Cupom de desconto aplicado com sucesso!!", extra_tags="cupom")
+            messages.success(request, "Cupom de desconto aplicado com sucesso!!",
+                             extra_tags="cupom")
             # success cupom
             return render(request, 'payment.html', {"product": product, "stock": stock, "variant": variant, "address": address})
         # error cupom

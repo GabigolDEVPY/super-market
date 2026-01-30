@@ -3,13 +3,8 @@ from django.shortcuts import redirect
 from django.views import View
 from django.views.generic import  TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from utils.decorators import clear_session_data
-from django.utils.decorators import method_decorator
-from django.http import HttpResponseBadRequest
-from django.core.exceptions import ValidationError
 from .utils import cartbuy, items_random, return_items
-from payment.utils import create_checkout_session_product
-from .cart_exceptions import OutOfStockError, MaxCartQuantity, CartItemNotExists
+from .exceptions import OutOfStockError, MaxCartQuantity, CartItemNotExists
 from .services import CartService
 
 
@@ -58,7 +53,7 @@ class CartRemove(LoginRequiredMixin,View):
 
 class CartBuyNow(View):
     def post(self, request, *args, **kwargs):
-        url = cartbuy(request)
+        url = CartService.CreateCartCheckout()
         return redirect(url)
 
 

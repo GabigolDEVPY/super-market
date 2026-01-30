@@ -13,6 +13,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from utils.decorators import clear_session_data
 from django.utils.decorators import method_decorator
-from payment.utils import create_checkout_session_product
+from payment.services import create_checkout_session_product
 from django.http import Http404
 
