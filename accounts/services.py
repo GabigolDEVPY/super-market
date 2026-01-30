@@ -55,7 +55,6 @@ class AuthService:
     @transaction.atomic
     def user_register(form):
         user_temp = form.save()
-        Inventory.objects.create(user=user_temp)
         Cart.objects.create(user=user_temp)
 
     

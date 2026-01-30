@@ -4,9 +4,16 @@ from product.models import Product, Variation
 from payment.models import Order, OrderItem, InfosForm
 from cart.models import Cart
 import stripe
+from django.db import transaction
 from django.conf import settings
 
 stripe.api_key = settings.API_STRIPE
+
+class TempItem:
+    def __init__(self, product, variant, quantity):
+        self.product = product
+        self.variant = variant
+        self.quantity = quantity
 
 class OrderCheckoutService:
     @staticmethod
@@ -57,7 +64,14 @@ class OrderCheckoutService:
         return session.url
 
 
-
+    @staticmethod
+    @transaction.atomic
+    def post_paid(metadata):
+        user = User.objects.get(id=metadata["user_id"])
+        cart = user.cart
+        Order.objects.get(id=metadata["order_id"]).status = "A"    
+        if metadata["event_mode"] == "cart":
+            cart.items.all().delete()
 
 
 

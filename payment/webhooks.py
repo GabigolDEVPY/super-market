@@ -2,7 +2,7 @@ import stripe
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-from .handlers import payment
+from .services import OrderCheckoutService
 
 @csrf_exempt
 def stripe_webhook(request):
@@ -16,7 +16,6 @@ def stripe_webhook(request):
     if event["type"] == "checkout.session.completed":
         session = event["data"]["object"]
         metadata = session["metadata"]
-        print("chamar payment")
-        payment(metadata)
+        OrderCheckoutService.post_paid(metadata)
         return HttpResponse(status=200)
     return HttpResponse(status=200)
