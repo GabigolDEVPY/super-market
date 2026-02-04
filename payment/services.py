@@ -1,25 +1,23 @@
-from django.contrib.auth.models import User
+from decimal import Decimal
 from accounts.models import Address
 from product.models import Product, Variation
 from payment.models import Order, OrderItem, InfosForm
+from django.contrib.auth import get_user_model
 from cart.models import Cart
 import stripe
 from django.db import transaction
 from django.conf import settings
+from . exceptions import *
 
 stripe.api_key = settings.API_STRIPE
 
-class TempItem:
-    def __init__(self, product, variant, quantity):
-        self.product = product
-        self.variant = variant
-        self.quantity = quantity
-
 class OrderCheckoutService:
+    @transaction.atomic
     @staticmethod
     def create_order(metadata, items):
+        User = get_user_model()
         user = User.objects.get(id=metadata["user_id"])
-        price = items[0]["price_data"]["unit_amount"] / 100
+        price = Decimal(metadata["total_price"])
         address = Address.objects.get(id=metadata["address"])
         infos_form = InfosForm.objects.create(
             user = user,
@@ -35,13 +33,12 @@ class OrderCheckoutService:
         order = Order.objects.create(user=user, price=price, address=infos_form)
         if metadata["type"] == "cart":
             cart = Cart.objects.get(id=metadata["cart_id"])
-            items = cart.items.all()
+            items = cart.items.select_related("product", "variant")
             for item in items:
                 OrderItem.objects.create(order=order, product=item.product, variant=item.variant, quantity=item.quantity)
             return str(order.id)
-            
         product = Product.objects.get(id=metadata["product_id"])
-        variation = Variation.objects.get(id=metadata["product_id"])
+        variation = Variation.objects.get(id=metadata["variation_id"])
         quantity = metadata["quantity"]
         OrderItem.objects.create(order=order, product=product, variant=variation, quantity=quantity)
         return str(order.id)
@@ -54,8 +51,8 @@ class OrderCheckoutService:
             payment_method_types=["card"],
             line_items=items,
             mode="payment",
-            success_url=f"http://localhost:8000/{urls['success_url']}",
-            cancel_url=f"http://localhost:8000/{urls['cancel_url']}",
+            success_url=f"{settings.FRONTEND_URL}/{urls['success_url']}",
+            cancel_url=f"{settings.FRONTEND_URL}/{urls['cancel_url']}",
             metadata=metadata,
         )
         order = Order.objects.get(id=order_id)
@@ -63,15 +60,22 @@ class OrderCheckoutService:
         order.save()
         return session.url
 
-
-    @staticmethod
     @transaction.atomic
+    @staticmethod
     def post_paid(metadata):
+        User = get_user_model()
         user = User.objects.get(id=metadata["user_id"])
+        if not user:
+            raise InvalidCheckoutMetada("Id de usuário inválido")
         cart = user.cart
-        Order.objects.get(id=metadata["order_id"]).status = "A"    
+        order = Order.objects.get(id=metadata["order_id"])
+        if order.status == "A":
+            return        
+        order.status = "A"
+        order.save()
         if metadata["event_mode"] == "cart":
             cart.items.all().delete()
+            cart.save()
 
 
 

@@ -2,12 +2,10 @@ from django.db import transaction
 from product.models import Product
 from cart.models import CartItem
 from .exceptions import OutOfStockError, MaxCartQuantity, CartItemNotExists
-from product.models import Product
-from cart.models import CartItem
 from payment.services import OrderCheckoutService
 import random
 
-class CartService():
+class CartService:
     @transaction.atomic
     @staticmethod
     def AddCartProduct(user, product_id, variant_id, quantity):
@@ -30,7 +28,7 @@ class CartService():
     @staticmethod
     def CartRemove(cart, id, variant_id):
         try:
-            item_cart = cart.items.get(id=id, variant=variant_id).delete()
+            cart.items.get(id=id, variant=variant_id).delete()
         except CartItem.DoesNotExist:
             raise CartItemNotExists("O item não existe no carrinho")
     
@@ -47,6 +45,7 @@ class CartService():
         for item in items:
             if item.variant.stock < item.quantity:
                 item.quantity = item.variant.stock
+                item.save()
                 continue
             items_return.append(item)
         return items_return
