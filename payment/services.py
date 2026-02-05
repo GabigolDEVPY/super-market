@@ -7,7 +7,7 @@ from cart.models import Cart
 import stripe
 from django.db import transaction
 from django.conf import settings
-from . exceptions import *
+from . exceptions import (EmptyCartException, InvalidCheckoutMetadata)
 
 stripe.api_key = settings.API_STRIPE
 
@@ -18,7 +18,7 @@ class OrderCheckoutService:
         User = get_user_model()
         user = User.objects.get(id=metadata["user_id"])
         price = Decimal(metadata["total_price"])
-        address = Address.objects.get(id=metadata["address"])
+        address = Address.objects.get(id=metadata["address"], user=user)
         infos_form = InfosForm.objects.create(
             user = user,
             address = address.address,
@@ -32,8 +32,10 @@ class OrderCheckoutService:
         )
         order = Order.objects.create(user=user, price=price, address=infos_form)
         if metadata["type"] == "cart":
-            cart = Cart.objects.get(id=metadata["cart_id"])
+            cart = Cart.objects.get(id=metadata["cart_id"], user=user)
             items = cart.items.select_related("product", "variant")
+            if not cart.items.exists():
+                raise EmptyCartException("Sem itens no carrinho")
             for item in items:
                 OrderItem.objects.create(order=order, product=item.product, variant=item.variant, quantity=item.quantity)
             return str(order.id)
@@ -43,8 +45,9 @@ class OrderCheckoutService:
         OrderItem.objects.create(order=order, product=product, variant=variation, quantity=quantity)
         return str(order.id)
 
+    @transaction.atomic
     @staticmethod
-    def create_checkout_session_product(metadata, items, urls):
+    def create_checkout_session(metadata, items, urls):
         order_id = OrderCheckoutService.create_order(metadata, items)
         metadata['order_id'] = order_id
         session = stripe.checkout.Session.create(
@@ -66,9 +69,9 @@ class OrderCheckoutService:
         User = get_user_model()
         user = User.objects.get(id=metadata["user_id"])
         if not user:
-            raise InvalidCheckoutMetada("Id de usuário inválido")
+            raise InvalidCheckoutMetadata("Id de usuário inválido")
         cart = user.cart
-        order = Order.objects.get(id=metadata["order_id"])
+        order = Order.objects.get(id=metadata["order_id"], user=user)
         if order.status == "A":
             return        
         order.status = "A"

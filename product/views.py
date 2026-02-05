@@ -57,7 +57,7 @@ class BuyNowView(LoginRequiredMixin, View):
             request.session["discount_price"] = discount_price      
             request.session["discount_name"] = discount_search.name  
             messages.success(request, "Cupom de desconto aplicado com sucesso!!",
-                             extra_tags="cupom")
+                            extra_tags="cupom")
             # success cupom
             return render(request, 'payment.html', {"product": product, "stock": stock, "variant": variant, "address": address})
         # error cupom
@@ -103,8 +103,7 @@ def productbuynow(request):
             "quantity": int(quantity),
             "event_mode": str("product"),
         }
-    url = OrderCheckoutService.create_checkout_session_product(metadata, items, urls);
-    print(url)
+    url = OrderCheckoutService.create_checkout_session(metadata, items, urls);
     return redirect(url)
 
     

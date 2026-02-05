@@ -1,2 +1,5 @@
-class InvalidCheckoutMetada(Exception):
+class InvalidCheckoutMetadata(Exception):
+    pass
+
+class EmptyCartException(Exception):
     pass
