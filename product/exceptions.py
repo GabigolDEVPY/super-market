@@ -1,0 +1,2 @@
+class InvalidCupom(Exception):
+    pass

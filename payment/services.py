@@ -1,5 +1,6 @@
 from decimal import Decimal
 from accounts.models import Address
+import product
 from product.models import Product, Variation
 from payment.models import Order, OrderItem, InfosForm
 from django.contrib.auth import get_user_model
@@ -12,7 +13,7 @@ from . exceptions import (EmptyCartException, InvalidCheckoutMetadata)
 stripe.api_key = settings.API_STRIPE
 
 class OrderCheckoutService:
-    @transaction.atomic
+    @transaction.atomic    
     @staticmethod
     def create_order(metadata, items):
         User = get_user_model()
@@ -40,7 +41,7 @@ class OrderCheckoutService:
                 OrderItem.objects.create(order=order, product=item.product, variant=item.variant, quantity=item.quantity)
             return str(order.id)
         product = Product.objects.get(id=metadata["product_id"])
-        variation = Variation.objects.get(id=metadata["variation_id"])
+        variation = Variation.objects.get(id=metadata["variant_id"])
         quantity = metadata["quantity"]
         OrderItem.objects.create(order=order, product=product, variant=variation, quantity=quantity)
         return str(order.id)
@@ -68,17 +69,27 @@ class OrderCheckoutService:
     def post_paid(metadata):
         User = get_user_model()
         user = User.objects.get(id=metadata["user_id"])
-        if not user:
-            raise InvalidCheckoutMetadata("Id de usuário inválido")
         cart = user.cart
         order = Order.objects.get(id=metadata["order_id"], user=user)
+        if not user:
+            raise InvalidCheckoutMetadata("Id de usuário inválido")
         if order.status == "A":
             return        
         order.status = "A"
         order.save()
         if metadata["event_mode"] == "cart":
+            for item in cart.items.select_related("product", "variant"):
+                item.variant.stock -= item.quantity
+                item.variant.save()
             cart.items.all().delete()
             cart.save()
+        else:
+            variant = Variation.objects.get(
+                id=metadata["variant_id"], 
+                product=metadata["product_id"])
+            variant.stock -= int(metadata["quantity"])
+            variant.save()
+        
 
 
 

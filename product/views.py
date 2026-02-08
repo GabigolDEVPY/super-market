@@ -10,6 +10,7 @@ from utils.decorators import clear_session_data
 from django.utils.decorators import method_decorator
 from payment.services import OrderCheckoutService
 from django.http import Http404
+from . services import ProductService
 
 
 @method_decorator(clear_session_data(["discount_name", "discount_price"]), name="dispatch")
@@ -20,49 +21,27 @@ class ProductDetailView(DetailView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        variations_with_stock = self.object.variations.filter(stock__gt=0)
-        stock = self.object.has_stock()
-        context["quantity"] = self.object.variations.filter(stock__gt=0).first().stock if stock else None
-        context["variants"] = variations_with_stock
-        images = [img.image.url for img in  self.object.images.all()]
-        images.insert(0, self.object.image.url)
-        context["images"] = images
+        product_data = ProductService.get_product_data(self.object)
+        context.update(product_data)
         return context
     
 class BuyNowView(LoginRequiredMixin, View):
+    # route buy product
     def get(self, request, product_id, variant_id):
-        product = Product.objects.get(id=product_id)
-        variant = product.variations.get(id=variant_id)
-        address = self.request.user.address.all()
-        if not variant.stock or variant.stock < 1:
-            raise Http404("product without stock avaliable")
-        return render(request, "payment.html", {"product": product, "stock": variant.stock, "variant": variant, "address": address})
-    
+        context_data = ProductService.get_payment_data(product_id, variant_id, request.user)
+        return render(request, "payment.html", context=context_data)
     
     #apply discount cupom
     def post(self, request, product_id, variant_id):
-        discount = request.POST.get("discount")
-        product = Product.objects.get(id=product_id)
-        variant = product.variations.get(id=variant_id)
-        address = self.request.user.address.all()
-        stock = variant.stock
-        
-        if discount:
-            discount_search = DiscountCode.objects.filter(name=discount).first()
-            print(discount_search)
-            if not discount_search:
-                messages.warning(request, "Cupom Inválido!", extra_tags="cupom")
-                return redirect("product:buynow", product_id=product_id, variant_id=variant_id)
-            discount_price = int(product.apply_discount() - (product.price / 100 * discount_search.discount))
-            request.session["discount_price"] = discount_price      
-            request.session["discount_name"] = discount_search.name  
-            messages.success(request, "Cupom de desconto aplicado com sucesso!!",
-                            extra_tags="cupom")
-            # success cupom
-            return render(request, 'payment.html', {"product": product, "stock": stock, "variant": variant, "address": address})
-        # error cupom
-        messages.warning(request, "Insira um cupom de desconto!", extra_tags="cupom")
-        return redirect("product:buynow", product_id=product_id, variant_id=variant_id)
+        response, context = ProductService.aplly_discount(request.POST.get("discount"), product_id, variant_id, self.request.user)
+        if "error" in response:
+            messages.warning(request, response["error"], extra_tags="warning")
+            return redirect("product:buynow", product_id=product_id, variant_id=variant_id)
+        request.session["discount_price"] = response["discount_price"]    
+        request.session["discount_name"] = response["discount_name"]   
+        messages.success(request, response["message"], extra_tags="success")
+        return render(request, 'payment.html', context=context)
+
 
 
 
@@ -102,6 +81,7 @@ def productbuynow(request):
             "user_id": str(user.id),
             "quantity": int(quantity),
             "event_mode": str("product"),
+            "total_price": price
         }
     url = OrderCheckoutService.create_checkout_session(metadata, items, urls);
     return redirect(url)

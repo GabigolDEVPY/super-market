@@ -70,7 +70,8 @@ class CartService:
             "type": "cart",
             "cart_id": str(user.cart.id),
             "user_id": str(user.id),
-            "address": address
+            "address": address,
+            "total_price": user.cart.total_price
         }
         url = OrderCheckoutService.create_checkout_session(metadata, line_items, urls)
         return url
