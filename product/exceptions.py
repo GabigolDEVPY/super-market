@@ -1,2 +1,0 @@
-class InvalidCupom(Exception):
-    pass
