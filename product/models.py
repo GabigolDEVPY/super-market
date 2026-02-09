@@ -3,7 +3,6 @@ from decimal import Decimal, ROUND_HALF_UP
 from PIL import Image
 from django.conf import settings
 import os
-from django.contrib.auth.models import User
 from django.utils import timezone
 
 

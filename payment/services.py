@@ -1,6 +1,5 @@
 from decimal import Decimal
 from accounts.models import Address
-import product
 from product.models import Product, Variation
 from payment.models import Order, OrderItem, InfosForm
 from django.contrib.auth import get_user_model
