@@ -1,7 +1,0 @@
-CLV: Class Based Views
-DDD: Separação por Domínio (Domain-Driven Design)
-SRP: Single Responsibility Principle
-OCP: O – Open/Closed Principle (OCP)
-LSP: Liskov Substitution Principle
-ISP: Interface Segregation Principle
-DIP: Dependency Inversion Principle
