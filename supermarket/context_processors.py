@@ -1,4 +1,4 @@
-from .models import Footer, Principal, Banners
+from .models import Footer, Principal
 
 
 def return_infos(request):

@@ -12,7 +12,7 @@ API_STRIPE = os.getenv("API_KEY_STRIPE")
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SESSION_COOKIE_AGE = 900
+SESSION_COOKIE_AGE = 5000
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 
@@ -21,13 +21,19 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-bn+la4x_^h!t)(=ibx$4h1a^*t!fg@+$c=0utnk6n5pe$19#3^'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG') == 'True'
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 
-ALLOWED_HOSTS = ["*"]
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
 
 # Application definition
 
@@ -89,6 +95,7 @@ DATABASES = {
         'PASSWORD': os.getenv("ROOT_PASSWORD"),
         'HOST': os.getenv("ROOT_HOST"),
         'PORT': os.getenv("ROOT_PORT"),
+        'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES"}
     }
 }
 
@@ -129,15 +136,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
-FRONTEND_URL = "http://localhost:8000"
+# FRONTEND_URL = "http://localhost:8000"
 
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'global/static')]
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'global/static')]
-STATIC_ROOT = os.path.join(BASE_DIR, 'templates/static')
 
 MESSAGE_TAGS = {
     constants.DEBUG: 'alert-info',
