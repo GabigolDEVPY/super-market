@@ -8,7 +8,8 @@ WORKDIR /app
 RUN apt update && apt install -y \
     default-libmysqlclient-dev \
     build-essential \
-    pkg-config
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
 RUN pip install --upgrade pip && pip install -r requirements.txt
